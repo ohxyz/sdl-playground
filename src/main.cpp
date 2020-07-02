@@ -5,6 +5,8 @@
 #include "event_handlers.hpp"
 #include "object2d.hpp"
 #include "sprite.hpp"
+#include <math.h>
+#include "velo.hpp"
 
 #define SCREEN_WIDTH 400
 #define SCREEN_HEIGHT 700
@@ -76,20 +78,6 @@ init() {
     return true;
 }
 
-SDL_Surface* 
-loadSurface( string path ) {
-
-    SDL_Surface* surface = SDL_LoadBMP( path.c_str() );
-
-    if ( surface == NULL ) {
-
-        printf( "Failed to load image. SDL Error: %s\n", SDL_GetError() );
-        return NULL;
-    }
-
-    return surface;
-}
-
 
 int
 loop( Object2D* obj ) {
@@ -119,17 +107,17 @@ loop( Object2D* obj ) {
             case SDLK_a:
                 SDL_Log( "Left!\n" );
                 obj->setFrames( jumpFrames );
-                obj->startAnimation( 50 );
+                obj->startAnimation();
                 break;
 
             case SDLK_d:
                 SDL_Log( "Right!\n" );
                 obj->setFrames( walkFrames );
-                obj->startAnimation( 50 );
+                obj->startAnimation();
                 break;
 
-            default:
-                SDL_Log( "No move!" );
+            // default:
+            //     SDL_Log( "No move!" );
             }
         }
     }
@@ -145,32 +133,17 @@ main( int argc, char* args[] ) {
         return 1;
     }
 
-    // Image2
-    SDL_Surface* imageSurface2 = loadSurface( "images/avatar.bmp" );
-    SDL_Texture* imageTexture2 = SDL_CreateTextureFromSurface( gRenderer, imageSurface2 );
-    SDL_FreeSurface( imageSurface2 );
-
-    SDL_Rect imageRect2;
-
-    imageRect2.x = 300;
-    imageRect2.y = 100;
-    imageRect2.w = 48;
-    imageRect2.h = 32;
-
-    int ticksStart2 = SDL_GetTicks();
-    int ticksNow2;
-
     Object2D* ranger = new Object2D( 20, 0, 48, 64, "images/ranger.bmp" );
     
     walkSprite = new Sprite( "images/walk.png", { .x=0, .y=0, .w=800, .h=795 }, 4, 4, SDL_FLIP_HORIZONTAL );
-    walkFrames = walkSprite->createFrames( {50, 350, 200, 199} );
+    walkFrames = walkSprite->createFrames( {50, 350, 200, 199}, 50 );
 
     jumpSprite = new Sprite( "images/jump.png", { .x=0, .y=0, .w=800, .h=596 }, 4, 3, SDL_FLIP_HORIZONTAL );
-    jumpFrames = jumpSprite->createFrames( {50, 350, 200, 199} );
+    jumpFrames = jumpSprite->createFrames( {50, 350, 200, 199}, 50 );
 
-    Object2D* o = new Object2D( 50, 350, 200, 199 );
-    o->setFrames( walkFrames );
-    o->startAnimation( 50 );
+    Object2D* velo = new Object2D();
+    velo->setFrames( walkFrames );
+    velo->startAnimation( true );
 
     SDL_Color backgroundColor = { .r=255, .g=255, .b=255, .a=128 };
     Object2D* white = new Object2D( 0, 0, 50, 80, backgroundColor );
@@ -179,42 +152,60 @@ main( int argc, char* args[] ) {
     Sprite* counterSprite = new Sprite( "images/numbers.png", { .x=0, .y=0, .w=512, .h=512 }, 4, 4 );
     std::vector<Frame> counterFrames = counterSprite->createFrames( {50, 50, 128, 128} );
     counter->setFrames( counterFrames );
-    counter->startAnimation( 1000 );
+    counter->startAnimation();
+
+    Velo* velo2 = new Velo();
+    velo2->walk();
 
     std::vector<Frame> redFrames = {
-
-        { .x=50, .y=250, .width=30, .height=20, .backgroundColorR=100, .backgroundColorG=0, .backgroundColorB=0, .backgroundColorA=255 },
-        { .x=60, .y=250, .width=30, .height=20, .backgroundColorR=0, .backgroundColorG=100, .backgroundColorB=0, .backgroundColorA=255 },
-        { .x=70, .y=250, .width=30, .height=20, .backgroundColorR=0, .backgroundColorG=0, .backgroundColorB=100, .backgroundColorA=255 }
+        
+        { .x=50, .y=400, .width=55, .height=66, .backgroundColorA=134, .duration=3000 },
+        { .x=50, .y=350, .width=55, .height=66, .backgroundColorA=134, .duration=2000 },
+        { .x=50, .y=320, .width=55, .height=66, .backgroundColorA=134, .duration=1000 },
+        { .x=50, .y=300, .width=55, .height=66, .backgroundColorA=134, .duration=500 },
+        { .x=50, .y=330, .width=55, .height=66, .backgroundColorA=134, .duration=500 },
+        { .x=50, .y=370, .width=55, .height=66, .backgroundColorA=134, .duration=1000 },
+        { .x=50, .y=400, .width=55, .height=66, .backgroundColorA=134, .duration=2000 }
     };
+
+    // Frame frame;
+    // std::vector<Frame> redFrames;
+
+    // int startX = 50;
+    // int startY = 400;
+    // int totalFrames = 21;
+
+    // int middleIndex = totalFrames / 2;
+    // float exponent = 2.1;
+    // int highest = round( pow( middleIndex, exponent ) );
+    // int eachHeight;
+    // int newY;
+
+    // for ( int i = 0; i < totalFrames; i ++ ) {
+
+    //     eachHeight = - round( pow( abs(i - middleIndex), exponent ) ) + highest;
+    //     newY = startY - eachHeight;
+
+    //     frame = { .x=startX, .y=newY, .width=55, .height=66, .backgroundColorA=134 };
+    //     redFrames.push_back( frame );
+    // }
 
     // red->setFrames( redFrames );
     Object2D* red = new Object2D( redFrames );
-    red->startAnimation( 1000, true );
+    red->startAnimation( true );
 
-    while ( loop( o ) ) {
+    while ( loop( velo ) ) {
 
         // Green
         SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
         SDL_RenderClear( gRenderer );
 
         ranger->render();
-        o->render();
+        // velo->render();
+        velo2->render();
         white->render();
         counter->render();
-        red->render();
-
-
-        // imageRect2
-        ticksNow2 = SDL_GetTicks();
-
-        if ( (ticksNow2 - ticksStart2) > 1000 ) {
-
-            imageRect2.y += 5;
-            ticksStart2 = ticksNow2;
-        }
-
-        SDL_RenderCopyEx( gRenderer, imageTexture2, NULL, &imageRect2, -15, NULL, SDL_FLIP_NONE );
+        // red->render();
 
         // Update
         SDL_RenderPresent( gRenderer );
@@ -226,8 +217,6 @@ main( int argc, char* args[] ) {
 
     // delete ranger;
     // delete o;
-
-    SDL_DestroyTexture( imageTexture2 );
 
     SDL_DestroyRenderer( gRenderer );
     SDL_FreeSurface( gWindowSurface );

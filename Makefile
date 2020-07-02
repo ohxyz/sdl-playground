@@ -9,6 +9,9 @@ DEBUG_SRC = src/main.cpp
 DEBUG_SRC += src/object2d.cpp
 DEBUG_SRC += src/event_handlers.cpp
 DEBUG_SRC += src/sprite.cpp
+DEBUG_SRC += src/velo.cpp
+DEBUG_SRC += src/helpers.cpp
+
 
 OBJECT2D_SRC = src/object2d.test.cpp src/object2d.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
@@ -31,8 +34,8 @@ EXEC_NAME		= 	bin/run
 debug: $(DEBUG_SRC)
 	$(CC) $(DEBUG_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
 
-app: $(APP_SRC)
-	$(CC) $(APP_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
+# app: $(APP_SRC)
+# 	$(CC) $(APP_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
 
 test_object2d: 
 	$(CC) $(OBJECT2D_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test

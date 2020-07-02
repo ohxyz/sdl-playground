@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "playground-mod.h"
 #include <vector>
+#include <math.h>
 
 struct TT {
 
@@ -15,7 +16,7 @@ struct T {
     TT tt;
 };
 
-void fn( T &t, T t2, T* t3 ) {
+void fn( T t, T t2, T* t3 ) {
 
     printf( "%d\n", t.a );
 
@@ -54,6 +55,17 @@ main( int argc, char* args[] ) {
     fn( { .a=99 }, arg2, pArg3 );
 
     printf( "@@@ %d, %d, %d\n", arg.a, arg2.a, arg3.a );
+
+    int a = pow(10, 2);
+    int x = 13;
+
+    int y = - pow( x-5, 2 ) + 1;
+
+    double z = pow( 2, 2.5 );
+
+    int rz = round(z);
+
+    printf( "@@@@ %f, %d\n", z, rz);
 
     return 0;
 }

@@ -53,6 +53,15 @@ Object2D::Object2D( int x, int y, int w, int h, SDL_Color fillColor )
     mFrame.backgroundColorA = fillColor.a;
 }
 
+Object2D::Object2D( int x, int y, int w, int h, SDL_Color fillColor, SDL_Color outlineColor )
+: Object2D( x, y ,w, h, fillColor ) {
+
+    mFrame.borderColorR = outlineColor.r;
+    mFrame.borderColorG = outlineColor.g;
+    mFrame.borderColorB = outlineColor.b;
+    mFrame.borderColorA = outlineColor.a;
+}
+
 Object2D::~Object2D() {
 
 }
@@ -64,7 +73,7 @@ Object2D::setFrames( std::vector<Frame>& frames ) {
 }
 
 void
-Object2D::startAnimation() {
+Object2D::startAnimation( bool repeat ) {
 
     if ( mAnimationFrames.size() == 0 ) {
 
@@ -76,13 +85,6 @@ Object2D::startAnimation() {
     mAnimationFrameIndex = 0;
     mAnimationTicks = SDL_GetTicks();
     mIsAnimationEnabled = true;
-}
-
-void
-Object2D::startAnimation( int interval, bool repeat ) {
-
-    startAnimation();
-    mAnimationInterval = interval;
     mCanAnimationRepeat = repeat;
 }
 
@@ -108,7 +110,7 @@ Object2D::animate() {
 
     int currentTicks = SDL_GetTicks();
 
-    if ( (currentTicks - mAnimationTicks) > mAnimationInterval ) {
+    if ( (currentTicks - mAnimationTicks) > mCurrentFrame->duration ) {
 
         if ( mAnimationFrameIndex < totalFrames -1 ) {
             mAnimationFrameIndex ++;
@@ -143,6 +145,16 @@ Object2D::render() {
         mCurrentFrame->backgroundColorA 
     );
     SDL_RenderFillRect( gRenderer, &screenRect );
+    
+    // 2. Render Border
+    SDL_SetRenderDrawColor( 
+        gRenderer,
+        mCurrentFrame->borderColorR, 
+        mCurrentFrame->borderColorG, 
+        mCurrentFrame->borderColorB, 
+        mCurrentFrame->borderColorA 
+    );
+    SDL_RenderDrawRect( gRenderer, &screenRect );    
 
     // 2. Render image
     SDL_Rect clipRect = {

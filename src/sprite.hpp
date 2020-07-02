@@ -11,7 +11,7 @@ class Sprite {
 public:
     Sprite( std::string, SDL_Rect, int=1, int=1, SDL_RendererFlip=SDL_FLIP_NONE );
     ~Sprite();
-    std::vector<Frame> createFrames( SDL_Rect );
+    std::vector<Frame> createFrames( SDL_Rect, int=1000 );
 
 private:
     int mCols {0};

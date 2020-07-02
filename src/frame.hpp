@@ -10,18 +10,24 @@ struct Frame {
     int width;
     int height;
 
+    uint8_t backgroundColorR {0};
+    uint8_t backgroundColorG {0};
+    uint8_t backgroundColorB {0};
+    uint8_t backgroundColorA {0};
+
+    uint8_t borderColorR {0};
+    uint8_t borderColorG {0};
+    uint8_t borderColorB {0};
+    uint8_t borderColorA {0};
+
     int imageClipX {0};
     int imageClipY {0};
     int imageClipWidth;
     int imageClipHeight;
+    SDL_Texture* imageTexture {NULL};
     SDL_RendererFlip imageClipFlip { SDL_FLIP_NONE };
 
-    int backgroundColorR {0};
-    int backgroundColorG {0};
-    int backgroundColorB {0};
-    int backgroundColorA {0};
-
-    SDL_Texture* imageTexture {NULL};
+    int duration {1000};
 };
 
 #endif

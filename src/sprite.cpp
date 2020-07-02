@@ -3,6 +3,7 @@
 #include <cmath>
 #include <SDL_image.h>
 #include "sprite.hpp"
+#include "helpers.hpp"
 
 extern SDL_Renderer* gRenderer;
 
@@ -13,17 +14,7 @@ Sprite::Sprite(std::string imagePath, SDL_Rect area, int cols, int rows, SDL_Ren
     mArea = area;
     mFlip = flip;
 
-    SDL_Surface* surface = IMG_Load( imagePath.c_str() );
-
-    if ( surface == NULL ) {
-
-        printf( "Failed to load image. SDL Error: %s\n", SDL_GetError() );
-    }
-    else {
-     
-        mTexture = SDL_CreateTextureFromSurface( gRenderer, surface );
-        SDL_FreeSurface( surface );
-    }
+    mTexture = loadTexture( imagePath );
 }
 
 Sprite::~Sprite() {
@@ -32,7 +23,7 @@ Sprite::~Sprite() {
 }
 
 std::vector<Frame>
-Sprite::createFrames( SDL_Rect screenRect ) {
+Sprite::createFrames( SDL_Rect screenRect, int frameDuration ) {
 
     std::vector<Frame> frames;
     Frame frame;
@@ -53,8 +44,9 @@ Sprite::createFrames( SDL_Rect screenRect ) {
                 .imageClipY = i * height,
                 .imageClipWidth = width,
                 .imageClipHeight = height,
+                .imageTexture = mTexture,
                 .imageClipFlip = mFlip,
-                .imageTexture = mTexture
+                .duration = frameDuration
             };
 
             frames.push_back( frame );
