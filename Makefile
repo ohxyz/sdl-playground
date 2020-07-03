@@ -6,12 +6,11 @@ APP_SRC += src/event_handlers.cpp
 APP_SRC += src/object2d.cpp
 
 DEBUG_SRC = src/main.cpp
-DEBUG_SRC += src/object2d.cpp
+DEBUG_SRC += src/object2d.hpp
 DEBUG_SRC += src/event_handlers.cpp
-DEBUG_SRC += src/sprite.cpp
-DEBUG_SRC += src/velo.cpp
+DEBUG_SRC += src/sprite.hpp
+DEBUG_SRC += src/velo.hpp
 DEBUG_SRC += src/helpers.cpp
-
 
 OBJECT2D_SRC = src/object2d.test.cpp src/object2d.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
@@ -48,3 +47,6 @@ test_sprite:
 
 play: $(PLAYGROUND_SRC)
 	$(CC) $(PLAYGROUND_SRC) -o bin/play
+
+play_sdl: 
+	$(CC) $(PLAYGROUND_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/play

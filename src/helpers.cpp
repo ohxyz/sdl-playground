@@ -1,9 +1,10 @@
-#include "helpers.hpp"
+#include "helpers.h"
 #include <SDL_image.h>
 
 extern SDL_Renderer* gRenderer;
 
-SDL_Texture* loadTexture( std::string imagePath ) {
+SDL_Texture* 
+loadTexture( std::string imagePath ) {
 
     SDL_Surface* surface = IMG_Load( imagePath.c_str() );
 

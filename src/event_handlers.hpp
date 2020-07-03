@@ -5,7 +5,6 @@ namespace event_handlers {
 
     void handleEventLoopFinish( SDL_Window* );
     void handleKeyDown( SDL_Event );
-
 }
 
 #endif

@@ -2,6 +2,15 @@
 #include "playground-mod.h"
 #include <vector>
 #include <math.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <stdio.h>
+#include <string>
+#include "event_handlers.hpp"
+#include "object2d.hpp"
+#include "sprite.hpp"
+#include <math.h>
+#include "velo.hpp"
 
 struct TT {
 

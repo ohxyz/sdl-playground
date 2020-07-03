@@ -24,8 +24,8 @@ struct Frame {
     int imageClipY {0};
     int imageClipWidth;
     int imageClipHeight;
-    SDL_Texture* imageTexture {NULL};
     SDL_RendererFlip imageClipFlip { SDL_FLIP_NONE };
+    SDL_Texture* imageTexture {NULL};
 
     int duration {1000};
 };
