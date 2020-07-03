@@ -5,16 +5,18 @@ APP_SRC = src/main.cpp
 APP_SRC += src/event_handlers.cpp
 APP_SRC += src/object2d.cpp
 
-DEBUG_SRC = src/main.cpp
+DEBUG_SRC =  src/main.cpp
 DEBUG_SRC += src/object2d.hpp
 DEBUG_SRC += src/event_handlers.cpp
 DEBUG_SRC += src/sprite.hpp
 DEBUG_SRC += src/velo.hpp
 DEBUG_SRC += src/helpers.cpp
+DEBUG_SRC += src/object_manager.hpp
 
 OBJECT2D_SRC = src/object2d.test.cpp src/object2d.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
 SPRITE_SRC = src/sprite.test.cpp src/sprite.cpp
+OBJECT_MANAGER_SRC = src/object_manager.test.cpp src/object_manager.hpp src/helpers.cpp src/utils.cpp
 
 CC = g++
 
@@ -36,14 +38,17 @@ debug: $(DEBUG_SRC)
 # app: $(APP_SRC)
 # 	$(CC) $(APP_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
 
-test_object2d: 
+test_object2d: $(OBJECT2D_SRC)
 	$(CC) $(OBJECT2D_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
-test_animation: 
+test_animation: $(ANIMATION_SRC)
 	$(CC) $(ANIMATION_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
-test_sprite: 
+test_sprite: $(SPRITE_SRC)
 	$(CC) $(SPRITE_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+
+test_object_manager: $(OBJECT_MANAGER_SRC)
+	$(CC) $(OBJECT_MANAGER_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
 play: $(PLAYGROUND_SRC)
 	$(CC) $(PLAYGROUND_SRC) -o bin/play

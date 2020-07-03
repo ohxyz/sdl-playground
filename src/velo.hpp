@@ -16,7 +16,7 @@ public:
 
         mScreenRect = {50, 350, 200, 199};
         mWalkSprite = new Sprite( "images/walk.png", { .x=0, .y=0, .w=800, .h=795 }, 4, 4, SDL_FLIP_HORIZONTAL );
-        mWalkFrames = mWalkSprite->createFrames( mScreenRect, 50 );
+        mWalkFrames = mWalkSprite->createFrames( mScreenRect, 40 );
         mJumpFrames = createJumpFrames();
     }
 
@@ -27,6 +27,13 @@ public:
 
     void
     walk() {
+        
+        if ( mCurrentState == Walk
+            || ( mCurrentState == Jump && !isAnimationFinished() )
+        ) {
+
+            return;
+        }
 
         mCurrentState = Walk;
         setFrames( mWalkFrames );
@@ -36,9 +43,7 @@ public:
     void
     jump() {
 
-        if ( mCurrentState == Jump && !isAnimationFinished() ) {
-            return;
-        }
+        if ( mCurrentState == Jump && !isAnimationFinished() ) return;
 
         mCurrentState = Jump;
         setFrames( mJumpFrames );
@@ -63,7 +68,7 @@ public:
 
         int totalFrames = 21;
         int middleIndex = totalFrames / 2;
-        float exponent = 2;
+        float exponent = 2.2;
         int highest = round( pow( middleIndex, exponent ) );
         int eachHeight;
         int newY;
@@ -71,7 +76,7 @@ public:
         int clipX;
         int clipY;
         SDL_Texture* imageTexture = loadTexture( "images/jump.png" );
-        int frameDuration = 50;
+        int frameDuration = 40;
         
         // Prepare for jump
         for ( int j = 0; j < 3; j ++ ) {
@@ -161,7 +166,7 @@ private:
     Sprite* mWalkSprite;
     std::vector<Frame> mWalkFrames;
     std::vector<Frame> mJumpFrames;
-    enum State { Walk, Jump } mCurrentState;
+    enum State { Idle, Walk, Jump } mCurrentState {Idle};
 
 };
 

@@ -5,6 +5,8 @@
 
 struct Frame {
 
+    std::string id {""};
+
     int x;
     int y;
     int width;

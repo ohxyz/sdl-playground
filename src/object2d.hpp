@@ -15,6 +15,12 @@ public:
 
     Object2D() {}
 
+    Object2D( Frame frame ) {
+
+        mFrame = frame;
+        mCurrentFrame = &mFrame;
+    }
+
     Object2D( std::vector<Frame>& frames ) {
 
         setFrames( frames );
@@ -174,16 +180,20 @@ public:
         );
     }
 
-    bool isAnimationFinished() { return mIsAnimationFinished; };
+    bool 
+    isAnimationFinished() { return mIsAnimationFinished; }
+
+    Frame*
+    getCurrentFrame() { return mCurrentFrame; }
 
 private:
+
     int mAnimationTicks;
     int mAnimationFrameIndex {0};
     std::vector<Frame> mAnimationFrames;
     bool mIsAnimationEnabled {false};
-    bool mIsAnimationFinished {false};
+    bool mIsAnimationFinished {true};
     bool mCanAnimationRepeat {false};
-
     Frame mFrame;
     Frame* mCurrentFrame;
 };

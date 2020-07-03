@@ -7,132 +7,130 @@
 #include "sprite.hpp"
 #include <math.h>
 #include "velo.hpp"
+#include "object_manager.hpp"
+#include "helpers.h"
 
 #define SCREEN_WIDTH 400
 #define SCREEN_HEIGHT 700
 
-using std::string;
 using namespace event_handlers;
 
 SDL_Window* gWindow;
 SDL_Surface* gWindowSurface;
 SDL_Renderer* gRenderer;
 
+// bool
+// init() {
 
-bool
-init() {
+//     if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 
-    if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+//         printf( "SDL can't initialize! SDL_Error: %s\n", SDL_GetError() );
+//         return false;
+//     }
 
-        printf( "SDL can't initialize! SDL_Error: %s\n", SDL_GetError() );
-        return false;
-    }
-
-    if ( IMG_Init( IMG_INIT_PNG ) < 0 ) {
+//     if ( IMG_Init( IMG_INIT_PNG ) < 0 ) {
         
-        printf( "Error initializing SDL_image: %s\n", SDL_GetError() );
-        return false;
-    }
+//         printf( "Error initializing SDL_image: %s\n", SDL_GetError() );
+//         return false;
+//     }
 
-    gWindow = SDL_CreateWindow(
-        "SDL APP",
-        1000,
-        -2000,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
-        SDL_WINDOW_SHOWN
-    );
+//     gWindow = SDL_CreateWindow(
+//         "SDL APP",
+//         1000,
+//         -2000,
+//         SCREEN_WIDTH,
+//         SCREEN_HEIGHT,
+//         SDL_WINDOW_SHOWN
+//     );
 
-    if ( gWindow == NULL ) {
+//     if ( gWindow == NULL ) {
 
-        printf( "Window can't be created! SDL_Error: %s\n", SDL_GetError() );
-        return false;
-    }
+//         printf( "Window can't be created! SDL_Error: %s\n", SDL_GetError() );
+//         return false;
+//     }
 
-    gWindowSurface = SDL_GetWindowSurface( gWindow );
+//     gWindowSurface = SDL_GetWindowSurface( gWindow );
 
-    if ( gWindowSurface == NULL ) {
+//     if ( gWindowSurface == NULL ) {
 
-        printf( "Can't get surface from window! SDL_Error: %s\n", SDL_GetError() );
-        return false;
-    }
+//         printf( "Can't get surface from window! SDL_Error: %s\n", SDL_GetError() );
+//         return false;
+//     }
 
-    // SDL_FillRect( gWindowSurface, NULL, SDL_MapRGB(gWindowSurface->format, 0, 128, 0) );
-    // SDL_UpdateWindowSurface( gWindow );
+//     // SDL_FillRect( gWindowSurface, NULL, SDL_MapRGB(gWindowSurface->format, 0, 128, 0) );
+//     // SDL_UpdateWindowSurface( gWindow );
 
-    gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
+//     gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
 
-    if ( gRenderer == NULL ) {
+//     if ( gRenderer == NULL ) {
 
-        printf( "Renderer can't be created! SDL_Error: %s\n", SDL_GetError() );
-        return false;
-    }
+//         printf( "Renderer can't be created! SDL_Error: %s\n", SDL_GetError() );
+//         return false;
+//     }
 
-    SDL_SetRenderDrawBlendMode( gRenderer, SDL_BLENDMODE_BLEND );
+//     SDL_SetRenderDrawBlendMode( gRenderer, SDL_BLENDMODE_BLEND );
 
-    return true;
-}
+//     return true;
+// }
 
-void h() {
 
-    printf( "Done!\n" );
-}
+// int
+// loop( Velo* hero ) {
 
-int
-loop( Velo* hero ) {
+//     SDL_Event event;
 
-    SDL_Event event;
+//     while ( SDL_PollEvent( &event ) != 0 ) {
 
-    while ( SDL_PollEvent( &event ) != 0 ) {
+//         if ( event.type == SDL_QUIT ) {
 
-        if ( event.type == SDL_QUIT ) {
+//             return false;
+//         }
+//         else if ( event.type == SDL_KEYDOWN ) {
 
-            return false;
-        }
-        else if ( event.type == SDL_KEYDOWN ) {
+//             switch ( event.key.keysym.sym ) {
 
-            switch ( event.key.keysym.sym ) {
+//             case SDLK_w:
+//                 SDL_Log( "Up!\n" );
+//                 hero->resumeAnimation();
+//                 break;
 
-            case SDLK_w:
-                SDL_Log( "Up!\n" );
-                hero->resumeAnimation();
-                break;
+//             case SDLK_s:
+//                 SDL_Log( "Down!\n" );
+//                 hero->stopAnimation();
+//                 break;
 
-            case SDLK_s:
-                SDL_Log( "Down!\n" );
-                hero->stopAnimation();
-                break;
+//             case SDLK_a:
+//                 SDL_Log( "Left!\n" );
+//                 break;
 
-            case SDLK_a:
-                SDL_Log( "Left!\n" );
-                break;
+//             case SDLK_d:
+//                 SDL_Log( "Right!\n" );
+//                 hero->walk();
+//                 break;
 
-            case SDLK_d:
-                SDL_Log( "Right!\n" );
-                hero->walk();
-                break;
+//             case SDLK_SPACE:
+//                 SDL_Log( "SPACE!\n" );
+//                 hero->jump();
+//                 break;
 
-            case SDLK_SPACE:
-                SDL_Log( "SPACE!\n" );
-                hero->jump();
-                break;
+//             // default:
+//             //     SDL_Log( "No move!" );
+//             }
+//         }
+//     }
 
-            // default:
-            //     SDL_Log( "No move!" );
-            }
-        }
-    }
-
-    return true;
-}
+//     return true;
+// }
 
 int 
 main( int argc, char* args[] ) {
 
-    if ( !init() ) {
+    if ( !initGame() ) {
 
         return 1;
     }
+
+    ObjectManager* om = new ObjectManager;
 
     Object2D* ranger = new Object2D( 20, 0, 48, 64, "images/ranger.bmp" );
 
@@ -148,19 +146,27 @@ main( int argc, char* args[] ) {
     Velo* velo = new Velo();
     velo->walk();
 
+    int redFrameDuration = 500;
+
     std::vector<Frame> redFrames = {
         
-        { .x=50, .y=400, .width=55, .height=66, .backgroundColorA=134, .duration=3000 },
-        { .x=50, .y=350, .width=55, .height=66, .backgroundColorA=134, .duration=2000 },
-        { .x=50, .y=320, .width=55, .height=66, .backgroundColorA=134, .duration=1000 },
-        { .x=50, .y=300, .width=55, .height=66, .backgroundColorA=134, .duration=500 },
-        { .x=50, .y=330, .width=55, .height=66, .backgroundColorA=134, .duration=500 },
-        { .x=50, .y=370, .width=55, .height=66, .backgroundColorA=134, .duration=1000 },
-        { .x=50, .y=400, .width=55, .height=66, .backgroundColorA=134, .duration=2000 }
+        { .x=50, .y=400, .width=55, .height=65, .backgroundColorA=134, .duration=redFrameDuration },
+        { .x=60, .y=400, .width=55, .height=65, .backgroundColorA=134, .duration=redFrameDuration },
+        { .x=70, .y=400, .width=55, .height=65, .backgroundColorA=134, .duration=redFrameDuration },
+        { .x=80, .y=400, .width=55, .height=65, .backgroundColorA=134, .duration=redFrameDuration },
+        { .x=90, .y=400, .width=55, .height=65, .backgroundColorA=134, .duration=redFrameDuration },
+        { .x=100, .y=400, .width=55, .height=65, .backgroundColorA=134, .duration=redFrameDuration },
+        { .x=120, .y=400, .width=55, .height=65, .backgroundColorA=134, .duration=redFrameDuration }
     };
 
-    Object2D* red = new Object2D( redFrames );
-    red->startAnimation( true );
+    Object2D* red = new Object2D( 50, 400, 55, 65, { .r=128, 0, 0, 150 } );
+
+    // red->setFrames( redFrames );
+    // red->startAnimation( true );
+
+    Object2D* blue = new Object2D( 105, 400, 55, 65, { 0, 0, .b=128, 150 } );
+
+    if ( om->collide( red, blue ) ) { printf( "red x blue\n" ); }
 
     bool shouldQuit = false;
 
@@ -196,8 +202,8 @@ main( int argc, char* args[] ) {
 
                 case SDLK_d:
                     SDL_Log( "Right!\n" );
-                    counter->startAnimation();
-                    // velo->walk();
+                    // counter->startAnimation();
+                    velo->walk();
                     break;
 
                 case SDLK_SPACE:
@@ -212,20 +218,19 @@ main( int argc, char* args[] ) {
         }
 
         // Drawing 
-
         // Green
         SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
         SDL_RenderClear( gRenderer );
 
         ranger->render();
-        velo->render();
+        // velo->render();
         white->render();
         counter->render();
-        // red->render();
+        red->render();
+        blue->render();
 
         // Update
         SDL_RenderPresent( gRenderer );
-
 
         // Delay by some time to avoid high CPU usage
         // If by 1 ms, my laptop gives ci, ci, ci sound
@@ -233,7 +238,6 @@ main( int argc, char* args[] ) {
     }
 
     // delete ranger;
-    // delete o;
 
     SDL_DestroyRenderer( gRenderer );
     SDL_FreeSurface( gWindowSurface );
