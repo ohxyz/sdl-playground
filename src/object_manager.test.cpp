@@ -10,11 +10,8 @@ SDL_Renderer* gRenderer;
 int 
 main( int argc, char* args[] ) {
 
-    printf( "%s\n", randomString().c_str() );
-    printf( "%s\n", randomString().c_str() );
-
     initGame();
-
+    
     ObjectManager* om = new ObjectManager;
 
     Object2D* red = new Object2D( 50, 400, 55, 65, { .r=128, 0, 0, 150 } );
@@ -27,7 +24,12 @@ main( int argc, char* args[] ) {
         .y = 90,
         .width = 55,
         .height = 65,
-        .backgroundColorA = 128
+        .backgroundColorA = 50,
+        .collisionTop = 10,
+        .collisionRight = 10,
+        .collisionBottom = 10,
+        .collisionLeft = 10,
+        .collisionColorA = 100
     });
 
     if ( om->collide( red, blue ) ) { 

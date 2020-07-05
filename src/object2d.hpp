@@ -17,8 +17,7 @@ public:
 
     Object2D( Frame frame ) {
 
-        mFrame = frame;
-        mCurrentFrame = &mFrame;
+        mCurrentFrame = &frame;
     }
 
     Object2D( std::vector<Frame>& frames ) {
@@ -28,39 +27,52 @@ public:
 
     Object2D( int x, int y, int w, int h ) {
 
-        mFrame.x = x;
-        mFrame.y = y;
-        mFrame.width = w;
-        mFrame.height = h;
+        mCurrentFrame = new Frame;
 
-        mFrame.imageClipWidth = w;
-        mFrame.imageClipHeight = h;
+        mCurrentFrame->x = x;
+        mCurrentFrame->y = y;
+        mCurrentFrame->width = w;
+        mCurrentFrame->height = h;
 
-        mCurrentFrame = &mFrame;
     }
 
-    Object2D( int x, int y, int w, int h, std::string imagePath )
+    Object2D( int x, int y, int w, int h, std::string imagePath, SDL_Rect imageClipRect={0,0,0,0} )
     : Object2D( x, y, w, h ) {
 
-        mCurrentFrame->imageTexture = loadTexture( imagePath );
+        if ( imageClipRect.w == 0 || imageClipRect.h == 0 ) {
+
+            mCurrentFrame->imageClipX = 0;
+            mCurrentFrame->imageClipY = 0;
+            mCurrentFrame->imageClipWidth = w;
+            mCurrentFrame->imageClipHeight = h;
+        }
+        else {
+
+            mCurrentFrame->imageClipX = imageClipRect.x;
+            mCurrentFrame->imageClipY = imageClipRect.y;
+            mCurrentFrame->imageClipWidth = imageClipRect.w;
+            mCurrentFrame->imageClipHeight = imageClipRect.h;
+        }
+
+        mCurrentFrame->imageTexture = helpers::loadTexture( imagePath );
     }
 
     Object2D( int x, int y, int w, int h, SDL_Color fillColor )
     : Object2D( x, y, w, h ) {
 
-        mFrame.backgroundColorR = fillColor.r;
-        mFrame.backgroundColorG = fillColor.g;
-        mFrame.backgroundColorB = fillColor.b;
-        mFrame.backgroundColorA = fillColor.a;
+        mCurrentFrame->backgroundColorR = fillColor.r;
+        mCurrentFrame->backgroundColorG = fillColor.g;
+        mCurrentFrame->backgroundColorB = fillColor.b;
+        mCurrentFrame->backgroundColorA = fillColor.a;
     }
 
     Object2D( int x, int y, int w, int h, SDL_Color fillColor, SDL_Color outlineColor )
     : Object2D( x, y ,w, h, fillColor ) {
 
-        mFrame.borderColorR = outlineColor.r;
-        mFrame.borderColorG = outlineColor.g;
-        mFrame.borderColorB = outlineColor.b;
-        mFrame.borderColorA = outlineColor.a;
+        mCurrentFrame->borderColorR = outlineColor.r;
+        mCurrentFrame->borderColorG = outlineColor.g;
+        mCurrentFrame->borderColorB = outlineColor.b;
+        mCurrentFrame->borderColorA = outlineColor.a;
     }
 
     ~Object2D() {
@@ -103,7 +115,7 @@ public:
         mIsAnimationEnabled = true;
     }
 
-    virtual void
+    void
     animate() {
 
         int totalFrames = mAnimationFrames.size();
@@ -130,18 +142,9 @@ public:
     }
 
     void
-    render() {
+    renderBackground() {
 
-        if ( mAnimationFrames.size() > 0 && mIsAnimationEnabled ) animate();
-
-        SDL_Rect screenRect = {
-            mCurrentFrame->x, 
-            mCurrentFrame->y, 
-            mCurrentFrame->width, 
-            mCurrentFrame->height 
-        };
-        
-        // 1. Render background
+        auto rect = getCurrentRect();
         SDL_SetRenderDrawColor( 
             gRenderer,
             mCurrentFrame->backgroundColorR, 
@@ -149,9 +152,13 @@ public:
             mCurrentFrame->backgroundColorB, 
             mCurrentFrame->backgroundColorA 
         );
-        SDL_RenderFillRect( gRenderer, &screenRect );
-        
-        // 2. Render Border
+        SDL_RenderFillRect( gRenderer, &rect );
+    }
+
+    void 
+    renderBorder() {
+
+        auto rect = getCurrentRect();
         SDL_SetRenderDrawColor( 
             gRenderer,
             mCurrentFrame->borderColorR, 
@@ -159,32 +166,165 @@ public:
             mCurrentFrame->borderColorB, 
             mCurrentFrame->borderColorA 
         );
-        SDL_RenderDrawRect( gRenderer, &screenRect );    
+        SDL_RenderDrawRect( gRenderer, &rect );
+    }
 
-        // 2. Render image
+    void 
+    renderHitbox() {
+
+        auto rect = getCurrentHitboxRect();
+        SDL_SetRenderDrawColor( 
+            gRenderer,
+            mCurrentFrame->hitboxColorR, 
+            mCurrentFrame->hitboxColorG, 
+            mCurrentFrame->hitboxColorB,
+            mCurrentFrame->hitboxColorA 
+        );
+        SDL_RenderFillRect( gRenderer, &rect );
+    }
+
+    void renderImage() {
+
+        if ( mCurrentFrame->imageTexture == NULL ) {
+            return;
+        }
+
+        int targetWidth = mCurrentFrame->imageClipWidth > mCurrentFrame->width  
+                        ? mCurrentFrame->width 
+                        : mCurrentFrame->imageClipWidth;
+
+        int targetHeight = mCurrentFrame->imageClipHeight > mCurrentFrame->height
+                         ? mCurrentFrame->height
+                         : mCurrentFrame->imageClipHeight;
+
         SDL_Rect clipRect = {
             mCurrentFrame->imageClipX,
             mCurrentFrame->imageClipY,
-            mCurrentFrame->imageClipWidth,
-            mCurrentFrame->imageClipHeight
+            targetWidth,
+            targetHeight
         };
 
-        SDL_RenderCopyEx( 
-            gRenderer, 
-            mCurrentFrame->imageTexture,
-            &clipRect,
-            &screenRect,
-            0, 
-            NULL, 
-            mCurrentFrame->imageClipFlip
-        );
+        SDL_Rect targetRect = {
+            mCurrentFrame->x,
+            mCurrentFrame->y,
+            targetWidth,
+            targetHeight
+        };
+
+        while ( true ) {
+
+            // Repeat on x-axis
+            while ( true ) {
+
+                SDL_RenderCopyEx( 
+                    gRenderer, 
+                    mCurrentFrame->imageTexture,
+                    &clipRect,
+                    &targetRect,
+                    0, 
+                    NULL, 
+                    mCurrentFrame->imageClipFlip
+                );
+
+                if ( !mCurrentFrame->imageClipRepeatX ) {
+                    break;
+                }
+
+                targetRect.x += mCurrentFrame->imageClipWidth;
+
+                if ( targetRect.x > mCurrentFrame->x + mCurrentFrame->width ) {
+                    break;
+                }
+
+                if ( targetRect.x + mCurrentFrame->imageClipWidth > mCurrentFrame->x + mCurrentFrame->width ) {
+                    targetRect.w = mCurrentFrame->x + mCurrentFrame->width - targetRect.x;
+                    clipRect.w = targetRect.w;
+                }
+                else {
+                    targetRect.w = mCurrentFrame->imageClipWidth;
+                }
+            }
+
+            if ( !mCurrentFrame->imageClipRepeatY ) {
+                break;
+            }
+
+            // Repeat on y-axis
+            // Reset
+            targetRect.x = mCurrentFrame->x;
+            targetRect.w = targetWidth;
+            clipRect.w = targetWidth;
+
+            targetRect.y += mCurrentFrame->imageClipHeight;
+
+            if ( targetRect.y > mCurrentFrame->y + mCurrentFrame->height ) {
+                break;
+            }
+
+            if ( targetRect.y + mCurrentFrame->imageClipHeight > mCurrentFrame->y + mCurrentFrame->height ) {
+                targetRect.h = mCurrentFrame->y + mCurrentFrame->height - targetRect.y;
+                clipRect.h = targetRect.h;
+            }
+            else {
+                targetRect.h = mCurrentFrame->imageClipHeight;
+            }
+        }
+    }
+
+    virtual void
+    render() {
+
+        if ( mIsAnimationEnabled ) animate();
+
+        renderBackground();
+        renderBorder();
+        renderHitbox();
+        renderImage();
     }
 
     bool 
-    isAnimationFinished() { return mIsAnimationFinished; }
+    isAnimationFinished() { 
+
+        return mIsAnimationFinished; 
+    }
 
     Frame*
-    getCurrentFrame() { return mCurrentFrame; }
+    getCurrentFrame() { 
+
+        return mCurrentFrame; 
+    }
+
+    SDL_Rect
+    getCurrentRect() {
+
+        SDL_Rect rect = {
+            mCurrentFrame->x,
+            mCurrentFrame->y,
+            mCurrentFrame->width,
+            mCurrentFrame->height
+        };
+
+        return rect;
+    }
+
+    SDL_Rect
+    getCurrentHitboxRect() {
+
+        SDL_Rect rect = {
+            mCurrentFrame->x + mCurrentFrame->hitboxLeft,
+            mCurrentFrame->y + mCurrentFrame->hitboxTop,
+            mCurrentFrame->width - mCurrentFrame->hitboxRight - mCurrentFrame->hitboxLeft,
+            mCurrentFrame->height - mCurrentFrame->hitboxBottom - mCurrentFrame->hitboxTop
+        };
+
+        return rect;
+    }
+
+    bool
+    isAnimationEnabled() {
+
+        return mIsAnimationEnabled;
+    }
 
 private:
 
@@ -194,7 +334,6 @@ private:
     bool mIsAnimationEnabled {false};
     bool mIsAnimationFinished {true};
     bool mCanAnimationRepeat {false};
-    Frame mFrame;
     Frame* mCurrentFrame;
 };
 

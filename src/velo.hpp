@@ -14,9 +14,21 @@ public:
 
     Velo() : Object2D() {
 
-        mScreenRect = {50, 350, 200, 199};
+        mScreenRect = {50, 300, 200, 199};
         mWalkSprite = new Sprite( "images/walk.png", { .x=0, .y=0, .w=800, .h=795 }, 4, 4, SDL_FLIP_HORIZONTAL );
         mWalkFrames = mWalkSprite->createFrames( mScreenRect, 40 );
+
+        //debug
+        // for ( auto &f : mWalkFrames ) {
+
+        //     f.backgroundColorA = 100;
+        //     f.hitboxTop = 10;
+        //     f.hitboxRight = 60;
+        //     f.hitboxBottom = 50;
+        //     f.hitboxLeft = 10;
+        //     f.hitboxColorA = 200;
+        // }   
+
         mJumpFrames = createJumpFrames();
     }
 
@@ -75,7 +87,7 @@ public:
 
         int clipX;
         int clipY;
-        SDL_Texture* imageTexture = loadTexture( "images/jump.png" );
+        SDL_Texture* imageTexture = helpers::loadTexture( "images/jump.png" );
         int frameDuration = 40;
         
         // Prepare for jump
@@ -157,7 +169,26 @@ public:
             frames.push_back( frame );
         }
 
+        // for ( auto &f : frames ) {
+
+        //     f.backgroundColorA = 100;
+        //     f.hitboxTop = 10;
+        //     f.hitboxRight = 60;
+        //     f.hitboxBottom = 50;
+        //     f.hitboxLeft = 10;
+        //     f.hitboxColorA = 200;
+        // }   
+
         return frames;
+    }
+
+    void
+    render() {
+
+        animate();
+        renderBackground();
+        renderHitbox();
+        renderImage();
     }
 
 private:

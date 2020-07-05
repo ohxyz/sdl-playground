@@ -25,7 +25,7 @@ public:
         mRows = rows;
         mArea = area;
         mFlip = flip;
-        mTexture = loadTexture( imagePath );
+        mTexture = helpers::loadTexture( imagePath );
     };
 
     ~Sprite() {

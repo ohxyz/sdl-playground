@@ -1,12 +1,13 @@
 #include "helpers.h"
 #include <SDL_image.h>
+#include <time.h>
 
 extern SDL_Window* gWindow;
 extern SDL_Surface* gWindowSurface;
 extern SDL_Renderer* gRenderer;
 
 SDL_Texture* 
-loadTexture( std::string imagePath ) {
+helpers::loadTexture( std::string imagePath ) {
 
     SDL_Surface* surface = IMG_Load( imagePath.c_str() );
 
@@ -23,10 +24,37 @@ loadTexture( std::string imagePath ) {
 }
 
 bool
+helpers::collide( SDL_Rect& rect1, SDL_Rect& rect2 ) {
+
+    if ( (rect1.x < rect2.x) && (rect1.x + rect1.w  < rect2.x) ) {
+        printf( "Rect1 on LEFT side of Rect2\n" );
+        return false;
+    }
+    else if ( (rect1.y < rect2.y) && (rect1.y + rect1.h < rect2.y) ) {
+        printf( "Rect1 on UP side of Rect2\n" );
+        return false;
+    }
+    else if (  rect1.y > (rect2.y + rect2.h) ) {
+        printf( "Rect1 on DOWN side of Rect2\n" );
+        return false;
+    }
+    else if ( rect1.x > (rect2.x + rect2.w) ) {
+        printf( "Rect1 on RIGHT side of Rect2\n" );
+        return false;
+    }
+
+    return true;
+}
+
+bool
 initGame() {
 
-    const int SCREEN_WIDTH = 400;
-    const int SCREEN_HEIGHT = 700;
+    srand( time(NULL) );
+
+    const int windowX = 1000;
+    const int windowY = -2000;
+    const int windowWidth = 360;
+    const int windowHeight = 640;
 
     if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 
@@ -42,10 +70,10 @@ initGame() {
 
     gWindow = SDL_CreateWindow(
         "SDL APP",
-        1000,
-        -2000,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
+        windowX,
+        windowY,
+        windowWidth,
+        windowHeight,
         SDL_WINDOW_SHOWN
     );
 

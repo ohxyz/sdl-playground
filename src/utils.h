@@ -3,6 +3,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-std::string randomString( int=10 );
+std::string generateRandomString( int=10 );
 
 #endif

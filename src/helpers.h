@@ -5,6 +5,11 @@
 #define HELPERS_H
 
 bool initGame();
-SDL_Texture* loadTexture( std::string );
+
+namespace helpers {
+
+    SDL_Texture* loadTexture( std::string );
+    bool collide( SDL_Rect&, SDL_Rect& );
+}
 
 #endif

@@ -24,10 +24,21 @@ struct Frame {
 
     int imageClipX {0};
     int imageClipY {0};
-    int imageClipWidth;
-    int imageClipHeight;
+    int imageClipWidth {0};
+    int imageClipHeight {0};
+    bool imageClipRepeatX {true};
+    bool imageClipRepeatY {true};
     SDL_RendererFlip imageClipFlip { SDL_FLIP_NONE };
     SDL_Texture* imageTexture {NULL};
+
+    int hitboxTop {0};
+    int hitboxRight {0};
+    int hitboxBottom {0};
+    int hitboxLeft {0};
+    int hitboxColorR {0};
+    int hitboxColorG {0};
+    int hitboxColorB {0};
+    int hitboxColorA {0};
 
     int duration {1000};
 };
