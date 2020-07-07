@@ -33,13 +33,13 @@ public:
     init() {
 
         mFrame->x = 0;
-        mFrame->y = 467;
+        mFrame->y = 400;
         mFrame->width = 420; // 360 + 60
-        mFrame->height = 173;
+        mFrame->height = 240;
         mFrame->imageClipX = 0;
         mFrame->imageClipY = 0;
         mFrame->imageClipWidth = 60;
-        mFrame->imageClipHeight = 173;
+        mFrame->imageClipHeight = 240;
         mFrame->imageTexture = mImageTexture;
 
         setCurrentFrame( mFrame );

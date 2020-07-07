@@ -1,7 +1,7 @@
 #include "object2d.hpp"
 #include "helpers.h"
 #include "chicken.hpp"
-#include "cactus.hpp"
+#include "obstacle.hpp"
 #include "land.hpp"
 #include <vector>
 #include <SDL.h>
@@ -15,10 +15,10 @@ class ObjectManager {
     Object2D* mSky;
     Land* mLand;
     Chicken* mChicken;
-    std::vector<Cactus*> mCactuses;
+    std::vector<Obstacle*> mObstacles;
 
-    int mTicksOfNewCactus;
-    int mTicksBeforeAddCactus;
+    int mTicksOfNewObstacle;
+    int mTicksBeforeAddObstacle;
     int mLandStep;
     int mLandFrameDuration;
     int mChickenFrameDuration;
@@ -28,11 +28,11 @@ public:
 
     ObjectManager() {
 
-        mSky = new Object2D( 0, 0, 360, 470, "images/sky.png" );
+        mSky = new Object2D( 0, 0, 360, 431, "images/sky.png" );
         mLand = new Land();
         mChicken = new Chicken();
 
-        init();        
+        init();
     }
 
     ~ObjectManager() {
@@ -40,7 +40,7 @@ public:
         delete mSky;
         delete mLand;
         delete mChicken;
-        for ( auto c : mCactuses ) delete c;
+        mObstacles.clear();
     }
     
     void
@@ -49,7 +49,7 @@ public:
         mLandStep = 5;
         mLandFrameDuration = 10;
         mChickenFrameDuration = 30;
-        mTicksBeforeAddCactus = 3000;
+        mTicksBeforeAddObstacle = 3000;
 
         mLand->init();
         mLand->setStep( mLandStep );
@@ -58,41 +58,41 @@ public:
         mChicken->init();
         mChicken->setFrameDuration( mChickenFrameDuration );
 
-        mCactuses.clear();
+        mObstacles.clear();
 
-        mTicksOfNewCactus = SDL_GetTicks();
+        mTicksOfNewObstacle = SDL_GetTicks();
         mIsFrozen = false;
     }
 
     void
-    manageCactuses() {
+    manageObstacles() {
 
         if ( mIsFrozen ) return;
 
         int currentTicks = SDL_GetTicks();
 
-        if ( currentTicks - mTicksBeforeAddCactus > mTicksOfNewCactus ) {
+        if ( currentTicks - mTicksBeforeAddObstacle > mTicksOfNewObstacle ) {
 
-            auto cactus = new Cactus();
-            mCactuses.push_back( cactus );
-            cactus->setStep( mLandStep );
-            cactus->setCurrentFrameDuration( mLandFrameDuration );
+            auto obstacle = new Obstacle();
+            mObstacles.push_back( obstacle );
+            obstacle->setStep( mLandStep );
+            obstacle->setCurrentFrameDuration( mLandFrameDuration );
 
-            cactus = mCactuses[0];
-            auto cactusFrame = cactus->getCurrentFrame();
+            obstacle = mObstacles[0];
+            auto obstacleFrame = obstacle->getCurrentFrame();
 
-            if ( cactusFrame->x + cactusFrame->width < 0 ) {
+            if ( obstacleFrame->x + obstacleFrame->width < 0 ) {
 
-                mCactuses.erase( mCactuses.begin() );
-                delete cactus;
+                mObstacles.erase( mObstacles.begin() );
+                delete obstacle;
             }
 
-            mTicksOfNewCactus = currentTicks;
+            mTicksOfNewObstacle = currentTicks;
         }
 
-        for ( auto cactus : mCactuses ) {
+        for ( auto obstacle : mObstacles ) {
 
-            if ( collide(cactus, mChicken) ) handleCollide();
+            if ( collide(obstacle, mChicken) ) handleCollide();
         }
     }
 
@@ -101,7 +101,7 @@ public:
 
         mChicken->hurt();
         mLand->setStep(0);
-        for ( auto cactus : mCactuses ) cactus->setStep(0);
+        for ( auto obstacle : mObstacles ) obstacle->setStep(0);
         mIsFrozen = true;
     }
 
@@ -117,11 +117,11 @@ public:
     void 
     run() {
 
-        manageCactuses();
+        manageObstacles();
 
         mSky->render();
         mLand->render();
-        for ( auto c : mCactuses ) c->render();
+        for ( auto obs : mObstacles ) obs->render();
         mChicken->render();
     }
 

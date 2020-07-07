@@ -21,7 +21,7 @@ public:
 
     Chicken() {
 
-        mScreenRect = { -25, 340, 160, 138 };
+        mScreenRect = { -25, 285, 160, 138 };
         mWalkFrames = createWalkFrames();
         mJumpFrames = createJumpFrames();
         mHurtFrames = createHurtFrames();

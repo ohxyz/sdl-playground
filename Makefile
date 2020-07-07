@@ -9,7 +9,7 @@ APP_SRC += src/helpers.cpp
 APP_SRC += src/object_manager.hpp
 APP_SRC += src/land.hpp
 APP_SRC += src/chicken.hpp
-APP_SRC += src/cactus.hpp
+APP_SRC += src/obstacle.hpp
 
 DEBUG_SRC = $(APP_SRC) src/main.cpp
 
