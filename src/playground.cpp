@@ -1,16 +1,9 @@
 #include <stdio.h>
-#include "playground-mod.h"
 #include <vector>
 #include <math.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <stdio.h>
 #include <string>
-#include "event_handlers.hpp"
-#include "object2d.hpp"
-#include "sprite.hpp"
-#include <math.h>
-#include "velo.hpp"
+#include "playground-mod.h"
+#include <iostream>
 
 struct TT {
 
@@ -37,44 +30,11 @@ void fn( T t, T t2, T* t3 ) {
 int 
 main( int argc, char* args[] ) {
 
-    std::vector<T> ts;
-    std::vector<T> ts2;
+    std::vector<int> v1 = { 1, 2, 3 };
+    std::vector<char> v2 = { 'a', 'b', 'c' };
 
-    printf( "@@ %d\n", ts.size() );
-
-    T t1 = { .a=1, .b=2 };
-    T t2 = { .a=3, .b=4 };
-
-    ts.push_back( t1 );
-    ts.push_back( t2 );
-
-    ts2 = {
-
-        { 5 },
-        { 6 }
-    };
-
-    printf( "@@ %d\n", ts2[1].a );
-
-    T arg = { .a=99 };
-    T arg2 = { .a=999 };
-    T arg3 = { .a=9999 };
-    T* pArg3 = &arg3;
-
-    fn( { .a=99 }, arg2, pArg3 );
-
-    printf( "@@@ %d, %d, %d\n", arg.a, arg2.a, arg3.a );
-
-    int a = pow(10, 2);
-    int x = 13;
-
-    int y = - pow( x-5, 2 ) + 1;
-
-    double z = pow( 2, 2.5 );
-
-    int rz = round(z);
-
-    printf( "@@@@ %f, %d\n", z, rz);
+    for ( auto &i : v1 ) std::cout << i << std::endl;
+    for ( auto &i : v2 ) std::cout << i << std::endl;
 
     return 0;
 }

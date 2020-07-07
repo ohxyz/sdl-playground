@@ -1,17 +1,17 @@
 PLAYGROUND_SRC =  src/playground.cpp
 PLAYGROUND_SRC += src/playground-mod.c
 
-APP_SRC = src/main.cpp
+APP_SRC += src/object2d.hpp
 APP_SRC += src/event_handlers.cpp
-APP_SRC += src/object2d.cpp
+APP_SRC += src/sprite.hpp
+APP_SRC += src/velo.hpp
+APP_SRC += src/helpers.cpp
+APP_SRC += src/object_manager.hpp
+APP_SRC += src/land.hpp
+APP_SRC += src/chicken.hpp
+APP_SRC += src/cactus.hpp
 
-DEBUG_SRC =  src/main.cpp
-DEBUG_SRC += src/object2d.hpp
-DEBUG_SRC += src/event_handlers.cpp
-DEBUG_SRC += src/sprite.hpp
-DEBUG_SRC += src/velo.hpp
-DEBUG_SRC += src/helpers.cpp
-DEBUG_SRC += src/object_manager.hpp
+DEBUG_SRC = $(APP_SRC) src/main.cpp
 
 OBJECT2D_SRC = src/object2d.test.cpp src/object2d.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
@@ -22,7 +22,6 @@ CC = g++
 
 INCLUDE_PATHS 	= 	-IC:/mingw_dev_lib/SDL2-2.0.12/i686-w64-mingw32/include/SDL2
 INCLUDE_PATHS 	+= 	-IC:/mingw_dev_lib/SDL2_image-2.0.5/i686-w64-mingw32/include/SDL2
-
 LIBRARY_PATHS 	= 	-LC:/mingw_dev_lib/SDL2-2.0.12/i686-w64-mingw32/lib
 LIBRARY_PATHS 	+= 	-LC:/mingw_dev_lib/SDL2_image-2.0.5/i686-w64-mingw32/lib
 

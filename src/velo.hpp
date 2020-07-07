@@ -12,18 +12,19 @@ class Velo : public Object2D {
 
 public:
 
-    Velo() : Object2D() {
+    Velo() {
 
-        mScreenRect = {50, 300, 200, 199};
-        mWalkSprite = new Sprite( "images/walk.png", { .x=0, .y=0, .w=800, .h=795 }, 4, 4, SDL_FLIP_HORIZONTAL );
+        mScreenRect = {10, 325, 160, 159};
+        mWalkSprite = new Sprite( "images/walk.png", { .x=0, .y=0, .w=640, .h=636 }, 4, 4, SDL_FLIP_HORIZONTAL );
         mWalkFrames = mWalkSprite->createFrames( mScreenRect, 40 );
 
-        //debug
+        // debug
+
         // for ( auto &f : mWalkFrames ) {
 
         //     f.backgroundColorA = 100;
         //     f.hitboxTop = 10;
-        //     f.hitboxRight = 60;
+        //     f.hitboxRight = 40;
         //     f.hitboxBottom = 50;
         //     f.hitboxLeft = 10;
         //     f.hitboxColorA = 200;
@@ -48,7 +49,7 @@ public:
         }
 
         mCurrentState = Walk;
-        setFrames( mWalkFrames );
+        setAnimationFrames( mWalkFrames );
         startAnimation( true );
     }
 
@@ -58,7 +59,7 @@ public:
         if ( mCurrentState == Jump && !isAnimationFinished() ) return;
 
         mCurrentState = Jump;
-        setFrames( mJumpFrames );
+        setAnimationFrames( mJumpFrames );
         startAnimation( false );
     }
 
@@ -169,6 +170,8 @@ public:
             frames.push_back( frame );
         }
 
+        // debug
+        
         // for ( auto &f : frames ) {
 
         //     f.backgroundColorA = 100;

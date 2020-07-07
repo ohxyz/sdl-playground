@@ -27,19 +27,19 @@ bool
 helpers::collide( SDL_Rect& rect1, SDL_Rect& rect2 ) {
 
     if ( (rect1.x < rect2.x) && (rect1.x + rect1.w  < rect2.x) ) {
-        printf( "Rect1 on LEFT side of Rect2\n" );
+        // printf( "Rect1 on LEFT side of Rect2\n" );
         return false;
     }
     else if ( (rect1.y < rect2.y) && (rect1.y + rect1.h < rect2.y) ) {
-        printf( "Rect1 on UP side of Rect2\n" );
+        // printf( "Rect1 on UP side of Rect2\n" );
         return false;
     }
     else if (  rect1.y > (rect2.y + rect2.h) ) {
-        printf( "Rect1 on DOWN side of Rect2\n" );
+        // printf( "Rect1 on DOWN side of Rect2\n" );
         return false;
     }
     else if ( rect1.x > (rect2.x + rect2.w) ) {
-        printf( "Rect1 on RIGHT side of Rect2\n" );
+        // printf( "Rect1 on RIGHT side of Rect2\n" );
         return false;
     }
 
@@ -94,7 +94,8 @@ initGame() {
     // SDL_FillRect( gWindowSurface, NULL, SDL_MapRGB(gWindowSurface->format, 0, 128, 0) );
     // SDL_UpdateWindowSurface( gWindow );
 
-    gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
+    gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_PRESENTVSYNC );
+    // gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
 
     if ( gRenderer == NULL ) {
 

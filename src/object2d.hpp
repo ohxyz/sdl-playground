@@ -11,32 +11,43 @@ extern SDL_Renderer* gRenderer;
 
 class Object2D {
 
+    int mAnimationTicks;
+    int mAnimationFrameIndex {0};
+    std::vector<Frame>* mAnimationFrames;
+    bool mIsAnimationEnabled {false};
+    bool mIsAnimationFinished {true};
+    bool mCanAnimationRepeat {false};
+    Frame* mCurrentFrame;
+
 public:
 
-    Object2D() {}
+    Object2D() {
 
-    Object2D( Frame frame ) {
+        mCurrentFrame = new Frame;
+    }
+
+    Object2D( Frame frame ) 
+    : Object2D() {
 
         mCurrentFrame = &frame;
     }
 
-    Object2D( std::vector<Frame>& frames ) {
+    Object2D( std::vector<Frame>& frames )
+    : Object2D() {
 
-        setFrames( frames );
+        setAnimationFrames( frames );
     }
 
-    Object2D( int x, int y, int w, int h ) {
-
-        mCurrentFrame = new Frame;
+    Object2D( int x, int y, int w, int h )
+    : Object2D() {
 
         mCurrentFrame->x = x;
         mCurrentFrame->y = y;
         mCurrentFrame->width = w;
         mCurrentFrame->height = h;
-
     }
 
-    Object2D( int x, int y, int w, int h, std::string imagePath, SDL_Rect imageClipRect={0,0,0,0} )
+    Object2D( int x, int y, int w, int h, SDL_Rect imageClipRect )
     : Object2D( x, y, w, h ) {
 
         if ( imageClipRect.w == 0 || imageClipRect.h == 0 ) {
@@ -53,6 +64,16 @@ public:
             mCurrentFrame->imageClipWidth = imageClipRect.w;
             mCurrentFrame->imageClipHeight = imageClipRect.h;
         }
+    }
+
+    Object2D( int x, int y, int w, int h, SDL_Texture* imageTexture, SDL_Rect imageClipRect={0,0,0,0} )
+    : Object2D( x, y, w, h, imageClipRect ) {
+
+        mCurrentFrame->imageTexture = imageTexture;
+    }
+
+    Object2D( int x, int y, int w, int h, std::string imagePath, SDL_Rect imageClipRect={0,0,0,0} )
+    : Object2D( x, y, w, h, imageClipRect ) {
 
         mCurrentFrame->imageTexture = helpers::loadTexture( imagePath );
     }
@@ -77,24 +98,25 @@ public:
 
     ~Object2D() {
 
+        delete mCurrentFrame;
     }
 
     void
-    setFrames( std::vector<Frame>& frames ) {
+    setAnimationFrames( std::vector<Frame>& frames ) {
 
-        mAnimationFrames = frames;
+        mAnimationFrames = &frames;
     }
 
     void
     startAnimation( bool repeat=false ) {
 
-        if ( mAnimationFrames.size() == 0 ) {
+        if ( (*mAnimationFrames).size() == 0 ) {
 
             SDL_Log( "No frames found!" );
             return;
         }
 
-        mCurrentFrame = &mAnimationFrames[0];
+        mCurrentFrame = &(*mAnimationFrames)[0];
         mAnimationFrameIndex = 0;
         mAnimationTicks = SDL_GetTicks();
         mIsAnimationEnabled = true;
@@ -118,7 +140,7 @@ public:
     void
     animate() {
 
-        int totalFrames = mAnimationFrames.size();
+        int totalFrames = (*mAnimationFrames).size();
 
         if ( totalFrames == 0 ) return;
 
@@ -136,7 +158,7 @@ public:
                 mIsAnimationFinished = true;
             }
 
-            mCurrentFrame = &mAnimationFrames[ mAnimationFrameIndex ];
+            mCurrentFrame = &(*mAnimationFrames)[ mAnimationFrameIndex ];
             mAnimationTicks = currentTicks;
         }
     }
@@ -183,7 +205,8 @@ public:
         SDL_RenderFillRect( gRenderer, &rect );
     }
 
-    void renderImage() {
+    void 
+    renderImage() {
 
         if ( mCurrentFrame->imageTexture == NULL ) {
             return;
@@ -326,15 +349,17 @@ public:
         return mIsAnimationEnabled;
     }
 
-private:
+    void
+    setCurrentFrame( Frame* frame ) {
 
-    int mAnimationTicks;
-    int mAnimationFrameIndex {0};
-    std::vector<Frame> mAnimationFrames;
-    bool mIsAnimationEnabled {false};
-    bool mIsAnimationFinished {true};
-    bool mCanAnimationRepeat {false};
-    Frame* mCurrentFrame;
+        mCurrentFrame = frame;
+    }
+
+    void
+    setCurrentFrameDuration( int ms ) {
+
+        mCurrentFrame->duration = ms;
+    }
 };
 
 #endif
