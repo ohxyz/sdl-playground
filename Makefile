@@ -1,22 +1,23 @@
 PLAYGROUND_SRC =  src/playground.cpp
 PLAYGROUND_SRC += src/playground-mod.c
 
-APP_SRC += src/object2d.hpp
-APP_SRC += src/event_handlers.cpp
-APP_SRC += src/sprite.hpp
-APP_SRC += src/velo.hpp
-APP_SRC += src/helpers.cpp
-APP_SRC += src/object_manager.hpp
-APP_SRC += src/land.hpp
-APP_SRC += src/chicken.hpp
-APP_SRC += src/obstacle.hpp
+SRC += src/object2d.hpp
+SRC += src/sprite.hpp
+SRC += src/helpers.cpp
+SRC += src/object_manager.hpp
+SRC += src/land.hpp
+SRC += src/chicken.hpp
+SRC += src/structs.hpp
+SRC += src/background.hpp
 
-DEBUG_SRC = $(APP_SRC) src/main.cpp
+DEBUG_SRC = $(SRC) src/debug.cpp
+APP_SRC = $(SRC) src/main.cpp
 
 OBJECT2D_SRC = src/object2d.test.cpp src/object2d.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
 SPRITE_SRC = src/sprite.test.cpp src/sprite.cpp
 OBJECT_MANAGER_SRC = src/object_manager.test.cpp src/object_manager.hpp src/helpers.cpp src/utils.cpp
+ANDROID_SRC = src/android.c
 
 CC = g++
 
@@ -31,11 +32,11 @@ COMPILER_FLAGS 	=
 LINKER_FLAGS 	= 	-lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 EXEC_NAME		= 	bin/run
 
+app: $(APP_SRC)
+	$(CC) $(APP_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
+
 debug: $(DEBUG_SRC)
 	$(CC) $(DEBUG_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
-
-# app: $(APP_SRC)
-# 	$(CC) $(APP_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
 
 test_object2d: $(OBJECT2D_SRC)
 	$(CC) $(OBJECT2D_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
@@ -52,5 +53,5 @@ test_object_manager: $(OBJECT_MANAGER_SRC)
 play: $(PLAYGROUND_SRC)
 	$(CC) $(PLAYGROUND_SRC) -o bin/play
 
-play_sdl: 
-	$(CC) $(PLAYGROUND_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/play
+play_android: $(ANDROID_SRC)
+	gcc $(ANDROID_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/play

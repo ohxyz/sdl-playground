@@ -2,7 +2,9 @@
 #include <vector>
 #include <SDL.h>
 #include "frame.h"
+#include "structs.hpp"
 #include "helpers.h"
+#include <iostream>
 
 #ifndef OBJECT2D_HPP
 #define OBJECT2D_HPP
@@ -11,6 +13,8 @@ extern SDL_Renderer* gRenderer;
 
 class Object2D {
 
+protected:
+
     int mAnimationTicks;
     int mAnimationFrameIndex {0};
     std::vector<Frame>* mAnimationFrames;
@@ -18,6 +22,10 @@ class Object2D {
     bool mIsAnimationFinished {true};
     bool mCanAnimationRepeat {false};
     Frame* mCurrentFrame;
+
+    Move mMovement;
+    int mMovementTicks;
+    bool mIsMovementStarted {false};
 
 public:
 
@@ -102,13 +110,58 @@ public:
     }
 
     void
+    startMove() {
+
+        mMovementTicks = SDL_GetTicks();
+        mIsMovementStarted = true;
+    }
+
+    void
+    stopMove() {
+
+        mIsMovementStarted = false;
+    }
+
+    void 
+    move() {
+
+        if ( mMovement.direction == Direction::None || mMovement.step == 0 ) return;
+
+        int currentTicks = SDL_GetTicks();
+
+        if ( currentTicks - mMovementTicks > mMovement.interval ) {
+
+            switch ( mMovement.direction ) {
+
+            case Direction::Up:
+                mCurrentFrame->y -= mMovement.step;
+                break;
+
+            case Direction::Right:
+                mCurrentFrame->x += mMovement.step;
+                break;
+
+            case Direction::Down:
+                mCurrentFrame->y += mMovement.step;
+                break;
+
+            case Direction::Left:
+                mCurrentFrame->x -= mMovement.step;
+                break;
+            }
+
+            mMovementTicks = currentTicks;
+        }
+    }
+
+    void
     setAnimationFrames( std::vector<Frame>& frames ) {
 
         mAnimationFrames = &frames;
     }
 
     void
-    startAnimation( bool repeat=false ) {
+    startAnimate( bool repeat=false ) {
 
         if ( (*mAnimationFrames).size() == 0 ) {
 
@@ -125,13 +178,13 @@ public:
     }
 
     void
-    stopAnimation() {
+    stopAnimate() {
 
         mIsAnimationEnabled = false;
     }
 
     void
-    resumeAnimation() {
+    resumeAnimate() {
 
         mAnimationTicks = SDL_GetTicks();
         mIsAnimationEnabled = true;
@@ -166,13 +219,13 @@ public:
     void
     renderBackground() {
 
-        auto rect = getCurrentRect();
+        auto rect = getRect();
         SDL_SetRenderDrawColor( 
             gRenderer,
             mCurrentFrame->backgroundColorR, 
             mCurrentFrame->backgroundColorG, 
             mCurrentFrame->backgroundColorB, 
-            mCurrentFrame->backgroundColorA 
+            mCurrentFrame->backgroundColorA
         );
         SDL_RenderFillRect( gRenderer, &rect );
     }
@@ -180,12 +233,12 @@ public:
     void 
     renderBorder() {
 
-        auto rect = getCurrentRect();
+        auto rect = getRect();
         SDL_SetRenderDrawColor( 
             gRenderer,
             mCurrentFrame->borderColorR, 
             mCurrentFrame->borderColorG, 
-            mCurrentFrame->borderColorB, 
+            mCurrentFrame->borderColorB,
             mCurrentFrame->borderColorA 
         );
         SDL_RenderDrawRect( gRenderer, &rect );
@@ -194,7 +247,7 @@ public:
     void 
     renderHitbox() {
 
-        auto rect = getCurrentHitboxRect();
+        auto rect = getHitboxRect();
         SDL_SetRenderDrawColor( 
             gRenderer,
             mCurrentFrame->hitboxColorR, 
@@ -297,6 +350,7 @@ public:
     virtual void
     render() {
 
+        if ( mIsMovementStarted ) move();
         if ( mIsAnimationEnabled ) animate();
 
         renderBackground();
@@ -318,7 +372,7 @@ public:
     }
 
     SDL_Rect
-    getCurrentRect() {
+    getRect() {
 
         SDL_Rect rect = {
             mCurrentFrame->x,
@@ -331,7 +385,7 @@ public:
     }
 
     SDL_Rect
-    getCurrentHitboxRect() {
+    getHitboxRect() {
 
         SDL_Rect rect = {
             mCurrentFrame->x + mCurrentFrame->hitboxLeft,
@@ -344,22 +398,32 @@ public:
     }
 
     bool
-    isAnimationEnabled() {
-
-        return mIsAnimationEnabled;
-    }
+    isAnimationEnabled() { return mIsAnimationEnabled; }
 
     void
-    setCurrentFrame( Frame* frame ) {
-
-        mCurrentFrame = frame;
-    }
+    setCurrentFrame( Frame* frame ) { mCurrentFrame = frame; }
 
     void
-    setCurrentFrameDuration( int ms ) {
+    setCurrentFrameDuration( int ms ) { mCurrentFrame->duration = ms; }
 
-        mCurrentFrame->duration = ms;
+    void
+    setMovement( Move move ) { mMovement = move; }
+
+    void
+    setX( int v ) { mCurrentFrame->x = v; }
+
+    void
+    setY( int v ) { mCurrentFrame->y = v; }
+
+    void
+    setHitbox( int top, int right, int bottom, int left ) {
+
+        mCurrentFrame->hitboxTop = top;
+        mCurrentFrame->hitboxRight = right;
+        mCurrentFrame->hitboxBottom = bottom;
+        mCurrentFrame->hitboxLeft = left;
     }
+
 };
 
 #endif

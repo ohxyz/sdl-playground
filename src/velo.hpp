@@ -50,7 +50,7 @@ public:
 
         mCurrentState = Walk;
         setAnimationFrames( mWalkFrames );
-        startAnimation( true );
+        startAnimate( true );
     }
 
     void
@@ -60,7 +60,7 @@ public:
 
         mCurrentState = Jump;
         setAnimationFrames( mJumpFrames );
-        startAnimation( false );
+        startAnimate( false );
     }
 
     void

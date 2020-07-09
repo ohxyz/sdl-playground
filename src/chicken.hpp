@@ -14,7 +14,7 @@ class Chicken : public Object2D {
     std::vector<Frame> mHurtFrames;
     SDL_Rect mScreenRect;
     
-    int mFrameDuration {50};
+    int mFrameDuration {1000};
     enum State { Idle, Walk, Jump, Hurt } mCurrentState { Idle };
 
 public:
@@ -35,7 +35,7 @@ public:
 
     void
     init() {
-
+        
         walk();
     }
 
@@ -48,7 +48,7 @@ public:
 
         mCurrentState = Walk;
         setAnimationFrames( mWalkFrames );
-        startAnimation( true );
+        startAnimate( true );
     }
 
     void
@@ -58,7 +58,7 @@ public:
 
         mCurrentState = Jump;
         setAnimationFrames( mJumpFrames );
-        startAnimation( false );
+        startAnimate( false );
     }
 
     void
@@ -69,13 +69,7 @@ public:
         mCurrentState = Hurt;
         setAnimationFrames( mHurtFrames );
         updateHurtFrames();
-
-        for ( auto &f : mHurtFrames ) {
-
-            std::cout << "@ " << f.y;
-        }
-
-        startAnimation( false );
+        startAnimate( false );
     }
 
     void
@@ -91,11 +85,11 @@ public:
     std::vector<Frame>
     createJumpFrames() {
 
-        int hitboxTop = 10;
-        int hitboxRight = 50;
-        int hitboxBottom = 30;
-        int hitboxLeft = 70;
-        int hitboxColorA = 150;
+        int jumpHitboxTop = 10;
+        int jumpHitboxRight = 50;
+        int jumpHitboxBottom = 30;
+        int jumpHitboxLeft = 70;
+        int jumpHitboxColorA = 150;
 
         for ( int i = 0; i < 12; i++ ) {
 
@@ -124,11 +118,11 @@ public:
                 .imageClipHeight = mScreenRect.h,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
-                .hitboxTop = hitboxTop,
-                .hitboxRight = hitboxRight,
-                .hitboxBottom = hitboxBottom,
-                .hitboxLeft = hitboxLeft,
-                .hitboxColorA = hitboxColorA,
+                .hitboxTop = jumpHitboxTop,
+                .hitboxRight = jumpHitboxRight,
+                .hitboxBottom = jumpHitboxBottom,
+                .hitboxLeft = jumpHitboxLeft,
+                .hitboxColorA = jumpHitboxColorA,
                 .duration = mFrameDuration
             };
 
@@ -169,11 +163,11 @@ public:
                 .imageClipHeight = mScreenRect.h,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
-                .hitboxTop = hitboxTop,
-                .hitboxRight = hitboxRight,
-                .hitboxBottom = hitboxBottom,
-                .hitboxLeft = hitboxLeft,
-                .hitboxColorA = hitboxColorA,
+                .hitboxTop = jumpHitboxTop,
+                .hitboxRight = jumpHitboxRight,
+                .hitboxBottom = jumpHitboxBottom,
+                .hitboxLeft = jumpHitboxLeft,
+                .hitboxColorA = jumpHitboxColorA,
                 .duration = mFrameDuration
             };
 
@@ -197,11 +191,11 @@ public:
                 .imageClipHeight = mScreenRect.h,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
-                .hitboxTop = hitboxTop,
-                .hitboxRight = hitboxRight,
-                .hitboxBottom = hitboxBottom,
-                .hitboxLeft = hitboxLeft,
-                .hitboxColorA = hitboxColorA,
+                .hitboxTop = jumpHitboxTop,
+                .hitboxRight = jumpHitboxRight,
+                .hitboxBottom = jumpHitboxBottom,
+                .hitboxLeft = jumpHitboxLeft,
+                .hitboxColorA = jumpHitboxColorA,
                 .duration = mFrameDuration
             };
 
@@ -263,6 +257,13 @@ public:
 
         std::vector<Frame> frames;
 
+        // Use jump hitbox to debug
+        int jumpHitboxTop = 10;
+        int jumpHitboxRight = 50;
+        int jumpHitboxBottom = 30;
+        int jumpHitboxLeft = 70;
+        int jumpHitboxColorA = 150;
+
         for ( int i = 0; i < 5; i++ ) {
 
             std::string imagePath 
@@ -275,13 +276,17 @@ public:
                 .y = mScreenRect.y, 
                 .width = mScreenRect.w, 
                 .height = mScreenRect.h,
-                // .backgroundColorA = 100,
                 .imageClipX = 0,
                 .imageClipY = 0,
                 .imageClipWidth = mScreenRect.w,
                 .imageClipHeight = mScreenRect.h,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
+                .hitboxTop = jumpHitboxTop,
+                .hitboxRight = jumpHitboxRight,
+                .hitboxBottom = jumpHitboxBottom,
+                .hitboxLeft = jumpHitboxLeft,
+                .hitboxColorA = jumpHitboxColorA,
                 .duration = 10
             };
 

@@ -24,8 +24,6 @@ main( int argc, char* args[] ) {
 
     auto chicken = om->getChicken();
 
-    // auto ranger = new Object2D( 10, 10, 170, 222, "images/ranger.bmp", { 0, 0, 48, 64} );
-
     bool shouldQuit = false;
     while ( !shouldQuit ) {
 
@@ -88,8 +86,6 @@ main( int argc, char* args[] ) {
         // If by 1 ms, my laptop gives ci, ci, ci sound
         SDL_Delay(5);
     }
-
-    // delete ranger;
 
     SDL_DestroyRenderer( gRenderer );
     SDL_FreeSurface( gWindowSurface );
