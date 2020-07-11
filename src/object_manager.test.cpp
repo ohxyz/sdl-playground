@@ -34,12 +34,12 @@ main( int argc, char* args[] ) {
 
     if ( om->collide( red, blue ) ) { 
 
-        printf( "red x blue\n" ); 
+        SDL_Log( "red x blue\n" ); 
     }
 
     if ( om->collide( blue, red ) ) { 
 
-        printf( "blue x red\n" );
+        SDL_Log( "blue x red\n" );
     }
 
     int shouldQuit = false;

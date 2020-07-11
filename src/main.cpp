@@ -7,16 +7,15 @@
 #include <math.h>
 #include "velo.hpp"
 #include "object_manager.hpp"
-#include "helpers.h"
+#include "helpers.hpp"
+#include "game.hpp"
 
-SDL_Window* gWindow;
-SDL_Surface* gWindowSurface;
-SDL_Renderer* gRenderer;
+extern SDL_Renderer* gRenderer;
 
 int 
 main( int argc, char* args[] ) {
 
-    if ( !initGame() ) {
+    if ( !game::init() ) {
         return 1;
     }
 
@@ -25,6 +24,7 @@ main( int argc, char* args[] ) {
     auto chicken = om->getChicken();
 
     bool shouldQuit = false;
+
     while ( !shouldQuit ) {
 
         SDL_Event event;
@@ -35,6 +35,10 @@ main( int argc, char* args[] ) {
 
                 shouldQuit = true;
                 break;
+            }
+            else if ( event.type == SDL_FINGERUP ) {
+            
+                if ( !om->isFrozen() ) chicken->jump();
             }
             else if ( event.type == SDL_KEYDOWN ) {
 
@@ -87,10 +91,7 @@ main( int argc, char* args[] ) {
         SDL_Delay(5);
     }
 
-    SDL_DestroyRenderer( gRenderer );
-    SDL_FreeSurface( gWindowSurface );
-    SDL_DestroyWindow( gWindow );
-    SDL_Quit();
+    game::quit();
 
     return 0;
 }

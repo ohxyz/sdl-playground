@@ -1,10 +1,8 @@
 #include "object2d.hpp"
-#include "helpers.h"
+#include "helpers.hpp"
 #include "chicken.hpp"
-#include "land.hpp"
 #include <vector>
 #include <SDL.h>
-#include <iostream>
 #include "background.hpp"
 
 #ifndef OBJECT_MANAGER_HPP
@@ -12,18 +10,20 @@
 
 class ObjectManager {
 
-    Background* mSky;
-    Background* mStars;
-    Background* mMountain;
-    Land* mLand;
+    Background* mDesert;
+    Background* mLand;
+    Background* mWaterTop;
+    Background* mWaterBody;
+
     Chicken* mChicken;
     std::vector<Object2D*> mObstacles;
 
     int mTicksOfNewObstacle;
     int mTicksBeforeAddObstacle;
+
     int mLandStep;
-    
-    unsigned int mLandFrameDuration;
+    unsigned int mLandInterval;
+
     int mChickenFrameDuration;
     bool mIsFrozen {false};
 
@@ -31,19 +31,26 @@ public:
 
     ObjectManager() {
 
-        mSky = new Background( 0, 0, 360, 431, "images/sky.png" );
-
-        mStars = new Background( 
-            0, 15, 540, 149, "images/stars.png",
-            { .direction=Direction::Left, .step=1, .interval=10 }
+        mDesert = new Background( 
+            0, 0, 676, 380, "images/desert.png",
+            {.direction=Direction::Left, .step=1, .interval=10 }
         );
 
-        mMountain = new Background( 
-            0, 230, 960, 232, "images/mountain.png", 
-            {.direction=Direction::Left, .step=2, .interval=10 } 
+        mLand = new Background(
+            0, 360, 360, 150, "images/sand.png", { 0, 0, 60, 150 },
+            {.direction=Direction::Left, .step=2, .interval=10 }
         );
-        
-        mLand = new Land();
+
+        mWaterTop = new Background(
+            0, 440, 360, 45, "images/water-top.png", { 0, 0, 60, 45 },
+            {.direction=Direction::Left, .step=1, .interval=20 }
+        );
+
+        mWaterBody = new Background(
+            0, 485, 360, 999, "images/water-body.png", { 0, 0, 60, 60 },
+            {.direction=Direction::Left, .step=1, .interval=20 }
+        );
+
         mChicken = new Chicken();
 
         init();
@@ -51,11 +58,11 @@ public:
 
     ~ObjectManager() {
 
-        delete mSky;
-        delete mStars;
-        delete mMountain;
-        delete mLand;
         delete mChicken;
+        delete mLand;
+        delete mWaterTop;
+        delete mWaterBody;
+        delete mDesert;
         mObstacles.clear();
     }
     
@@ -63,19 +70,23 @@ public:
     init() {
 
         mLandStep = 5;
-        mLandFrameDuration = 10;
-        mChickenFrameDuration = 30;
+        mLandInterval = 10;
+        mChickenFrameDuration = 20;
         mTicksBeforeAddObstacle = 3000;
 
-        mStars->setX( 0 );
-        mStars->startMove();
+        mDesert->setX( 0 );
+        mDesert->startMove();
+        
+        mLand->setX( 0 );
+        mLand->setMovementStep( mLandStep );
+        mLand->setMovementInterval( mLandInterval );
+        mLand->startMove();
 
-        mMountain->setX( 0 );
-        mMountain->startMove();
+        mWaterTop->setX( 0 );
+        mWaterTop->startMove();
 
-        mLand->init();
-        mLand->setStep( mLandStep );
-        mLand->setCurrentFrameDuration( mLandFrameDuration );
+        mWaterBody->setX( 0 );
+        mWaterBody->startMove();
 
         mChicken->init();
         mChicken->setFrameDuration( mChickenFrameDuration );
@@ -95,10 +106,10 @@ public:
 
         if ( currentTicks - mTicksBeforeAddObstacle > mTicksOfNewObstacle ) {
 
-            auto obstacle = new Object2D( 360, 340, 40, 75, "images/obstacle-1.png" );
+            auto obstacle = new Object2D( 360, 289, 40, 72, "images/obstacle-3.png" );
 
             obstacle->setMovement( { 
-                .direction=Direction::Left, .step=mLandStep, .interval=mLandFrameDuration
+                .direction=Direction::Left, .step=mLandStep, .interval=mLandInterval
             } );
             obstacle->setHitbox( 5, 5, 0, 5 );
             obstacle->startMove();
@@ -126,9 +137,10 @@ public:
     handleCollide() {
 
         mChicken->hurt();
-        mLand->setStep(0);
-        mMountain->stopMove();
-        mStars->stopMove();
+        mDesert->stopMove();
+        mLand->stopMove();
+        mWaterTop->stopMove();
+        mWaterBody->stopMove();
         for ( auto obstacle : mObstacles ) obstacle->stopMove();
         mIsFrozen = true;
     }
@@ -147,10 +159,10 @@ public:
 
         manageObstacles();
 
-        mSky->render();
-        mStars->render();
-        mMountain->render();
+        mDesert->render();
         mLand->render();
+        mWaterTop->render();
+        mWaterBody->render();
         for ( auto obs : mObstacles ) obs->render();
         mChicken->render();
     }

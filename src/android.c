@@ -1,7 +1,7 @@
 #include <SDL.h>
+#include <SDL_image.h>
 
 SDL_Window* gWindow;
-SDL_Surface* gWindowSurface;
 SDL_Renderer* gRenderer;
 
 const int windowX = 100;
@@ -14,6 +14,12 @@ int main( int argc, char* args[] ) {
     if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 
         SDL_Log( "SDL can't initialize! SDL_Error: %s", SDL_GetError() );
+        return 1;
+    }
+
+    if ( IMG_Init( IMG_INIT_PNG ) < 0 ) {
+        
+        SDL_Log( "Error initializing SDL_image: %s\n", SDL_GetError() );
         return 1;
     }
 
@@ -32,14 +38,6 @@ int main( int argc, char* args[] ) {
         return 1;
     }
 
-    gWindowSurface = SDL_GetWindowSurface( gWindow );
-
-    if ( gWindowSurface == NULL ) {
-
-        SDL_Log( "Can't get surface from window! SDL_Error: %s", SDL_GetError() );
-        return 1;
-    }
-
     gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_PRESENTVSYNC );
 
     if ( gRenderer == NULL ) {
@@ -50,7 +48,8 @@ int main( int argc, char* args[] ) {
 
     SDL_SetRenderDrawBlendMode( gRenderer, SDL_BLENDMODE_BLEND );
 
-    SDL_Surface* imageSurface = SDL_LoadBMP( "ranger.bmp" );
+    // SDL_Surface* imageSurface = SDL_LoadBMP( "ranger.bmp" );
+    SDL_Surface* imageSurface = IMG_Load( "ranger.bmp" ); 
 
     if ( imageSurface == NULL ) {
 
@@ -123,7 +122,6 @@ int main( int argc, char* args[] ) {
     }
 
     SDL_DestroyRenderer( gRenderer );
-    SDL_FreeSurface( gWindowSurface );
     SDL_DestroyWindow( gWindow );
     SDL_Quit();
 

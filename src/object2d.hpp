@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include "frame.h"
 #include "structs.hpp"
-#include "helpers.h"
+#include "helpers.hpp"
 #include <iostream>
 
 #ifndef OBJECT2D_HPP
@@ -408,6 +408,15 @@ public:
 
     void
     setMovement( Move move ) { mMovement = move; }
+
+    void
+    setMovementDirection( Direction d ) { mMovement.direction = d; }
+
+    void
+    setMovementStep( int s ) { mMovement.step = s; }
+    
+    void
+    setMovementInterval( int i ) { mMovement.interval = i; }
 
     void
     setX( int v ) { mCurrentFrame->x = v; }

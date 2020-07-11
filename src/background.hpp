@@ -16,11 +16,17 @@ public:
 
     }
 
-    Background( int x, int y, int w, int h, std::string imagePath, Move movement )
-    : Object2D( x, y, w, h, imagePath ) {
+    Background( int x, int y, int w, int h, std::string imagePath, SDL_Rect imageClipRect, Move movement )
+    : Object2D( x, y, w, h, imagePath, imageClipRect ) {
 
         mMovement = movement;
         mShouldRepeatHorizontal = true;
+    }
+
+
+    Background( int x, int y, int w, int h, std::string imagePath, Move movement )
+    : Background( x, y, w, h, imagePath, { 0, 0, 0, 0 }, movement ) {
+
     }
 
     void

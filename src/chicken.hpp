@@ -1,6 +1,6 @@
 #include <iostream>
 #include "object2d.hpp"
-#include "helpers.h"
+#include "helpers.hpp"
 #include <math.h>
 
 #ifndef CHICKEN_HPP
@@ -21,7 +21,7 @@ public:
 
     Chicken() {
 
-        mScreenRect = { -25, 285, 160, 138 };
+        mScreenRect = { -25, 230, 160, 138 };
         mWalkFrames = createWalkFrames();
         mJumpFrames = createJumpFrames();
         mHurtFrames = createHurtFrames();

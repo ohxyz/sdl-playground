@@ -3,7 +3,7 @@
 #include <vector>
 #include <SDL.h>
 #include <math.h>
-#include "helpers.h"
+#include "helpers.hpp"
 
 #ifndef VELO_HPP
 #define VELO_HPP

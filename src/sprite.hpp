@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "frame.h"
-#include "helpers.h"
+#include "helpers.hpp"
 
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
