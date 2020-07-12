@@ -299,7 +299,7 @@ public:
     void
     render() {
 
-        animate();
+        if ( mIsAnimationEnabled ) animate();
         // renderBackground();
         // renderHitbox();
         renderImage();

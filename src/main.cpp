@@ -11,6 +11,9 @@
 #include "game.hpp"
 
 extern SDL_Renderer* gRenderer;
+extern float gScaleRatio;
+extern int gScreenWidth;
+extern int gScreenHeight;
 
 int 
 main( int argc, char* args[] ) {
@@ -19,9 +22,12 @@ main( int argc, char* args[] ) {
         return 1;
     }
 
+    SDL_Log( "Platform: %s", game::platform );
+
     ObjectManager* om = new ObjectManager;
 
     auto chicken = om->getChicken();
+    auto restartButton = om->getRestartButton();
 
     bool shouldQuit = false;
 
@@ -38,7 +44,41 @@ main( int argc, char* args[] ) {
             }
             else if ( event.type == SDL_FINGERUP ) {
             
-                if ( !om->isFrozen() ) chicken->jump();
+
+            }
+            else if ( event.type == SDL_FINGERDOWN ) {
+
+                if ( !om->isFrozen() ) {
+
+                     chicken->jump();
+                     break;
+                }
+
+                int x = event.tfinger.x * gScreenWidth / gScaleRatio;
+                int y = event.tfinger.y * gScreenHeight / gScaleRatio;
+
+                // SDL_Log( "Touch X: %d, Y: %d", x, y );
+
+                if ( restartButton->isWithinRect( x, y ) && restartButton->isVisible() ) {
+
+                    om->init();
+                }
+            }
+            else if ( event.type == SDL_MOUSEBUTTONUP ) {
+
+                if ( !game::isDesktop() ) break;
+
+                int x, y;
+                SDL_GetMouseState( &x, &y );
+
+                // SDL_Log( "Click X: %d, Y: %d", x, y );
+
+                if ( restartButton->isWithinRect( x, y )
+                        && restartButton->isVisible()
+                        && SDL_BUTTON(SDL_BUTTON_LEFT) ) {
+
+                    om->init();
+                }
             }
             else if ( event.type == SDL_KEYDOWN ) {
 

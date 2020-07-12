@@ -7,13 +7,13 @@ SRC += src/helpers.hpp
 SRC += src/object_manager.hpp
 SRC += src/chicken.hpp
 SRC += src/structs.hpp
-SRC += src/background.hpp
+SRC += src/scrollable.hpp
 SRC += src/game.hpp
 
 DEBUG_SRC = $(SRC) src/debug.cpp
 APP_SRC = $(SRC) src/main.cpp
 
-OBJECT2D_SRC = src/object2d.test.cpp src/object2d.cpp
+OBJECT2D_SRC = src/object2d.test.cpp src/object2d.hpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
 SPRITE_SRC = src/sprite.test.cpp src/sprite.cpp
 OBJECT_MANAGER_SRC = src/object_manager.test.cpp src/object_manager.hpp src/helpers.cpp src/utils.cpp

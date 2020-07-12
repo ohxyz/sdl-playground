@@ -2,30 +2,30 @@
 #include "structs.hpp"
 #include <string>
 
-#ifndef BACKGROUND_HPP
-#define BACKGROUND_HPP
+#ifndef SCROLLABLE_HPP
+#define SCROLLABLE_HPP
 
-class Background : public Object2D {
+class Scrollable : public Object2D {
 
     bool mShouldRepeatHorizontal {false};
 
 public:
 
-    Background( int x, int y, int w, int h, std::string imagePath )
+    Scrollable( int x, int y, int w, int h, std::string imagePath )
     : Object2D( x, y, w, h, imagePath ) {
 
     }
 
-    Background( int x, int y, int w, int h, std::string imagePath, SDL_Rect imageClipRect, Move movement )
+    Scrollable( int x, int y, int w, int h, std::string imagePath, SDL_Rect imageClipRect, Move movement )
     : Object2D( x, y, w, h, imagePath, imageClipRect ) {
 
         mMovement = movement;
         mShouldRepeatHorizontal = true;
+        mCurrentFrame->width = mCurrentFrame->width * 2;
     }
 
-
-    Background( int x, int y, int w, int h, std::string imagePath, Move movement )
-    : Background( x, y, w, h, imagePath, { 0, 0, 0, 0 }, movement ) {
+    Scrollable( int x, int y, int w, int h, std::string imagePath, Move movement )
+    : Scrollable( x, y, w, h, imagePath, {0, 0, 0, 0}, movement ) {
 
     }
 
@@ -37,14 +37,10 @@ public:
         if ( mShouldRepeatHorizontal ) {
 
             if ( mMovement.direction == Direction::Left ) {
-
-                mCurrentFrame->width = mCurrentFrame->width * 2;
                 mCurrentFrame->x = 0;
             }
             else if ( mMovement.direction == Direction::Right ) {
-
                 mCurrentFrame->x = -mCurrentFrame->imageClipWidth;
-                mCurrentFrame->width = mCurrentFrame->width * 2;
             }
         }
     }
@@ -62,8 +58,7 @@ public:
 
             case Direction::Right:
 
-                if ( mShouldRepeatHorizontal 
-                        && mCurrentFrame->x >= -mMovement.step ) {
+                if ( mShouldRepeatHorizontal && mCurrentFrame->x >= -mMovement.step ) {
 
                     mCurrentFrame->x = -mCurrentFrame->imageClipWidth;
                 }

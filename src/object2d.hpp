@@ -9,6 +9,8 @@
 #ifndef OBJECT2D_HPP
 #define OBJECT2D_HPP
 
+typedef void (*EventHandler)(void);
+
 extern SDL_Renderer* gRenderer;
 
 class Object2D {
@@ -26,6 +28,11 @@ protected:
     Move mMovement;
     int mMovementTicks;
     bool mIsMovementStarted {false};
+
+    EventHandler mClickEventHandler;
+    EventHandler mTouchEventHandler;
+
+    bool mShouldRender {true};
 
 public:
 
@@ -180,6 +187,7 @@ public:
     void
     stopAnimate() {
 
+        SDL_Log( "@@ stop" );
         mIsAnimationEnabled = false;
     }
 
@@ -350,6 +358,7 @@ public:
     virtual void
     render() {
 
+        if ( !mShouldRender ) return;
         if ( mIsMovementStarted ) move();
         if ( mIsAnimationEnabled ) animate();
 
@@ -433,6 +442,31 @@ public:
         mCurrentFrame->hitboxLeft = left;
     }
 
+    void
+    setShouldRender( bool flag ) { mShouldRender = flag; }
+
+    void 
+    onClick( EventHandler handler ) { mClickEventHandler = handler; }
+
+    void 
+    click() { mClickEventHandler(); }
+
+    void
+    onTouch( EventHandler handler ) { mTouchEventHandler = handler; }
+
+    void
+    touch() { mTouchEventHandler(); }
+
+    bool
+    isWithinRect( int x, int y ) {
+
+        return ( x >= mCurrentFrame->x && x <= mCurrentFrame->x + mCurrentFrame->width
+            && y >= mCurrentFrame->y && y <= mCurrentFrame->y + mCurrentFrame->height
+        );
+    }
+
+    bool
+    isVisible() { return mShouldRender; }
 };
 
 #endif

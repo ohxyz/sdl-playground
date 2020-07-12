@@ -3,19 +3,19 @@
 #include "chicken.hpp"
 #include <vector>
 #include <SDL.h>
-#include "background.hpp"
+#include "scrollable.hpp"
 
 #ifndef OBJECT_MANAGER_HPP
 #define OBJECT_MANAGER_HPP
 
 class ObjectManager {
-
-    Background* mDesert;
-    Background* mLand;
-    Background* mWaterTop;
-    Background* mWaterBody;
-
-    Chicken* mChicken;
+    
+    Scrollable* mDesert {NULL};
+    Scrollable* mLand {NULL};
+    Scrollable* mWaterTop {NULL};
+    Scrollable* mWaterBody {NULL};
+    Object2D* mRestartButton {NULL};
+    Chicken* mChicken {NULL};
     std::vector<Object2D*> mObstacles;
 
     int mTicksOfNewObstacle;
@@ -31,27 +31,28 @@ public:
 
     ObjectManager() {
 
-        mDesert = new Background( 
+        mDesert = new Scrollable( 
             0, 0, 676, 380, "images/desert.png",
             {.direction=Direction::Left, .step=1, .interval=10 }
         );
 
-        mLand = new Background(
-            0, 360, 360, 150, "images/sand.png", { 0, 0, 60, 150 },
+        mLand = new Scrollable(
+            0, 360, 360, 150, "images/land.png", { 0, 0, 90, 135 },
             {.direction=Direction::Left, .step=2, .interval=10 }
         );
-
-        mWaterTop = new Background(
+        
+        mWaterTop = new Scrollable(
             0, 440, 360, 45, "images/water-top.png", { 0, 0, 60, 45 },
             {.direction=Direction::Left, .step=1, .interval=20 }
         );
 
-        mWaterBody = new Background(
+        mWaterBody = new Scrollable(
             0, 485, 360, 999, "images/water-body.png", { 0, 0, 60, 60 },
             {.direction=Direction::Left, .step=1, .interval=20 }
         );
 
         mChicken = new Chicken();
+        mRestartButton = new Object2D( 120, 400, 120, 120, "images/restart.png" );
 
         init();
     }
@@ -73,6 +74,7 @@ public:
         mLandInterval = 10;
         mChickenFrameDuration = 20;
         mTicksBeforeAddObstacle = 3000;
+        mRestartButton->setShouldRender( false );
 
         mDesert->setX( 0 );
         mDesert->startMove();
@@ -143,6 +145,7 @@ public:
         mWaterBody->stopMove();
         for ( auto obstacle : mObstacles ) obstacle->stopMove();
         mIsFrozen = true;
+        mRestartButton->setShouldRender( true );
     }
 
     bool
@@ -165,19 +168,17 @@ public:
         mWaterBody->render();
         for ( auto obs : mObstacles ) obs->render();
         mChicken->render();
+        mRestartButton->render();
     }
 
     Chicken*
-    getChicken() {
+    getChicken() { return mChicken; }
 
-        return mChicken;
-    }
+    Object2D*
+    getRestartButton() { return mRestartButton; }
 
     bool
-    isFrozen() {
-
-        return mIsFrozen;
-    }
+    isFrozen() { return mIsFrozen; }
 };
 
 #endif
