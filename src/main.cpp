@@ -2,18 +2,12 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
-#include "object2d.hpp"
-#include "sprite.hpp"
 #include <math.h>
-#include "velo.hpp"
 #include "object_manager.hpp"
 #include "helpers.hpp"
 #include "game.hpp"
 
 extern SDL_Renderer* gRenderer;
-extern float gScaleRatio;
-extern int gScreenWidth;
-extern int gScreenHeight;
 
 int 
 main( int argc, char* args[] ) {
@@ -54,8 +48,8 @@ main( int argc, char* args[] ) {
                      break;
                 }
 
-                int x = event.tfinger.x * gScreenWidth / gScaleRatio;
-                int y = event.tfinger.y * gScreenHeight / gScaleRatio;
+                int x = event.tfinger.x * game::screenWidth / game::scaleRatio;
+                int y = event.tfinger.y * game::screenHeight / game::scaleRatio;
 
                 // SDL_Log( "Touch X: %d, Y: %d", x, y );
 

@@ -7,7 +7,7 @@
 #include <math.h>
 #include "velo.hpp"
 #include "object_manager.hpp"
-#include "helpers.h"
+#include "helpers.hpp"
 
 SDL_Window* gWindow;
 SDL_Surface* gWindowSurface;

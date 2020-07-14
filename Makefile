@@ -17,6 +17,7 @@ OBJECT2D_SRC = src/object2d.test.cpp src/object2d.hpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
 SPRITE_SRC = src/sprite.test.cpp src/sprite.cpp
 OBJECT_MANAGER_SRC = src/object_manager.test.cpp src/object_manager.hpp src/helpers.cpp src/utils.cpp
+ANIMATION_SRC = src/animation.hpp src/animation.test.cpp src/game.hpp
 ANDROID_SRC = src/android.c
 
 CC = g++

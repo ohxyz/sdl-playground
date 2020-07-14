@@ -17,12 +17,13 @@ class Object2D {
 
 protected:
 
-    int mAnimationTicks;
-    int mAnimationFrameIndex {0};
-    std::vector<Frame>* mAnimationFrames;
-    bool mIsAnimationEnabled {false};
-    bool mIsAnimationFinished {true};
-    bool mCanAnimationRepeat {false};
+    // int mAnimationTicks;
+    // int mAnimationFrameIndex {0};
+    // std::vector<Frame>* mAnimationFrames;
+    // bool mIsAnimationEnabled {false};
+    // bool mIsAnimationFinished {true};
+    // bool mCanAnimationRepeat {false};
+    
     Frame* mCurrentFrame;
 
     Move mMovement;
@@ -47,11 +48,11 @@ public:
         mCurrentFrame = &frame;
     }
 
-    Object2D( std::vector<Frame>& frames )
-    : Object2D() {
+    // Object2D( std::vector<Frame>& frames )
+    // : Object2D() {
 
-        setAnimationFrames( frames );
-    }
+    //     setAnimationFrames( frames );
+    // }
 
     Object2D( int x, int y, int w, int h )
     : Object2D() {
@@ -161,68 +162,68 @@ public:
         }
     }
 
-    void
-    setAnimationFrames( std::vector<Frame>& frames ) {
+    // void
+    // setAnimationFrames( std::vector<Frame>& frames ) {
 
-        mAnimationFrames = &frames;
-    }
+    //     mAnimationFrames = &frames;
+    // }
 
-    void
-    startAnimate( bool repeat=false ) {
+    // void
+    // startAnimate( bool repeat=false ) {
 
-        if ( (*mAnimationFrames).size() == 0 ) {
+    //     if ( (*mAnimationFrames).size() == 0 ) {
 
-            SDL_Log( "No frames found!" );
-            return;
-        }
+    //         SDL_Log( "No frames found!" );
+    //         return;
+    //     }
 
-        mCurrentFrame = &(*mAnimationFrames)[0];
-        mAnimationFrameIndex = 0;
-        mAnimationTicks = SDL_GetTicks();
-        mIsAnimationEnabled = true;
-        mIsAnimationFinished = false;
-        mCanAnimationRepeat = repeat;
-    }
+    //     mCurrentFrame = &(*mAnimationFrames)[0];
+    //     mAnimationFrameIndex = 0;
+    //     mAnimationTicks = SDL_GetTicks();
+    //     mIsAnimationEnabled = true;
+    //     mIsAnimationFinished = false;
+    //     mCanAnimationRepeat = repeat;
+    // }
 
-    void
-    stopAnimate() {
+    // void
+    // stopAnimate() {
 
-        SDL_Log( "@@ stop" );
-        mIsAnimationEnabled = false;
-    }
+    //     SDL_Log( "@@ stop" );
+    //     mIsAnimationEnabled = false;
+    // }
 
-    void
-    resumeAnimate() {
+    // void
+    // resumeAnimate() {
 
-        mAnimationTicks = SDL_GetTicks();
-        mIsAnimationEnabled = true;
-    }
+    //     mAnimationTicks = SDL_GetTicks();
+    //     mIsAnimationEnabled = true;
+    // }
 
-    void
-    animate() {
+    // void
+    // animate() {
 
-        int totalFrames = (*mAnimationFrames).size();
+    //     int totalFrames = (*mAnimationFrames).size();
 
-        if ( totalFrames == 0 ) return;
+    //     if ( totalFrames == 0 ) return;
 
-        int currentTicks = SDL_GetTicks();
+    //     int currentTicks = SDL_GetTicks();
 
-        if ( (currentTicks - mAnimationTicks) > mCurrentFrame->duration ) {
+    //     if ( (currentTicks - mAnimationTicks) > mCurrentFrame->duration ) {
 
-            if ( mAnimationFrameIndex < totalFrames -1 ) {
-                mAnimationFrameIndex ++;
-            }
-            else if ( mCanAnimationRepeat ) {
-                mAnimationFrameIndex = 0;
-            }
-            else {
-                mIsAnimationFinished = true;
-            }
+    //         if ( mAnimationFrameIndex < totalFrames -1 ) {
+    //             mAnimationFrameIndex ++;
+    //         }
+    //         else if ( mCanAnimationRepeat ) {
+    //             mAnimationFrameIndex = 0;
+    //         }
+    //         else {
+    //             mIsAnimationFinished = true;
+    //         }
 
-            mCurrentFrame = &(*mAnimationFrames)[ mAnimationFrameIndex ];
-            mAnimationTicks = currentTicks;
-        }
-    }
+    //         mCurrentFrame = &(*mAnimationFrames)[ mAnimationFrameIndex ];
+    //         mAnimationTicks = currentTicks;
+    //     }
+    // }
 
     void
     renderBackground() {
@@ -360,7 +361,7 @@ public:
 
         if ( !mShouldRender ) return;
         if ( mIsMovementStarted ) move();
-        if ( mIsAnimationEnabled ) animate();
+        // if ( mIsAnimationEnabled ) animate();
 
         renderBackground();
         renderBorder();
@@ -368,11 +369,11 @@ public:
         renderImage();
     }
 
-    bool 
-    isAnimationFinished() { 
+    // bool 
+    // isAnimationFinished() { 
 
-        return mIsAnimationFinished; 
-    }
+    //     return mIsAnimationFinished; 
+    // }
 
     Frame*
     getCurrentFrame() { 
@@ -406,8 +407,8 @@ public:
         return rect;
     }
 
-    bool
-    isAnimationEnabled() { return mIsAnimationEnabled; }
+    // bool
+    // isAnimationEnabled() { return mIsAnimationEnabled; }
 
     void
     setCurrentFrame( Frame* frame ) { mCurrentFrame = frame; }

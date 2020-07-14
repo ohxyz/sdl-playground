@@ -7,21 +7,25 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
-const int gWindowX = 1000;
-const int gWindowY = -2000;
-const int gWindowWidth = 360;
-const int gWindowHeight = 640;
-
-float gScaleRatio = 1;
-int gScreenWidth;
-int gScreenHeight;
+// float gScaleRatio = 1;
+// int gScreenWidth;
+// int gScreenHeight;
 
 namespace game {
 
-    const char* platform;
+    SDL_Window* window = NULL;
+
+    const char* platform = "";
+    const int windowX = 1000;
+    const int windowY = -2000;
+    const int windowWidth = 360;
+    const int windowHeight = 640;
+
+    float scaleRatio = 1;
+    int screenWidth;
+    int screenHeight;
 
     bool
     isMobile() {
@@ -54,22 +58,22 @@ namespace game {
             return false;
         }
 
-        gWindow = SDL_CreateWindow(
+        window = SDL_CreateWindow(
             "SDL APP",
-            gWindowX,
-            gWindowY,
-            gWindowWidth,
-            gWindowHeight,
+            windowX,
+            windowY,
+            windowWidth,
+            windowHeight,
             SDL_WINDOW_SHOWN
         );
 
-        if ( gWindow == NULL ) {
+        if ( window == NULL ) {
 
             SDL_Log( "Window can't be created! SDL_Error: %s\n", SDL_GetError() );
             return false;
         }
 
-        gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_PRESENTVSYNC );
+        gRenderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_PRESENTVSYNC );
 
         if ( gRenderer == NULL ) {
 
@@ -86,11 +90,11 @@ namespace game {
 
             if( SDL_GetCurrentDisplayMode( 0, &displayMode ) == 0 ) {
 
-                gScreenWidth = displayMode.w;
-                gScreenHeight = displayMode.h;
-                gScaleRatio = float(gScreenWidth) / (float)gWindowWidth;
+                screenWidth = displayMode.w;
+                screenHeight = displayMode.h;
+                scaleRatio = float(screenWidth) / (float)windowWidth;
 
-                SDL_RenderSetScale( gRenderer, gScaleRatio, gScaleRatio );
+                SDL_RenderSetScale( gRenderer, scaleRatio, scaleRatio );
             }
         }
 
@@ -101,7 +105,7 @@ namespace game {
     quit() {
 
         SDL_DestroyRenderer( gRenderer );
-        SDL_DestroyWindow( gWindow );
+        SDL_DestroyWindow( window );
         SDL_Quit();
     }
 
