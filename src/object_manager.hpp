@@ -4,6 +4,7 @@
 #include <vector>
 #include <SDL.h>
 #include "scrollable.hpp"
+#include "random_obstacle.hpp"
 
 #ifndef OBJECT_MANAGER_HPP
 #define OBJECT_MANAGER_HPP
@@ -16,7 +17,8 @@ class ObjectManager {
     Scrollable* mWaterBody {NULL};
     Object2D* mRestartButton {NULL};
     Chicken* mChicken {NULL};
-    std::vector<Object2D*> mObstacles;
+
+    std::vector<RandomObstacle*> mRandomObstacles;
 
     int mTicksOfNewObstacle;
     int mTicksBeforeAddObstacle;
@@ -54,6 +56,7 @@ public:
         mChicken = new Chicken();
         mRestartButton = new Object2D( 120, 400, 120, 120, "images/restart.png" );
 
+        RandomObstacle::init();
         init();
     }
 
@@ -64,7 +67,7 @@ public:
         delete mWaterTop;
         delete mWaterBody;
         delete mDesert;
-        mObstacles.clear();
+        mRandomObstacles.clear();
     }
     
     void
@@ -93,14 +96,13 @@ public:
         mChicken->init();
         mChicken->setFrameDuration( mChickenFrameDuration );
 
-        mObstacles.clear();
+        mRandomObstacles.clear();
 
         mTicksOfNewObstacle = SDL_GetTicks();
         mIsFrozen = false;
     }
 
-    void
-    manageObstacles() {
+    void manageRandomObstacles() {
 
         if ( mIsFrozen ) return;
 
@@ -108,30 +110,29 @@ public:
 
         if ( currentTicks - mTicksBeforeAddObstacle > mTicksOfNewObstacle ) {
 
-            auto obstacle = new Object2D( 360, 289, 40, 72, "images/obstacle-3.png" );
+            auto ro = new RandomObstacle( 360, 362 );
 
-            obstacle->setMovement( { 
+            ro->setMovement( { 
                 .direction=Direction::Left, .step=mLandStep, .interval=mLandInterval
             } );
-            obstacle->setHitbox( 5, 5, 0, 5 );
-            obstacle->startMove();
-            mObstacles.push_back( obstacle );
 
-            obstacle = mObstacles[0];
-            auto obstacleFrame = obstacle->getCurrentFrame();
+            ro->startMove();
+            mRandomObstacles.push_back( ro );
 
-            if ( obstacleFrame->x + obstacleFrame->width < 0 ) {
+            ro = mRandomObstacles[0];
 
-                mObstacles.erase( mObstacles.begin() );
-                delete obstacle;
+            if ( ro->getX() + ro->getWidth() < 0 ) {
+
+                mRandomObstacles.erase( mRandomObstacles.begin() );
+                delete ro;
             }
 
             mTicksOfNewObstacle = currentTicks;
         }
 
-        for ( auto obstacle : mObstacles ) {
+        for ( auto &ro : mRandomObstacles ) {
 
-            if ( collide(obstacle, mChicken) ) handleCollide();
+            if ( ro->collide( mChicken ) ) handleCollide();
         }
     }
 
@@ -143,7 +144,7 @@ public:
         mLand->stopMove();
         mWaterTop->stopMove();
         mWaterBody->stopMove();
-        for ( auto obstacle : mObstacles ) obstacle->stopMove();
+        for ( auto &ro : mRandomObstacles ) ro->stopMove();
         mIsFrozen = true;
         mRestartButton->setShouldRender( true );
     }
@@ -160,13 +161,13 @@ public:
     void 
     run() {
 
-        manageObstacles();
+        manageRandomObstacles();
 
         mDesert->render();
         mLand->render();
         mWaterTop->render();
         mWaterBody->render();
-        for ( auto obs : mObstacles ) obs->render();
+        for ( auto &ro: mRandomObstacles ) ro->render();
         mChicken->render();
         mRestartButton->render();
     }

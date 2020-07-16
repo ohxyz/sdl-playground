@@ -17,17 +17,12 @@ class Object2D {
 
 protected:
 
-    // int mAnimationTicks;
-    // int mAnimationFrameIndex {0};
-    // std::vector<Frame>* mAnimationFrames;
-    // bool mIsAnimationEnabled {false};
-    // bool mIsAnimationFinished {true};
-    // bool mCanAnimationRepeat {false};
-    
+    Frame mFrame;
     Frame* mCurrentFrame;
 
     Move mMovement;
     int mMovementTicks;
+    int mCurrentMovementTicks;
     bool mIsMovementStarted {false};
 
     EventHandler mClickEventHandler;
@@ -35,24 +30,21 @@ protected:
 
     bool mShouldRender {true};
 
+    SDL_Texture* mImageTexture {NULL};
+
 public:
 
     Object2D() {
 
-        mCurrentFrame = new Frame;
+        mCurrentFrame = &mFrame;
     }
 
     Object2D( Frame frame ) 
     : Object2D() {
 
-        mCurrentFrame = &frame;
+        mFrame = frame;
+        mCurrentFrame = &mFrame;
     }
-
-    // Object2D( std::vector<Frame>& frames )
-    // : Object2D() {
-
-    //     setAnimationFrames( frames );
-    // }
 
     Object2D( int x, int y, int w, int h )
     : Object2D() {
@@ -91,7 +83,8 @@ public:
     Object2D( int x, int y, int w, int h, std::string imagePath, SDL_Rect imageClipRect={0,0,0,0} )
     : Object2D( x, y, w, h, imageClipRect ) {
 
-        mCurrentFrame->imageTexture = helpers::loadTexture( imagePath );
+        mImageTexture = helpers::loadTexture( imagePath );
+        mCurrentFrame->imageTexture = mImageTexture;
     }
 
     Object2D( int x, int y, int w, int h, SDL_Color fillColor )
@@ -114,13 +107,14 @@ public:
 
     ~Object2D() {
 
-        delete mCurrentFrame;
+        if ( mImageTexture != NULL ) SDL_DestroyTexture( mImageTexture );
     }
 
     void
     startMove() {
 
         mMovementTicks = SDL_GetTicks();
+        mCurrentMovementTicks = mMovementTicks;
         mIsMovementStarted = true;
     }
 
@@ -135,9 +129,9 @@ public:
 
         if ( mMovement.direction == Direction::None || mMovement.step == 0 ) return;
 
-        int currentTicks = SDL_GetTicks();
+        mCurrentMovementTicks = SDL_GetTicks();
 
-        if ( currentTicks - mMovementTicks > mMovement.interval ) {
+        if ( mCurrentMovementTicks - mMovementTicks > mMovement.interval ) {
 
             switch ( mMovement.direction ) {
 
@@ -158,72 +152,9 @@ public:
                 break;
             }
 
-            mMovementTicks = currentTicks;
+            mMovementTicks = mCurrentMovementTicks;
         }
     }
-
-    // void
-    // setAnimationFrames( std::vector<Frame>& frames ) {
-
-    //     mAnimationFrames = &frames;
-    // }
-
-    // void
-    // startAnimate( bool repeat=false ) {
-
-    //     if ( (*mAnimationFrames).size() == 0 ) {
-
-    //         SDL_Log( "No frames found!" );
-    //         return;
-    //     }
-
-    //     mCurrentFrame = &(*mAnimationFrames)[0];
-    //     mAnimationFrameIndex = 0;
-    //     mAnimationTicks = SDL_GetTicks();
-    //     mIsAnimationEnabled = true;
-    //     mIsAnimationFinished = false;
-    //     mCanAnimationRepeat = repeat;
-    // }
-
-    // void
-    // stopAnimate() {
-
-    //     SDL_Log( "@@ stop" );
-    //     mIsAnimationEnabled = false;
-    // }
-
-    // void
-    // resumeAnimate() {
-
-    //     mAnimationTicks = SDL_GetTicks();
-    //     mIsAnimationEnabled = true;
-    // }
-
-    // void
-    // animate() {
-
-    //     int totalFrames = (*mAnimationFrames).size();
-
-    //     if ( totalFrames == 0 ) return;
-
-    //     int currentTicks = SDL_GetTicks();
-
-    //     if ( (currentTicks - mAnimationTicks) > mCurrentFrame->duration ) {
-
-    //         if ( mAnimationFrameIndex < totalFrames -1 ) {
-    //             mAnimationFrameIndex ++;
-    //         }
-    //         else if ( mCanAnimationRepeat ) {
-    //             mAnimationFrameIndex = 0;
-    //         }
-    //         else {
-    //             mIsAnimationFinished = true;
-    //         }
-
-    //         mCurrentFrame = &(*mAnimationFrames)[ mAnimationFrameIndex ];
-    //         mAnimationTicks = currentTicks;
-    //     }
-    // }
 
     void
     renderBackground() {
@@ -361,19 +292,12 @@ public:
 
         if ( !mShouldRender ) return;
         if ( mIsMovementStarted ) move();
-        // if ( mIsAnimationEnabled ) animate();
 
         renderBackground();
         renderBorder();
         renderHitbox();
         renderImage();
     }
-
-    // bool 
-    // isAnimationFinished() { 
-
-    //     return mIsAnimationFinished; 
-    // }
 
     Frame*
     getCurrentFrame() { 
@@ -407,9 +331,6 @@ public:
         return rect;
     }
 
-    // bool
-    // isAnimationEnabled() { return mIsAnimationEnabled; }
-
     void
     setCurrentFrame( Frame* frame ) { mCurrentFrame = frame; }
 
@@ -431,8 +352,20 @@ public:
     void
     setX( int v ) { mCurrentFrame->x = v; }
 
+    int
+    getX() { return mCurrentFrame->x; }
+
     void
     setY( int v ) { mCurrentFrame->y = v; }
+
+    int
+    getY() { return mCurrentFrame->y; }
+
+    int
+    getWidth() { return mCurrentFrame->width; }
+
+    int
+    getHeight() { return mCurrentFrame->height; }
 
     void
     setHitbox( int top, int right, int bottom, int left ) {
@@ -441,6 +374,15 @@ public:
         mCurrentFrame->hitboxRight = right;
         mCurrentFrame->hitboxBottom = bottom;
         mCurrentFrame->hitboxLeft = left;
+    }
+
+    void
+    setHitboxColor( int r, int g, int b, int a ) {
+
+        mCurrentFrame->hitboxColorR = r;
+        mCurrentFrame->hitboxColorG = g;
+        mCurrentFrame->hitboxColorB = b;
+        mCurrentFrame->hitboxColorA = a;
     }
 
     void

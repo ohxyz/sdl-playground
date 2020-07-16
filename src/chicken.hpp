@@ -91,7 +91,6 @@ public:
 
         mCurrentFrame = mCurrentAnimation->animate();
 
-
         if ( mCurrentFrame != NULL ) {
 
             renderImage();

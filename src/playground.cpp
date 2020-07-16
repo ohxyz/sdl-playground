@@ -27,14 +27,29 @@ void fn( T t, T t2, T* t3 ) {
     t3->a = 10000;
 }
 
+int f2( int x ) { return x; }
+int y = f2( 3 );
+
+class Cls {
+
+public:
+    static std::vector<int> a;
+};
+
+int Cls::a = 22;
+
 int 
 main( int argc, char* args[] ) {
+
+    
+
+    std::cout << Cls::a << std::endl;
 
     std::vector<int> v1 = { 1, 2, 3 };
     std::vector<char> v2 = { 'a', 'b', 'c' };
 
-    for ( auto &i : v1 ) std::cout << i << std::endl;
-    for ( auto &i : v2 ) std::cout << i << std::endl;
+    // for ( auto &i : v1 ) std::cout << i << std::endl;
+    // for ( auto &i : v2 ) std::cout << i << std::endl;
 
     return 0;
 }

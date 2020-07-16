@@ -9,19 +9,20 @@
 
 SDL_Renderer* gRenderer = NULL;
 
-// float gScaleRatio = 1;
-// int gScreenWidth;
-// int gScreenHeight;
-
 namespace game {
+
+    struct InitOptions {
+
+        int x {1000};
+        int y {-2000};
+        int width {360};
+        int height {640};
+
+    } defaultInitOptions;
 
     SDL_Window* window = NULL;
 
     const char* platform = "";
-    const int windowX = 1000;
-    const int windowY = -2000;
-    const int windowWidth = 360;
-    const int windowHeight = 640;
 
     float scaleRatio = 1;
     int screenWidth;
@@ -40,7 +41,7 @@ namespace game {
     }
 
     bool
-    init() {
+    init( InitOptions options=defaultInitOptions ) {
 
         platform = SDL_GetPlatform();
 
@@ -60,10 +61,10 @@ namespace game {
 
         window = SDL_CreateWindow(
             "SDL APP",
-            windowX,
-            windowY,
-            windowWidth,
-            windowHeight,
+            options.x,
+            options.y,
+            options.width,
+            options.height,
             SDL_WINDOW_SHOWN
         );
 
@@ -92,7 +93,7 @@ namespace game {
 
                 screenWidth = displayMode.w;
                 screenHeight = displayMode.h;
-                scaleRatio = float(screenWidth) / (float)windowWidth;
+                scaleRatio = float(screenWidth) / (float)options.width;
 
                 SDL_RenderSetScale( gRenderer, scaleRatio, scaleRatio );
             }

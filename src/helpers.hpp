@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <time.h>
 #include <string.h>
+#include "structs.hpp"
 
 #ifndef HELPERS_HPP
 #define HELPERS_HPP

@@ -14,7 +14,7 @@ public:
 
     ChickenWalkAnimation( int x=0, int y=0 ) {
 
-        setFrames( createIdleFrames( x, y ) );
+        setFrames( createFrames( x, y ) );
     }
 
     ~ChickenWalkAnimation() {
@@ -23,7 +23,7 @@ public:
     }
 
     std::vector<Frame>
-    createIdleFrames( int x, int y ) {
+    createFrames( int x, int y ) {
 
         std::vector<Frame> frames;
         int totalFrames = 16;

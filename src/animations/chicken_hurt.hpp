@@ -32,7 +32,7 @@ public:
         int jumpHitboxRight = 50;
         int jumpHitboxBottom = 30;
         int jumpHitboxLeft = 70;
-        int jumpHitboxColorA = 150;
+        uint8_t jumpHitboxColorA = 150;
 
         for ( int i = 0; i < 5; i++ ) {
 

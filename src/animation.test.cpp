@@ -15,7 +15,7 @@ extern SDL_Renderer* gRenderer;
 int 
 main( int argc, char* args[] ) {
 
-    if ( !game::init() ) {
+    if ( !game::init( { .x=500, .width=800, .height=600 } ) ) {
         return 1;
     }
 

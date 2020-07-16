@@ -13,12 +13,13 @@ SRC += src/game.hpp
 DEBUG_SRC = $(SRC) src/debug.cpp
 APP_SRC = $(SRC) src/main.cpp
 
-OBJECT2D_SRC = src/object2d.test.cpp src/object2d.hpp
+OBJECT2D_SRC = src/object2d.test.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
 SPRITE_SRC = src/sprite.test.cpp src/sprite.cpp
 OBJECT_MANAGER_SRC = src/object_manager.test.cpp src/object_manager.hpp src/helpers.cpp src/utils.cpp
-ANIMATION_SRC = src/animation.hpp src/animation.test.cpp src/game.hpp
-ANDROID_SRC = src/android.c
+ANIMATION_SRC = src/animation.hpp src/animation.test.cpp
+UTILS_SRC = src/utils.test.cpp
+RANDOM_OBSTACLE_SRC = src/random_obstacle.test.cpp
 
 CC = g++
 
@@ -52,8 +53,12 @@ test_sprite: $(SPRITE_SRC)
 test_object_manager: $(OBJECT_MANAGER_SRC)
 	$(CC) $(OBJECT_MANAGER_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
+test_random_obstacle: $(RANDOM_OBSTACLE_SRC)
+	$(CC) $(RANDOM_OBSTACLE_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+
+test_utils: $(UTILS_SRC)
+	$(CC) $(UTILS_SRC) -o bin/test
+
 play: $(PLAYGROUND_SRC)
 	$(CC) $(PLAYGROUND_SRC) -o bin/play
 
-play_android: $(ANDROID_SRC)
-	gcc $(ANDROID_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/play

@@ -1,3 +1,5 @@
+#include <SDL.h>
+
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
