@@ -19,7 +19,7 @@ SPRITE_SRC = src/sprite.test.cpp src/sprite.cpp
 OBJECT_MANAGER_SRC = src/object_manager.test.cpp src/object_manager.hpp src/helpers.cpp src/utils.cpp
 ANIMATION_SRC = src/animation.hpp src/animation.test.cpp
 UTILS_SRC = src/utils.test.cpp
-RANDOM_OBSTACLE_SRC = src/random_obstacle.test.cpp
+RANDOM_OBJECT_SRC = src/random_object.test.cpp
 
 CC = g++
 
@@ -53,8 +53,8 @@ test_sprite: $(SPRITE_SRC)
 test_object_manager: $(OBJECT_MANAGER_SRC)
 	$(CC) $(OBJECT_MANAGER_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
-test_random_obstacle: $(RANDOM_OBSTACLE_SRC)
-	$(CC) $(RANDOM_OBSTACLE_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+test_random_object: $(RANDOM_OBJECT_SRC)
+	$(CC) $(RANDOM_OBJECT_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
 test_utils: $(UTILS_SRC)
 	$(CC) $(UTILS_SRC) -o bin/test

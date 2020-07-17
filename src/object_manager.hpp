@@ -4,7 +4,7 @@
 #include <vector>
 #include <SDL.h>
 #include "scrollable.hpp"
-#include "random_obstacle.hpp"
+#include "random_object.hpp"
 
 #ifndef OBJECT_MANAGER_HPP
 #define OBJECT_MANAGER_HPP
@@ -18,10 +18,10 @@ class ObjectManager {
     Object2D* mRestartButton {NULL};
     Chicken* mChicken {NULL};
 
-    std::vector<RandomObstacle*> mRandomObstacles;
+    std::vector<RandomObject*> mRandomSpikes;
 
-    int mTicksOfNewObstacle;
-    int mTicksBeforeAddObstacle;
+    int mTicksOfNewSpike;
+    int mTicksBeforeAddSpike;
 
     int mLandStep;
     unsigned int mLandInterval;
@@ -56,7 +56,7 @@ public:
         mChicken = new Chicken();
         mRestartButton = new Object2D( 120, 400, 120, 120, "images/restart.png" );
 
-        RandomObstacle::init();
+        RandomObject::init();
         init();
     }
 
@@ -67,7 +67,7 @@ public:
         delete mWaterTop;
         delete mWaterBody;
         delete mDesert;
-        mRandomObstacles.clear();
+        mRandomSpikes.clear();
     }
     
     void
@@ -76,7 +76,7 @@ public:
         mLandStep = 5;
         mLandInterval = 10;
         mChickenFrameDuration = 20;
-        mTicksBeforeAddObstacle = 3000;
+        mTicksBeforeAddSpike = 3000;
         mRestartButton->setShouldRender( false );
 
         mDesert->setX( 0 );
@@ -96,41 +96,41 @@ public:
         mChicken->init();
         mChicken->setFrameDuration( mChickenFrameDuration );
 
-        mRandomObstacles.clear();
+        mRandomSpikes.clear();
 
-        mTicksOfNewObstacle = SDL_GetTicks();
+        mTicksOfNewSpike = SDL_GetTicks();
         mIsFrozen = false;
     }
 
-    void manageRandomObstacles() {
+    void manageRandomObjects() {
 
         if ( mIsFrozen ) return;
 
         int currentTicks = SDL_GetTicks();
 
-        if ( currentTicks - mTicksBeforeAddObstacle > mTicksOfNewObstacle ) {
+        if ( currentTicks - mTicksBeforeAddSpike > mTicksOfNewSpike ) {
 
-            auto ro = new RandomObstacle( 360, 362 );
+            auto ro = new RandomObject( 360, 362 );
 
             ro->setMovement( { 
                 .direction=Direction::Left, .step=mLandStep, .interval=mLandInterval
             } );
 
             ro->startMove();
-            mRandomObstacles.push_back( ro );
+            mRandomSpikes.push_back( ro );
 
-            ro = mRandomObstacles[0];
+            ro = mRandomSpikes[0];
 
             if ( ro->getX() + ro->getWidth() < 0 ) {
 
-                mRandomObstacles.erase( mRandomObstacles.begin() );
+                mRandomSpikes.erase( mRandomSpikes.begin() );
                 delete ro;
             }
 
-            mTicksOfNewObstacle = currentTicks;
+            mTicksOfNewSpike = currentTicks;
         }
 
-        for ( auto &ro : mRandomObstacles ) {
+        for ( auto &ro : mRandomSpikes ) {
 
             if ( ro->collide( mChicken ) ) handleCollide();
         }
@@ -144,7 +144,7 @@ public:
         mLand->stopMove();
         mWaterTop->stopMove();
         mWaterBody->stopMove();
-        for ( auto &ro : mRandomObstacles ) ro->stopMove();
+        for ( auto &ro : mRandomSpikes ) ro->stopMove();
         mIsFrozen = true;
         mRestartButton->setShouldRender( true );
     }
@@ -161,13 +161,13 @@ public:
     void 
     run() {
 
-        manageRandomObstacles();
+        manageRandomObjects();
 
         mDesert->render();
         mLand->render();
         mWaterTop->render();
         mWaterBody->render();
-        for ( auto &ro: mRandomObstacles ) ro->render();
+        for ( auto &ro: mRandomSpikes ) ro->render();
         mChicken->render();
         mRestartButton->render();
     }

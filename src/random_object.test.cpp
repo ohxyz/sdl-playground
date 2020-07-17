@@ -4,7 +4,7 @@
 #include <string>
 #include <math.h>
 #include <iostream>
-#include "random_obstacle.hpp"
+#include "random_object.hpp"
 #include "game.hpp"
 #include <vector>
 
@@ -13,27 +13,27 @@ extern SDL_Renderer* gRenderer;
 int 
 main( int argc, char* args[] ) {
 
-    SDL_Log( "Test RandomObstacle" );
+    SDL_Log( "Test RandomObject" );
 
     if ( !game::init( {.x=500, .width=800, .height=600} ) ) {
         return 1;
     }
 
-    std::vector<RandomObstacle*> ros;
+    std::vector<RandomObject*> ros;
 
-    RandomObstacle::init();
+    RandomObject::init();
 
     for ( int i = 0; i < 5; i ++ ) {
 
         for ( int j = 0; j < 3; j ++ ) {
 
-            auto ro = new RandomObstacle( 50 + 120*i, 100 + 100*j );
+            auto ro = new RandomObject( 50 + 120*i, 100 + 100*j );
             ros.push_back( ro );
         }
     }
 
     auto ranger = new Object2D( 30, 400, 48, 64, "images/ranger.bmp" );
-    auto random = new RandomObstacle( 100, 450 );
+    auto random = new RandomObject( 100, 450 );
 
     if ( random->collide(ranger) ) {
         SDL_Log( "@@ Collide!" );
@@ -42,7 +42,7 @@ main( int argc, char* args[] ) {
         SDL_Log( "@@ NOT collide!" );
     }
 
-    auto random2 = new RandomObstacle( 800, 550 );
+    auto random2 = new RandomObject( 700, 550, 0.5 );
     random2->setMovement( {
         .direction=Direction::Left, .step=10, .interval=5000
     } );

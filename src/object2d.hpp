@@ -22,7 +22,6 @@ protected:
 
     Move mMovement;
     int mMovementTicks;
-    int mCurrentMovementTicks;
     bool mIsMovementStarted {false};
 
     EventHandler mClickEventHandler;
@@ -113,8 +112,8 @@ public:
     void
     startMove() {
 
+
         mMovementTicks = SDL_GetTicks();
-        mCurrentMovementTicks = mMovementTicks;
         mIsMovementStarted = true;
     }
 
@@ -125,34 +124,39 @@ public:
     }
 
     void 
-    move() {
+    moveOnce() {
 
         if ( mMovement.direction == Direction::None || mMovement.step == 0 ) return;
 
-        mCurrentMovementTicks = SDL_GetTicks();
+        switch ( mMovement.direction ) {
 
-        if ( mCurrentMovementTicks - mMovementTicks > mMovement.interval ) {
+        case Direction::Up:
+            mCurrentFrame->y -= mMovement.step;
+            break;
 
-            switch ( mMovement.direction ) {
+        case Direction::Right:
+            mCurrentFrame->x += mMovement.step;
+            break;
 
-            case Direction::Up:
-                mCurrentFrame->y -= mMovement.step;
-                break;
+        case Direction::Down:
+            mCurrentFrame->y += mMovement.step;
+            break;
 
-            case Direction::Right:
-                mCurrentFrame->x += mMovement.step;
-                break;
+        case Direction::Left:
+            mCurrentFrame->x -= mMovement.step;
+            break;
+        }
+    }
 
-            case Direction::Down:
-                mCurrentFrame->y += mMovement.step;
-                break;
+    void 
+    move() {
 
-            case Direction::Left:
-                mCurrentFrame->x -= mMovement.step;
-                break;
-            }
+        int currentTicks = SDL_GetTicks();
 
-            mMovementTicks = mCurrentMovementTicks;
+        if ( currentTicks - mMovementTicks > mMovement.interval ) {
+
+            moveOnce();
+            mMovementTicks = currentTicks;
         }
     }
 
