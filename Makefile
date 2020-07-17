@@ -10,8 +10,8 @@ SRC += src/structs.hpp
 SRC += src/scrollable.hpp
 SRC += src/game.hpp
 
-DEBUG_SRC = $(SRC) src/debug.cpp
 APP_SRC = $(SRC) src/main.cpp
+DEBUG_SRC = src/debug.cpp
 
 OBJECT2D_SRC = src/object2d.test.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
@@ -39,7 +39,7 @@ app: $(APP_SRC)
 	$(CC) $(APP_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
 
 debug: $(DEBUG_SRC)
-	$(CC) $(DEBUG_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(EXEC_NAME)
+	$(CC) $(DEBUG_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/debug
 
 test_object2d: $(OBJECT2D_SRC)
 	$(CC) $(OBJECT2D_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test

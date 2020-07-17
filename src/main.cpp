@@ -1,11 +1,8 @@
 #include <SDL.h>
-#include <SDL_image.h>
 #include <stdio.h>
-#include <string>
-#include <math.h>
 #include "object_manager.hpp"
-#include "helpers.hpp"
 #include "game.hpp"
+#include "event_handler.hpp"
 
 extern SDL_Renderer* gRenderer;
 
@@ -20,95 +17,7 @@ main( int argc, char* args[] ) {
 
     ObjectManager* om = new ObjectManager;
 
-    auto chicken = om->getChicken();
-    auto restartButton = om->getRestartButton();
-
-    bool shouldQuit = false;
-
-    while ( !shouldQuit ) {
-
-        SDL_Event event;
-
-        while ( SDL_PollEvent( &event ) != 0 ) {
-
-            if ( event.type == SDL_QUIT ) {
-
-                shouldQuit = true;
-                break;
-            }
-            else if ( event.type == SDL_FINGERUP ) {
-            
-
-            }
-            else if ( event.type == SDL_FINGERDOWN ) {
-
-                if ( !om->isFrozen() ) {
-
-                     chicken->jump();
-                     break;
-                }
-
-                int x = event.tfinger.x * game::screenWidth / game::scaleRatio;
-                int y = event.tfinger.y * game::screenHeight / game::scaleRatio;
-
-                // SDL_Log( "Touch X: %d, Y: %d", x, y );
-
-                if ( restartButton->isWithinRect( x, y ) && restartButton->isVisible() ) {
-
-                    om->init();
-                }
-            }
-            else if ( event.type == SDL_MOUSEBUTTONUP ) {
-
-                if ( !game::isDesktop() ) break;
-
-                int x, y;
-                SDL_GetMouseState( &x, &y );
-
-                // SDL_Log( "Click X: %d, Y: %d", x, y );
-
-                if ( restartButton->isWithinRect( x, y )
-                        && restartButton->isVisible()
-                        && SDL_BUTTON(SDL_BUTTON_LEFT) ) {
-
-                    om->init();
-                }
-            }
-            else if ( event.type == SDL_KEYDOWN ) {
-
-                switch ( event.key.keysym.sym ) {
-
-                case SDLK_r:
-                    SDL_Log( "Restart!\n" );
-                    om->init();
-                    break;
-
-                case SDLK_w:
-                    SDL_Log( "Up!\n" );
-                    break;
-
-                case SDLK_s:
-                    SDL_Log( "Down!\n" );
-                    break;
-
-                case SDLK_a:
-                    SDL_Log( "Left!\n" );
-                    break;
-
-                case SDLK_d:
-                    // SDL_Log( "Right!\n" );
-                    break;
-
-                case SDLK_SPACE:
-                    // SDL_Log( "SPACE!\n" );
-                    if ( !om->isFrozen() ) chicken->jump();
-                    break;
-
-                // default:
-                //     SDL_Log( "No move!" );
-                }
-            }
-        }
+    while ( event_handler::handleEventLoop( om ) ) {
 
         // Drawing 
         // Green

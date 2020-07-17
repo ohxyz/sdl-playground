@@ -11,12 +11,12 @@
 
 class ObjectManager {
     
-    Scrollable* mDesert {NULL};
-    Scrollable* mLand {NULL};
-    Scrollable* mWaterTop {NULL};
-    Scrollable* mWaterBody {NULL};
-    Object2D* mRestartButton {NULL};
-    Chicken* mChicken {NULL};
+    Scrollable* mDesert {nullptr};
+    Scrollable* mLand {nullptr};
+    Scrollable* mWaterTop {nullptr};
+    Scrollable* mWaterBody {nullptr};
+    Object2D* mRestartButton {nullptr};
+    Chicken* mChicken {nullptr};
 
     std::vector<RandomObject*> mRandomSpikes;
 
@@ -102,7 +102,7 @@ public:
         mIsFrozen = false;
     }
 
-    void manageRandomObjects() {
+    void manageSpikes() {
 
         if ( mIsFrozen ) return;
 
@@ -110,29 +110,29 @@ public:
 
         if ( currentTicks - mTicksBeforeAddSpike > mTicksOfNewSpike ) {
 
-            auto ro = new RandomObject( 360, 362 );
+            auto spike = new RandomObject( 360, 362 );
 
-            ro->setMovement( { 
+            spike->setMovement( { 
                 .direction=Direction::Left, .step=mLandStep, .interval=mLandInterval
             } );
 
-            ro->startMove();
-            mRandomSpikes.push_back( ro );
+            spike->startMove();
+            mRandomSpikes.push_back( spike );
 
-            ro = mRandomSpikes[0];
+            spike = mRandomSpikes[0];
 
-            if ( ro->getX() + ro->getWidth() < 0 ) {
+            if ( spike->getX() + spike->getWidth() < 0 ) {
 
                 mRandomSpikes.erase( mRandomSpikes.begin() );
-                delete ro;
+                delete spike;
             }
 
             mTicksOfNewSpike = currentTicks;
         }
 
-        for ( auto &ro : mRandomSpikes ) {
+        for ( auto &spike : mRandomSpikes ) {
 
-            if ( ro->collide( mChicken ) ) handleCollide();
+            if ( spike->collide( mChicken ) ) handleCollide();
         }
     }
 
@@ -149,25 +149,16 @@ public:
         mRestartButton->setShouldRender( true );
     }
 
-    bool
-    collide( Object2D* obj1, Object2D* obj2 ) {
-
-        SDL_Rect rect1 = obj1->getHitboxRect();
-        SDL_Rect rect2 = obj2->getHitboxRect();
-
-        return helpers::collide( rect1, rect2 );
-    }
-
     void 
     run() {
 
-        manageRandomObjects();
+        manageSpikes();
 
         mDesert->render();
         mLand->render();
         mWaterTop->render();
         mWaterBody->render();
-        for ( auto &ro: mRandomSpikes ) ro->render();
+        for ( auto &spike: mRandomSpikes ) spike->render();
         mChicken->render();
         mRestartButton->render();
     }

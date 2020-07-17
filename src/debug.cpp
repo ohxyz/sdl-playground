@@ -2,40 +2,30 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
-#include "object2d.hpp"
-#include "sprite.hpp"
 #include <math.h>
-#include "velo.hpp"
-#include "object_manager.hpp"
+#include <iostream>
+#include "random_object.hpp"
+#include "game.hpp"
+#include <vector>
 #include "helpers.hpp"
 
-SDL_Window* gWindow;
-SDL_Surface* gWindowSurface;
-SDL_Renderer* gRenderer;
+extern SDL_Renderer* gRenderer;
 
 int 
 main( int argc, char* args[] ) {
 
-    if ( !initGame() ) {
+    SDL_Log( "Test RandomObject" );
+
+    if ( !game::init( {.x=500, .width=300, .height=400} ) ) {
         return 1;
     }
 
-    ObjectManager* om = new ObjectManager;
+    std::vector<RandomObject*> ros;
 
-    SDL_Color backgroundColor = { .r=255, .g=255, .b=255, .a=128 };
-    Object2D* white = new Object2D( 0, 0, 50, 80, backgroundColor );
-
-    Object2D* counter = new Object2D( 50, 50, 128, 128 );
-    Sprite* counterSprite = new Sprite( "images/numbers.png", { .x=0, .y=0, .w=512, .h=512 }, 4, 4 );
-    std::vector<Frame> counterFrames = counterSprite->createFrames( {50, 50, 128, 128}, 1000);
-    counter->setAnimationFrames( counterFrames );
-    counter->startAnimate();
-
-    auto chicken = om->getChicken();
-
-    // auto ranger = new Object2D( 10, 10, 170, 222, "images/ranger.bmp", { 0, 0, 48, 64} );
+    auto ranger = new Object2D( 11, 55, 48, 64, "images/ranger.bmp" );
 
     bool shouldQuit = false;
+    
     while ( !shouldQuit ) {
 
         SDL_Event event;
@@ -47,39 +37,45 @@ main( int argc, char* args[] ) {
                 shouldQuit = true;
                 break;
             }
-            else if ( event.type == SDL_KEYDOWN ) {
-
-                switch ( event.key.keysym.sym ) {
-
-                case SDLK_w:
-                    SDL_Log( "Up!\n" );
-                    counter->resumeAnimate();
-                    break;
-
-                case SDLK_s:
-                    SDL_Log( "Down!\n" );
-                    counter->stopAnimate();
-                    break;
-
-                case SDLK_a:
-                    SDL_Log( "Left!\n" );
-                    break;
-
-                case SDLK_d:
-                    SDL_Log( "Right!\n" );
-                    // counter->startAnimate();
-                    chicken->walk();
-                    break;
-
-                case SDLK_SPACE:
-                    SDL_Log( "SPACE!\n" );
-                    chicken->jump();
-                    break;
-
-                // default:
-                //     SDL_Log( "No move!" );
-                }
+            else if ( event.type == SDL_FINGERUP ) {
+            
             }
+            else if ( event.type == SDL_FINGERDOWN ) {
+
+                int x = event.tfinger.x * game::screenWidth / game::scaleRatio;
+                int y = event.tfinger.y * game::screenHeight / game::scaleRatio;
+
+                // SDL_Log( "@@ finger down %d, %d", x, y );
+
+            }
+            else if ( event.type == SDL_FINGERMOTION ) {
+
+                // int x = event.tfinger.x * game::screenWidth / game::scaleRatio;
+                // int y = event.tfinger.y * game::screenHeight / game::scaleRatio;
+
+                // float dxf = event.tfinger.dx;
+                // float dyf = event.tfinger.dy;
+
+                float dx = event.tfinger.dx * (float)game::screenWidth / game::scaleRatio;
+                float dy = event.tfinger.dy * (float)game::screenHeight / game::scaleRatio;
+
+                auto direction = helpers::getDirection( dx, dy, 10 );
+
+                if ( direction == Direction::Up ) SDL_Log( "up!" );
+                else if ( direction == Direction::Down ) SDL_Log( "down!" );
+                else if ( direction == Direction::Left ) SDL_Log( "left!");
+                else if ( direction == Direction::Right ) SDL_Log( "right!" );
+                // float r = (float)dy / (float)dx;
+
+                // if ( dy > 0 && (r > 1.0 || r < -1.0) ) SDL_Log( "down!" );
+                // else if ( dy < 0 && (r > 1.0 || r <= -1.0) ) SDL_Log( "up!" );
+                // else if ( dx > 0 && (r > -1.0 && r <1.0) ) SDL_Log( "right!" );
+                // else if ( dx < 0 && (r > -1.0 && r <1.0) ) SDL_Log( "left!" );
+
+                // SDL_Log( "@@@ finger motion %f, %f, %f", dx, dy, r );
+
+            }
+
         }
 
         // Drawing 
@@ -87,26 +83,14 @@ main( int argc, char* args[] ) {
         SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
         SDL_RenderClear( gRenderer );
 
-        // white->render();
-        // counter->render();
-        // ranger->render();
-        om->run();
+        ranger->render();
 
         // Update
         SDL_RenderPresent( gRenderer );
-
-        // velo->render();
-        // Delay by some time to avoid high CPU usage
-        // If by 1 ms, my laptop gives ci, ci, ci sound
         SDL_Delay(5);
     }
 
-    // delete ranger;
-
-    SDL_DestroyRenderer( gRenderer );
-    SDL_FreeSurface( gWindowSurface );
-    SDL_DestroyWindow( gWindow );
-    SDL_Quit();
+    game::quit();
 
     return 0;
 }

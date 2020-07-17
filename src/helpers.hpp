@@ -12,6 +12,23 @@ extern SDL_Renderer* gRenderer;
 
 namespace helpers {
 
+    Direction
+    getDirection( float distX, float distY, float min=1.0 ) {
+
+        SDL_Log( "@@ %f, %f, %f", distX, distY, min );
+
+        if ( distX < min && distY < min && distX > -min && distY > -min ) return Direction::None;
+
+        float r = distY / distX;
+
+        if ( distY > 0 && (r > 1.0 || r < -1.0) ) return Direction::Down;
+        if ( distY < 0 && (r > 1.0 || r <= -1.0) ) return Direction::Up;
+        if ( distX > 0 && (r > -1.0 && r <1.0) ) return Direction::Right;
+        if ( distX < 0 && (r > -1.0 && r <1.0) ) return Direction::Left;
+
+        return Direction::None;
+    }
+
     SDL_Texture* 
     loadTexture( std::string imagePath ) {
 
