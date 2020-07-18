@@ -3,7 +3,7 @@
 #include <cmath>
 #include <SDL.h>
 #include <SDL_image.h>
-#include "frame.h"
+#include "frame.hpp"
 #include "helpers.hpp"
 
 #ifndef SPRITE_HPP

@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "../frame.h"
+#include "../frame.hpp"
 #include "../helpers.hpp"
 #include "../animation.hpp"
 
@@ -9,6 +9,10 @@
 #define ANIMATIONS_CHICKEN_HURT_HPP
 
 class ChickenHurtAnimation : public Animation {
+
+    int mImageWidth = 141;
+    int mImageHeight = 122;
+    std::string mImageFolderPath = "images/chicken/";
 
 public:
 
@@ -29,27 +33,27 @@ public:
 
         // Use jump hitbox to debug
         int jumpHitboxTop = 10;
-        int jumpHitboxRight = 50;
-        int jumpHitboxBottom = 30;
-        int jumpHitboxLeft = 70;
+        int jumpHitboxRight = 40;
+        int jumpHitboxBottom = 15;
+        int jumpHitboxLeft = 60;
         uint8_t jumpHitboxColorA = 150;
 
         for ( int i = 0; i < 5; i++ ) {
 
             std::string imagePath 
-                = "images/chicken/__yellow_chicken_hurt_00" + std::to_string(i) + ".png";
+                = mImageFolderPath + "__yellow_chicken_hurt_00" + std::to_string(i) + ".png";
 
             SDL_Texture* imageTexture = helpers::loadTexture( imagePath );
 
             Frame frame = {
                 .x = x,
                 .y = y, 
-                .width = 160, 
-                .height = 138,
+                .width = mImageWidth, 
+                .height = mImageHeight,
                 .imageClipX = 0,
                 .imageClipY = 0,
-                .imageClipWidth = 160,
-                .imageClipHeight = 138,
+                .imageClipWidth = mImageWidth,
+                .imageClipHeight = mImageHeight,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
                 .hitboxTop = jumpHitboxTop,

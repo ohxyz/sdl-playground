@@ -1,176 +1,117 @@
 #include "object2d.hpp"
 #include "helpers.hpp"
-#include "chicken.hpp"
 #include <vector>
 #include <SDL.h>
-#include "scrollable.hpp"
-#include "random_object.hpp"
+#include "structs.hpp"
+#include <functional>
 
 #ifndef OBJECT_MANAGER_HPP
 #define OBJECT_MANAGER_HPP
 
+template <class ObjectType>
 class ObjectManager {
-    
-    Scrollable* mDesert {nullptr};
-    Scrollable* mLand {nullptr};
-    Scrollable* mWaterTop {nullptr};
-    Scrollable* mWaterBody {nullptr};
-    Object2D* mRestartButton {nullptr};
-    Chicken* mChicken {nullptr};
 
-    std::vector<RandomObject*> mRandomSpikes;
+    std::vector<ObjectType*> mObjectQueue;
 
-    int mTicksOfNewSpike;
-    int mTicksBeforeAddSpike;
+    int mObjectPosX {0};
+    int mObjectPosY {0};
+    Move mMovement;
 
-    int mLandStep;
-    unsigned int mLandInterval;
-
-    int mChickenFrameDuration;
-    bool mIsFrozen {false};
+    int mSpawnInterval;
+    int mTicksLastTime;
+    bool mShouldMove {true};
 
 public:
 
     ObjectManager() {
 
-        mDesert = new Scrollable( 
-            0, 0, 676, 380, "images/desert.png",
-            {.direction=Direction::Left, .step=1, .interval=10 }
-        );
+    }
 
-        mLand = new Scrollable(
-            0, 360, 360, 150, "images/land.png", { 0, 0, 90, 135 },
-            {.direction=Direction::Left, .step=2, .interval=10 }
-        );
-        
-        mWaterTop = new Scrollable(
-            0, 440, 360, 45, "images/water-top.png", { 0, 0, 60, 45 },
-            {.direction=Direction::Left, .step=1, .interval=20 }
-        );
+    ObjectManager( int aPosX, int aPosY ) {
 
-        mWaterBody = new Scrollable(
-            0, 485, 360, 999, "images/water-body.png", { 0, 0, 60, 60 },
-            {.direction=Direction::Left, .step=1, .interval=20 }
-        );
+        mObjectPosX = aPosX;
+        mObjectPosY = aPosY;
+    }
 
-        mChicken = new Chicken();
-        mRestartButton = new Object2D( 120, 400, 120, 120, "images/restart.png" );
+    ObjectManager( int aPosX, int aPosY, Move aMovement, int aSpawnInterval=1000 )
+    : ObjectManager( aPosX, aPosY ) {
 
-        RandomObject::init();
-        init();
+        mMovement = aMovement;
+        mSpawnInterval = aSpawnInterval;
     }
 
     ~ObjectManager() {
 
-        delete mChicken;
-        delete mLand;
-        delete mWaterTop;
-        delete mWaterBody;
-        delete mDesert;
-        mRandomSpikes.clear();
+        mObjectQueue.clear();
     }
-    
+
     void
-    init() {
+    clear() {
 
-        mLandStep = 5;
-        mLandInterval = 10;
-        mChickenFrameDuration = 20;
-        mTicksBeforeAddSpike = 3000;
-        mRestartButton->setShouldRender( false );
-
-        mDesert->setX( 0 );
-        mDesert->startMove();
-        
-        mLand->setX( 0 );
-        mLand->setMovementStep( mLandStep );
-        mLand->setMovementInterval( mLandInterval );
-        mLand->startMove();
-
-        mWaterTop->setX( 0 );
-        mWaterTop->startMove();
-
-        mWaterBody->setX( 0 );
-        mWaterBody->startMove();
-
-        mChicken->init();
-        mChicken->setFrameDuration( mChickenFrameDuration );
-
-        mRandomSpikes.clear();
-
-        mTicksOfNewSpike = SDL_GetTicks();
-        mIsFrozen = false;
+        mObjectQueue.clear();
     }
 
-    void manageSpikes() {
+    void
+    startMove() { 
 
-        if ( mIsFrozen ) return;
+        mTicksLastTime = SDL_GetTicks();
+        mShouldMove = true; 
+    }
 
-        int currentTicks = SDL_GetTicks();
+    void
+    stopMove() {
 
-        if ( currentTicks - mTicksBeforeAddSpike > mTicksOfNewSpike ) {
+        mShouldMove = false;
+        for ( auto& obj : mObjectQueue ) { obj->stopMove(); }
+    }
 
-            auto spike = new RandomObject( 360, 362 );
+    void
+    move() {
 
-            spike->setMovement( { 
-                .direction=Direction::Left, .step=mLandStep, .interval=mLandInterval
-            } );
+        if ( !mShouldMove ) return;
 
-            spike->startMove();
-            mRandomSpikes.push_back( spike );
+        int ticksNow = SDL_GetTicks();
 
-            spike = mRandomSpikes[0];
+        if ( ticksNow - mSpawnInterval > mTicksLastTime ) {
 
-            if ( spike->getX() + spike->getWidth() < 0 ) {
+            auto obj = new ObjectType( mObjectPosX, mObjectPosY );
 
-                mRandomSpikes.erase( mRandomSpikes.begin() );
-                delete spike;
+            obj->setMovement( mMovement );
+            obj->startMove();
+            mObjectQueue.push_back( obj );
+
+            auto firstObj = mObjectQueue[0];
+
+            if ( firstObj->getX() + firstObj->getWidth() < 0 ) {
+
+                mObjectQueue.erase( mObjectQueue.begin() );
+                delete firstObj;
             }
 
-            mTicksOfNewSpike = currentTicks;
+            mTicksLastTime = ticksNow;
         }
 
-        for ( auto &spike : mRandomSpikes ) {
+        // for ( auto& obj : mObjectQueue ) {
 
-            if ( spike->collide( mChicken ) ) handleCollide();
-        }
+        //     if ( obj->collide( target ) ) onCollide();
+        // }
     }
 
     void
-    handleCollide() {
+    render() {
 
-        mChicken->hurt();
-        mDesert->stopMove();
-        mLand->stopMove();
-        mWaterTop->stopMove();
-        mWaterBody->stopMove();
-        for ( auto &ro : mRandomSpikes ) ro->stopMove();
-        mIsFrozen = true;
-        mRestartButton->setShouldRender( true );
+        for ( auto& obj: mObjectQueue ) obj->render();
     }
 
-    void 
-    run() {
+    std::vector<ObjectType*>*
+    getObjects() { return &mObjectQueue; }
+    
+    void
+    setMovement( Move aMove ) { mMovement = aMove; }
 
-        manageSpikes();
-
-        mDesert->render();
-        mLand->render();
-        mWaterTop->render();
-        mWaterBody->render();
-        for ( auto &spike: mRandomSpikes ) spike->render();
-        mChicken->render();
-        mRestartButton->render();
-    }
-
-    Chicken*
-    getChicken() { return mChicken; }
-
-    Object2D*
-    getRestartButton() { return mRestartButton; }
-
-    bool
-    isFrozen() { return mIsFrozen; }
+    void
+    setSpawnInterval( int aMilliseconds ) { mSpawnInterval = aMilliseconds; }
+    
 };
 
 #endif

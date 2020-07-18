@@ -1,7 +1,7 @@
 #include <string>
 #include <SDL.h>
 #include <vector>
-#include "frame.h"
+#include "frame.hpp"
 
 #ifndef ANIMATION_HPP
 #define ANIMATION_HPP

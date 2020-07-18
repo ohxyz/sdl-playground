@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <SDL.h>
-#include "frame.h"
+#include "frame.hpp"
 #include "structs.hpp"
 #include "helpers.hpp"
 #include <iostream>
@@ -17,7 +17,7 @@ class Object2D {
 
 protected:
 
-    Frame mFrame;
+    Frame* mFrame;
     Frame* mCurrentFrame;
 
     Move mMovement;
@@ -35,14 +35,14 @@ public:
 
     Object2D() {
 
-        mCurrentFrame = &mFrame;
+        mFrame = new Frame;
+        mCurrentFrame = mFrame;
     }
 
-    Object2D( Frame frame ) 
+    Object2D( Frame* frame ) 
     : Object2D() {
 
-        mFrame = frame;
-        mCurrentFrame = &mFrame;
+        mCurrentFrame = frame;
     }
 
     Object2D( int x, int y, int w, int h )
@@ -106,12 +106,12 @@ public:
 
     ~Object2D() {
 
+        delete mFrame;
         if ( mImageTexture != NULL ) SDL_DestroyTexture( mImageTexture );
     }
 
     void
     startMove() {
-
 
         mMovementTicks = SDL_GetTicks();
         mIsMovementStarted = true;
@@ -161,135 +161,16 @@ public:
     }
 
     void
-    renderBackground() {
+    renderBorder() { mCurrentFrame->renderBorder(); }
 
-        auto rect = getRect();
-        SDL_SetRenderDrawColor( 
-            gRenderer,
-            mCurrentFrame->backgroundColorR, 
-            mCurrentFrame->backgroundColorG, 
-            mCurrentFrame->backgroundColorB, 
-            mCurrentFrame->backgroundColorA
-        );
-        SDL_RenderFillRect( gRenderer, &rect );
-    }
+    void
+    renderBackground() { mCurrentFrame->renderBackground(); }
+
+    void
+    renderHitbox() { mCurrentFrame->renderHitbox(); }
 
     void 
-    renderBorder() {
-
-        auto rect = getRect();
-        SDL_SetRenderDrawColor( 
-            gRenderer,
-            mCurrentFrame->borderColorR, 
-            mCurrentFrame->borderColorG, 
-            mCurrentFrame->borderColorB,
-            mCurrentFrame->borderColorA 
-        );
-        SDL_RenderDrawRect( gRenderer, &rect );
-    }
-
-    void 
-    renderHitbox() {
-
-        auto rect = getHitboxRect();
-        SDL_SetRenderDrawColor( 
-            gRenderer,
-            mCurrentFrame->hitboxColorR, 
-            mCurrentFrame->hitboxColorG, 
-            mCurrentFrame->hitboxColorB,
-            mCurrentFrame->hitboxColorA 
-        );
-        SDL_RenderFillRect( gRenderer, &rect );
-    }
-
-    void 
-    renderImage() {
-
-        if ( mCurrentFrame->imageTexture == NULL ) {
-            return;
-        }
-
-        int targetWidth = mCurrentFrame->imageClipWidth > mCurrentFrame->width  
-                        ? mCurrentFrame->width 
-                        : mCurrentFrame->imageClipWidth;
-
-        int targetHeight = mCurrentFrame->imageClipHeight > mCurrentFrame->height
-                         ? mCurrentFrame->height
-                         : mCurrentFrame->imageClipHeight;
-
-        SDL_Rect clipRect = {
-            mCurrentFrame->imageClipX,
-            mCurrentFrame->imageClipY,
-            targetWidth,
-            targetHeight
-        };
-
-        SDL_Rect targetRect = {
-            mCurrentFrame->x,
-            mCurrentFrame->y,
-            targetWidth,
-            targetHeight
-        };
-
-        while ( true ) {
-
-            // Repeat on x-axis
-            while ( true ) {
-
-                SDL_RenderCopyEx( 
-                    gRenderer, 
-                    mCurrentFrame->imageTexture,
-                    &clipRect,
-                    &targetRect,
-                    0, 
-                    NULL, 
-                    mCurrentFrame->imageClipFlip
-                );
-
-                if ( !mCurrentFrame->imageClipRepeatX ) {
-                    break;
-                }
-
-                targetRect.x += mCurrentFrame->imageClipWidth;
-
-                if ( targetRect.x > mCurrentFrame->x + mCurrentFrame->width ) {
-                    break;
-                }
-
-                if ( targetRect.x + mCurrentFrame->imageClipWidth > mCurrentFrame->x + mCurrentFrame->width ) {
-                    targetRect.w = mCurrentFrame->x + mCurrentFrame->width - targetRect.x;
-                    clipRect.w = targetRect.w;
-                }
-                else {
-                    targetRect.w = mCurrentFrame->imageClipWidth;
-                }
-            }
-
-            if ( !mCurrentFrame->imageClipRepeatY ) {
-                break;
-            }
-
-            // Repeat on y-axis
-            // Reset
-            targetRect.x = mCurrentFrame->x;
-            targetRect.w = targetWidth;
-            clipRect.w = targetWidth;
-
-            targetRect.y += mCurrentFrame->imageClipHeight;
-
-            if ( targetRect.y > mCurrentFrame->y + mCurrentFrame->height ) {
-                break;
-            }
-
-            if ( targetRect.y + mCurrentFrame->imageClipHeight > mCurrentFrame->y + mCurrentFrame->height ) {
-                targetRect.h = mCurrentFrame->y + mCurrentFrame->height - targetRect.y;
-                clipRect.h = targetRect.h;
-            }
-            else {
-                targetRect.h = mCurrentFrame->imageClipHeight;
-            }
-        }
-    }
+    renderImage() { mCurrentFrame->renderImage(); }
 
     virtual void
     render() {
@@ -304,36 +185,13 @@ public:
     }
 
     Frame*
-    getCurrentFrame() { 
-
-        return mCurrentFrame; 
-    }
+    getCurrentFrame() { return mCurrentFrame; }
 
     SDL_Rect
-    getRect() {
-
-        SDL_Rect rect = {
-            mCurrentFrame->x,
-            mCurrentFrame->y,
-            mCurrentFrame->width,
-            mCurrentFrame->height
-        };
-
-        return rect;
-    }
+    getRect() { return mCurrentFrame->getRect(); }
 
     SDL_Rect
-    getHitboxRect() {
-
-        SDL_Rect rect = {
-            mCurrentFrame->x + mCurrentFrame->hitboxLeft,
-            mCurrentFrame->y + mCurrentFrame->hitboxTop,
-            mCurrentFrame->width - mCurrentFrame->hitboxRight - mCurrentFrame->hitboxLeft,
-            mCurrentFrame->height - mCurrentFrame->hitboxBottom - mCurrentFrame->hitboxTop
-        };
-
-        return rect;
-    }
+    getHitboxRect() { return mCurrentFrame->getHitboxRect(); }
 
     void
     setCurrentFrame( Frame* frame ) { mCurrentFrame = frame; }
@@ -374,19 +232,13 @@ public:
     void
     setHitbox( int top, int right, int bottom, int left ) {
 
-        mCurrentFrame->hitboxTop = top;
-        mCurrentFrame->hitboxRight = right;
-        mCurrentFrame->hitboxBottom = bottom;
-        mCurrentFrame->hitboxLeft = left;
+        mCurrentFrame->setHitbox( top, right, bottom, left );
     }
 
     void
     setHitboxColor( int r, int g, int b, int a ) {
 
-        mCurrentFrame->hitboxColorR = r;
-        mCurrentFrame->hitboxColorG = g;
-        mCurrentFrame->hitboxColorB = b;
-        mCurrentFrame->hitboxColorA = a;
+        mCurrentFrame->setHitboxColor( r, g, b, a );
     }
 
     void
@@ -405,12 +257,7 @@ public:
     touch() { mTouchEventHandler(); }
 
     bool
-    isWithinRect( int x, int y ) {
-
-        return ( x >= mCurrentFrame->x && x <= mCurrentFrame->x + mCurrentFrame->width
-            && y >= mCurrentFrame->y && y <= mCurrentFrame->y + mCurrentFrame->height
-        );
-    }
+    isWithinRect( int x, int y ) { return mCurrentFrame->isWithinRect( x, y ); }
 
     bool
     isVisible() { return mShouldRender; }

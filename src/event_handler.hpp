@@ -1,6 +1,6 @@
 #include <SDL.h>
 #include "game.hpp"
-#include "object_manager.hpp"
+#include "game_runner.hpp"
 #include "structs.hpp"
 
 #ifndef EVENT_HANDLER_HPP
@@ -9,10 +9,10 @@
 namespace event_handler {
 
     bool
-    handleEventLoop( ObjectManager* om ) {
+    handleEventLoop( GameRunner* gameRunner ) {
 
-        auto chicken = om->getChicken();
-        auto restartButton = om->getRestartButton();
+        auto chicken = gameRunner->getChicken();
+        auto restartButton = gameRunner->getRestartButton();
 
         SDL_Event event;
 
@@ -33,7 +33,7 @@ namespace event_handler {
 
                 if ( restartButton->isWithinRect( x, y ) && restartButton->isVisible() ) {
 
-                    om->init();
+                    gameRunner->init();
                 }
             }
             else if ( event.type == SDL_FINGERMOTION ) {
@@ -47,7 +47,7 @@ namespace event_handler {
                     
                     SDL_Log( "up!" );
 
-                    if ( !om->isFrozen() ) {
+                    if ( !gameRunner->isFrozen() ) {
                          chicken->jump();
                     }
                 } 
@@ -75,7 +75,7 @@ namespace event_handler {
                         && restartButton->isVisible()
                         && SDL_BUTTON(SDL_BUTTON_LEFT) ) {
 
-                    om->init();
+                    gameRunner->init();
                 }
             }
             else if ( event.type == SDL_KEYDOWN ) {
@@ -84,13 +84,13 @@ namespace event_handler {
 
                 case SDLK_r:
                     SDL_Log( "Restart!\n" );
-                    om->init();
+                    gameRunner->init();
                     break;
 
                 case SDLK_UP:
                 case SDLK_w:
                     // SDL_Log( "key up!\n" );
-                    if ( !om->isFrozen() ) chicken->jump();
+                    if ( !gameRunner->isFrozen() ) chicken->jump();
                     break;
 
                 case SDLK_DOWN:

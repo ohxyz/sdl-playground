@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "../frame.h"
+#include "../frame.hpp"
 #include "../helpers.hpp"
 #include "../animation.hpp"
 
@@ -9,6 +9,10 @@
 #define ANIMATIONS_CHICKEN_JUMP_HPP
 
 class ChickenJumpAnimation : public Animation {
+
+    int mImageWidth = 141;
+    int mImageHeight = 122;
+    std::string mImageFolderPath = "images/chicken/";
 
     std::vector<SDL_Texture*> mTextures;
 
@@ -28,15 +32,17 @@ public:
     createFrames( int x, int y ) {
 
         int jumpHitboxTop = 10;
-        int jumpHitboxRight = 50;
-        int jumpHitboxBottom = 30;
-        int jumpHitboxLeft = 70;
+        int jumpHitboxRight = 40;
+        int jumpHitboxBottom = 15;
+        int jumpHitboxLeft = 60;
         uint8_t jumpHitboxColorA = 150;
+        int frameDuration = 100;
 
         for ( int i = 0; i < 12; i++ ) {
 
             std::string imageIndex = i < 10 ? "0" + std::to_string(i) : std::to_string(i);
-            std::string imagePath = "images/chicken/__yellow_chicken_jump_0" + imageIndex + ".png";
+            std::string imagePath 
+                = mImageFolderPath + "__yellow_chicken_jump_0" + imageIndex + ".png";
             SDL_Texture* imageTexture = helpers::loadTexture( imagePath );
             mTextures.push_back( imageTexture );
         }
@@ -51,13 +57,13 @@ public:
             Frame frame = {
                 .x = x, 
                 .y = y, 
-                .width = 160, 
-                .height = 138,
+                .width = mImageWidth, 
+                .height = mImageHeight,
                 // .backgroundColorA = 100,
                 .imageClipX = 0,
                 .imageClipY = 0,
-                .imageClipWidth = 160,
-                .imageClipHeight = 138,
+                .imageClipWidth = mImageWidth,
+                .imageClipHeight = mImageHeight,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
                 .hitboxTop = jumpHitboxTop,
@@ -65,7 +71,7 @@ public:
                 .hitboxBottom = jumpHitboxBottom,
                 .hitboxLeft = jumpHitboxLeft,
                 .hitboxColorA = jumpHitboxColorA,
-                .duration = 20
+                .duration = frameDuration
             };
 
             frames.push_back( frame );
@@ -96,13 +102,13 @@ public:
             Frame frame = {
                 .x = x, 
                 .y = newY,
-                .width = 160, 
-                .height = 138,
+                .width = mImageWidth, 
+                .height = mImageHeight,
                 // .backgroundColorA = 100,
                 .imageClipX = 0,
                 .imageClipY = 0,
-                .imageClipWidth = 160,
-                .imageClipHeight = 138,
+                .imageClipWidth = mImageWidth,
+                .imageClipHeight = mImageHeight,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
                 .hitboxTop = jumpHitboxTop,
@@ -110,7 +116,7 @@ public:
                 .hitboxBottom = jumpHitboxBottom,
                 .hitboxLeft = jumpHitboxLeft,
                 .hitboxColorA = jumpHitboxColorA,
-                .duration = 20
+                .duration = frameDuration
             };
 
             frames.push_back( frame );
@@ -124,13 +130,13 @@ public:
             Frame frame = {
                 .x = x, 
                 .y = y, 
-                .width = 160, 
-                .height = 138,
+                .width = mImageWidth, 
+                .height = mImageHeight,
                 // .backgroundColorA = 100,
                 .imageClipX = 0,
                 .imageClipY = 0,
-                .imageClipWidth = 160,
-                .imageClipHeight = 138,
+                .imageClipWidth = mImageWidth,
+                .imageClipHeight = mImageHeight,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
                 .hitboxTop = jumpHitboxTop,
@@ -138,7 +144,7 @@ public:
                 .hitboxBottom = jumpHitboxBottom,
                 .hitboxLeft = jumpHitboxLeft,
                 .hitboxColorA = jumpHitboxColorA,
-                .duration = 20
+                .duration = frameDuration
             };
 
             frames.push_back( frame );

@@ -1,6 +1,6 @@
 #include <SDL.h>
 #include <stdio.h>
-#include "object_manager.hpp"
+#include "game_runner.hpp"
 #include "game.hpp"
 #include "event_handler.hpp"
 
@@ -15,16 +15,16 @@ main( int argc, char* args[] ) {
 
     SDL_Log( "Platform: %s", game::platform );
 
-    ObjectManager* om = new ObjectManager;
+    GameRunner* gr = new GameRunner;
 
-    while ( event_handler::handleEventLoop( om ) ) {
+    while ( event_handler::handleEventLoop( gr ) ) {
 
         // Drawing 
         // Green
         SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
         SDL_RenderClear( gRenderer );
 
-        om->run();
+        gr->run();
 
         // Update
         SDL_RenderPresent( gRenderer );

@@ -74,7 +74,7 @@ public:
         }
 
         mPrimaryObject->setHitboxColor( 0, 0, 0, 150 );
-        mPrimaryObject->setHitbox( 10, 5, 0, 5 );
+        mPrimaryObject->setHitbox( 5, 5, 0, 5 );
 
         mShouldSwap = utils::genRandomBool();
     }
@@ -131,7 +131,7 @@ public:
 
         if ( mPrimaryObject != nullptr ) {
 
-            // mPrimaryObject->renderHitbox();
+            mPrimaryObject->renderHitbox();
             mPrimaryObject->renderImage();
         } 
     }
@@ -141,7 +141,7 @@ public:
 
         if ( mPrimaryObject != nullptr && mShouldRenderSecondary ) {
 
-            // mSecondaryObject->renderHitbox();
+            mSecondaryObject->renderHitbox();
             mSecondaryObject->renderImage();
         }
     }

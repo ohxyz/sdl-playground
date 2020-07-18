@@ -22,9 +22,12 @@ public:
 
     Chicken() {
 
-        mHurtAnimation = new ChickenHurtAnimation( -25, 230 );
-        mWalkAnimation = new ChickenWalkAnimation( -25, 230 );
-        mJumpAnimation = new ChickenJumpAnimation( -25, 230 );
+        int startX = -25;
+        int startY = 246;
+
+        mHurtAnimation = new ChickenHurtAnimation( startX, startY );
+        mWalkAnimation = new ChickenWalkAnimation( startX, startY );
+        mJumpAnimation = new ChickenJumpAnimation( startX, startY );
         mCurrentAnimation = mWalkAnimation;
     }
 
@@ -68,6 +71,7 @@ public:
 
         if ( mCurrentState == Hurt && !mHurtAnimation->isFinished() ) return;
         
+        SDL_Log( "hurt!");
         mCurrentState = Hurt;
         updateHurtFrames();
         mCurrentAnimation = mHurtAnimation;
@@ -75,7 +79,7 @@ public:
     }
 
     void
-    updateHurtFrames() {    
+    updateHurtFrames() {
 
         auto hurtFrames = mHurtAnimation->getFrames();
         for ( auto &f : *hurtFrames ) f.y = mCurrentFrame->y;
@@ -94,8 +98,7 @@ public:
         if ( mCurrentFrame != NULL ) {
 
             renderImage();
-            // renderBackground();
-            // renderHitbox();
+            renderHitbox();
         }
     }
 

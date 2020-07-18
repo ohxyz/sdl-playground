@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "../frame.h"
+#include "../frame.hpp"
 #include "../helpers.hpp"
 #include "../animation.hpp"
 
@@ -9,6 +9,10 @@
 #define ANIMATIONS_CHICKEN_WALK_HPP
 
 class ChickenWalkAnimation : public Animation {
+
+    int mImageWidth = 141;
+    int mImageHeight = 122;
+    std::string mImageFolderPath = "images/chicken/";
 
 public:
 
@@ -28,29 +32,36 @@ public:
         std::vector<Frame> frames;
         int totalFrames = 16;
 
+        int hitboxTop = 10;
+        int hitboxRight = 40;
+        int hitboxBottom = 10;
+        int hitboxLeft = 60;
+        uint8_t hitboxColorA = 150;
+        int frameDuration = 20;
+
         for ( int i = 0; i < totalFrames; i++ ) {
 
             std::string imageIndex = i < 10 ? "0" + std::to_string(i) : std::to_string(i);
-            std::string imagePath = "images/chicken/__yellow_chicken_walk_0" + imageIndex + ".png";
+            std::string imagePath = mImageFolderPath + "__yellow_chicken_walk_0" + imageIndex + ".png";
             SDL_Texture* imageTexture = helpers::loadTexture( imagePath );
 
             Frame frame = {
                 .x = x, 
                 .y = y, 
-                .width = 160, 
-                .height = 138,
+                .width = mImageWidth, 
+                .height = mImageHeight,
                 .imageClipX = 0,
                 .imageClipY = 0,
-                .imageClipWidth = 160,
-                .imageClipHeight = 138,
+                .imageClipWidth = mImageWidth,
+                .imageClipHeight = mImageHeight,
                 .imageClipFlip = SDL_FLIP_HORIZONTAL,
                 .imageTexture = imageTexture,
-                .hitboxTop = 10,
-                .hitboxRight = 50,
-                .hitboxBottom = 10,
-                .hitboxLeft = 70,
-                .hitboxColorA = 150,
-                .duration = 20
+                .hitboxTop = hitboxTop,
+                .hitboxRight = hitboxRight,
+                .hitboxBottom = hitboxBottom,
+                .hitboxLeft = hitboxLeft,
+                .hitboxColorA = hitboxColorA,
+                .duration = frameDuration
             };
 
             frames.push_back( frame );

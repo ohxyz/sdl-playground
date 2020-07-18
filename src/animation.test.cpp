@@ -31,7 +31,7 @@ main( int argc, char* args[] ) {
 
     auto jumpFrames = jump->getFrames();
 
-    for ( auto &f : *jumpFrames ) { f.x = 50; }
+    for ( auto &f : *jumpFrames ) { f.x = 200; }
 
     bool shouldQuit = false;
     
