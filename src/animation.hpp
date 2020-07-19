@@ -18,7 +18,8 @@ protected:
     int mTicks {0};
     bool mIsFinished {false};
     bool mIsEnabled {false};
-    bool mCanRepeat {false};
+    uint32_t mRepeats {0}; // 0 - Infinitely, 1 - Repeat once, n - Repeat n times;
+    uint32_t mCurrentRepeat {1};
 
 public:
 
@@ -47,8 +48,14 @@ public:
             if ( mCurrentFrameIndex < totalFrames -1 ) {
                 mCurrentFrameIndex ++;
             }
-            else if ( mCanRepeat ) {
+            else if ( mRepeats == 0 ) {
+
                 mCurrentFrameIndex = 0;
+            }
+            else if ( mCurrentRepeat < mRepeats ) {
+
+                mCurrentFrameIndex = 0;
+                mCurrentRepeat ++;
             }
             else {
                 mIsFinished = true;
@@ -62,7 +69,7 @@ public:
     }
 
     void
-    start( bool repeat=false ) {
+    start( int aRepeats ) {
 
         if ( mFrames.size() == 0 ) {
 
@@ -75,8 +82,15 @@ public:
         mTicks = SDL_GetTicks();
         mIsFinished = false;
         mIsEnabled = true;
-        mCanRepeat = repeat;
+        mRepeats = aRepeats;
+        mCurrentRepeat = 1;
     }
+
+    void
+    start( bool aCanRepeat ) { aCanRepeat ? start(0) : start(1); }
+
+    void
+    start() { start(1); }
 
     void
     stop() {
@@ -92,31 +106,10 @@ public:
     }
 
     void
-    renderCurrentFrame() {
+    render() {
 
-        SDL_Rect clipRect = {
-            mCurrentFrame->imageClipX,
-            mCurrentFrame->imageClipY,
-            mCurrentFrame->imageClipWidth,
-            mCurrentFrame->imageClipHeight
-        };
-
-        SDL_Rect targetRect = {
-            mCurrentFrame->x,
-            mCurrentFrame->y,
-            mCurrentFrame->width,
-            mCurrentFrame->height
-        };
-
-        SDL_RenderCopyEx( 
-            gRenderer,
-            mCurrentFrame->imageTexture,
-            &clipRect,
-            &targetRect,
-            0, 
-            NULL, 
-            mCurrentFrame->imageClipFlip
-        );
+        mCurrentFrame->renderHitbox();
+        mCurrentFrame->renderImage();
     }
 
     void

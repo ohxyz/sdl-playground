@@ -13,71 +13,84 @@ extern SDL_Renderer* gRenderer;
 int 
 main( int argc, char* args[] ) {
 
-    SDL_Log( "Test RandomObject" );
+    try {
 
-    if ( !game::init( {.x=500, .width=800, .height=600} ) ) {
-        return 1;
-    }
+        SDL_Log( "Test RandomObject" );
 
-    std::vector<RandomObject*> ros;
-
-    RandomObject::init();
-
-    for ( int i = 0; i < 5; i ++ ) {
-
-        for ( int j = 0; j < 3; j ++ ) {
-
-            auto ro = new RandomObject( 50 + 120*i, 100 + 100*j );
-            ros.push_back( ro );
+        if ( !game::init( {.x=500, .width=800, .height=600} ) ) {
+            return 1;
         }
-    }
 
-    auto ranger = new Object2D( 30, 400, 48, 64, "images/ranger.bmp" );
-    auto random = new RandomObject( 100, 450 );
+        std::vector<RandomObject*> ros;
 
-    if ( random->collide(ranger) ) {
-        SDL_Log( "@@ Collide!" );
-    }
-    else {
-        SDL_Log( "@@ NOT collide!" );
-    }
+        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-0.png" ) );
+        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-1.png" ) );
+        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-2.png" ) );
+        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-0.png" ) );
+        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-1.png" ) );
+        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-2.png" ) );
 
-    auto random2 = new RandomObject( 700, 550, 0.5 );
-    random2->setMovement( {
-        .direction=Direction::Left, .step=10, .interval=5000
-    } );
-    random2->startMove();
+        for ( int i = 0; i < 5; i ++ ) {
 
-    bool shouldQuit = false;
-    
-    while ( !shouldQuit ) {
+            for ( int j = 0; j < 3; j ++ ) {
 
-        SDL_Event event;
-
-        while ( SDL_PollEvent( &event ) != 0 ) {
-
-            if ( event.type == SDL_QUIT ) {
-
-                shouldQuit = true;
-                break;
+                auto ro = new RandomObject( 50 + 120*i, 100 + 100*j );
+                ros.push_back( ro );
             }
         }
 
-        // Drawing 
-        // Green
-        SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
-        SDL_RenderClear( gRenderer );
+        auto ranger = new Object2D( 30, 400, 48, 64, "images/ranger.bmp" );
+        auto random = new RandomObject( 100, 450 );
 
-        for ( auto &ro: ros ) { ro->render(); }
-        ranger->render();
-        random->render();
-        random2->render();
-        // Update
-        SDL_RenderPresent( gRenderer );
-        SDL_Delay(5);
+        if ( random->collide(ranger) ) {
+            SDL_Log( "@@ Collide!" );
+        }
+        else {
+            SDL_Log( "@@ NOT collide!" );
+        }
+
+        auto random2 = new RandomObject( 700, 550, 0.5 );
+        random2->setMovement( {
+            .direction=Direction::Left, .step=10, .interval=5000
+        } );
+        random2->startMove();
+
+        bool shouldQuit = false;
+        
+        while ( !shouldQuit ) {
+
+            SDL_Event event;
+
+            while ( SDL_PollEvent( &event ) != 0 ) {
+
+                if ( event.type == SDL_QUIT ) {
+
+                    shouldQuit = true;
+                    break;
+                }
+            }
+
+            // Drawing 
+            // Green
+            SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
+            SDL_RenderClear( gRenderer );
+
+            for ( auto &ro: ros ) { ro->render(); }
+            ranger->render();
+            random->render();
+            random2->render();
+            // Update
+            SDL_RenderPresent( gRenderer );
+            SDL_Delay(5);
+        }
+
+        game::quit();
+
     }
+    catch (const char* message ) {
 
-    game::quit();
+        std::cerr << message << std::endl;
+    }
 
     return 0;
 }

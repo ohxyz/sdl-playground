@@ -4,52 +4,47 @@
 #include <string>
 #include "playground-mod.h"
 #include <iostream>
+#include <functional>
+#include <iostream>
 
-struct TT {
+void
+outside() {
 
-    int i;
-    int j;
-};
-
-struct T {
-
-    int a;
-    int b;
-    TT tt;
-};
-
-void fn( T t, T t2, T* t3 ) {
-
-    printf( "%d\n", t.a );
-
-    t.a = 100;
-    t2.a = 1000;
-    t3->a = 10000;
+    std::cout << "outside!" << std::endl;
 }
 
-int f2( int x ) { return x; }
-int y = f2( 3 );
+void
+call( std::function<void()> callback ) {
+
+    callback();
+}
 
 class Cls {
 
-public:
-    static std::vector<int> a;
-};
+    int mInt = 1;
 
-int Cls::a = 22;
+public:
+
+    void
+    inside() {
+
+        std::cout << mInt << std::endl;
+    }
+
+    void
+    callInside() {
+
+        call( inside );
+    }
+};
 
 int 
 main( int argc, char* args[] ) {
 
+    call( outside );
+    auto cls = new Cls;
     
-
-    std::cout << Cls::a << std::endl;
-
-    std::vector<int> v1 = { 1, 2, 3 };
-    std::vector<char> v2 = { 'a', 'b', 'c' };
-
-    // for ( auto &i : v1 ) std::cout << i << std::endl;
-    // for ( auto &i : v2 ) std::cout << i << std::endl;
+    cls->callInside();
 
     return 0;
 }

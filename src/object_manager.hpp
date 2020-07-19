@@ -90,11 +90,6 @@ public:
 
             mTicksLastTime = ticksNow;
         }
-
-        // for ( auto& obj : mObjectQueue ) {
-
-        //     if ( obj->collide( target ) ) onCollide();
-        // }
     }
 
     void

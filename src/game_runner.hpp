@@ -59,7 +59,13 @@ public:
 
         mSpikeManager = new ObjectManager<RandomObject>( 360, 362 );
 
-        RandomObject::init();
+        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-0.png" ) );
+        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-1.png" ) );
+        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-2.png" ) );
+        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-0.png" ) );
+        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-1.png" ) );
+        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-2.png" ) );
+
         init();
     }
 

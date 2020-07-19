@@ -6,17 +6,19 @@
 #include "animations/chicken_hurt.hpp"
 #include "animations/chicken_walk.hpp"
 #include "animations/chicken_jump.hpp"
+#include "animations/chicken_skid.hpp"
 
 #ifndef CHICKEN_HPP
 #define CHICKEN_HPP
 
 class Chicken : public Object2D {
 
-    enum State { Idle, Walk, Jump, Hurt } mCurrentState { Idle };
+    enum State { Idle, Walk, Jump, Hurt, Skid } mCurrentState { Idle };
     Animation* mCurrentAnimation;
     ChickenHurtAnimation* mHurtAnimation;
     ChickenWalkAnimation* mWalkAnimation;
     ChickenJumpAnimation* mJumpAnimation;
+    ChickenSkidAnimation* mSkidAnimation;
 
 public:
 
@@ -28,6 +30,7 @@ public:
         mHurtAnimation = new ChickenHurtAnimation( startX, startY );
         mWalkAnimation = new ChickenWalkAnimation( startX, startY );
         mJumpAnimation = new ChickenJumpAnimation( startX, startY );
+        mSkidAnimation = new ChickenSkidAnimation( startX, startY );
         mCurrentAnimation = mWalkAnimation;
     }
 
@@ -36,6 +39,7 @@ public:
         delete mHurtAnimation;
         delete mWalkAnimation;
         delete mJumpAnimation;
+        delete mSkidAnimation;
     }
 
     void
@@ -47,13 +51,21 @@ public:
     void
     walk() {
 
-        if ( mCurrentState == Walk || (mCurrentState == Jump && !mJumpAnimation->isFinished()) ) {
-            return;
-        }
+        if ( mCurrentState == Walk ) return;
 
         mCurrentState = Walk;
         mCurrentAnimation = mWalkAnimation;
         mWalkAnimation->start( true );
+    }
+
+    void
+    skid() {
+
+        if ( mCurrentState == Skid && !mSkidAnimation->isFinished() ) return;
+
+        mCurrentState = Skid;
+        mCurrentAnimation = mSkidAnimation;
+        mSkidAnimation->start( 3 );
     }
 
     void
@@ -71,7 +83,6 @@ public:
 
         if ( mCurrentState == Hurt && !mHurtAnimation->isFinished() ) return;
         
-        SDL_Log( "hurt!");
         mCurrentState = Hurt;
         updateHurtFrames();
         mCurrentAnimation = mHurtAnimation;
@@ -88,7 +99,9 @@ public:
     void
     render() {
 
-        if ( mCurrentState == Jump && mCurrentAnimation->isFinished() ) {
+        if ( ( mCurrentState == Jump || mCurrentState == Skid ) 
+                && mCurrentAnimation->isFinished() 
+        ) {
 
             mCurrentAnimation = mWalkAnimation;
         }
@@ -98,7 +111,7 @@ public:
         if ( mCurrentFrame != NULL ) {
 
             renderImage();
-            renderHitbox();
+            // renderHitbox();
         }
     }
 

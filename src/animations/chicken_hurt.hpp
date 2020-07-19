@@ -33,9 +33,9 @@ public:
 
         // Use jump hitbox to debug
         int jumpHitboxTop = 10;
-        int jumpHitboxRight = 40;
+        int jumpHitboxRight = 45;
         int jumpHitboxBottom = 15;
-        int jumpHitboxLeft = 60;
+        int jumpHitboxLeft = 65;
         uint8_t jumpHitboxColorA = 150;
 
         for ( int i = 0; i < 5; i++ ) {

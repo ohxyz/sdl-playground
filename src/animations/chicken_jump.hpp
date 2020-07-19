@@ -32,11 +32,11 @@ public:
     createFrames( int x, int y ) {
 
         int jumpHitboxTop = 10;
-        int jumpHitboxRight = 40;
+        int jumpHitboxRight = 45;
         int jumpHitboxBottom = 15;
-        int jumpHitboxLeft = 60;
+        int jumpHitboxLeft = 65;
         uint8_t jumpHitboxColorA = 150;
-        int frameDuration = 100;
+        int frameDuration = 20;
 
         for ( int i = 0; i < 12; i++ ) {
 
@@ -78,9 +78,9 @@ public:
         }
 
         // Jump in the air
-        int totalInAir = 21;
+        int totalInAir = 23;
         int middleIndex = totalInAir / 2;
-        float exponent = 2.1;
+        float exponent = 2.0;
         int highest = round( pow( middleIndex, exponent ) );
 
         for ( int i = 0; i < totalInAir; i++ ) {

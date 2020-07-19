@@ -15,7 +15,7 @@ DEBUG_SRC = src/debug.cpp
 
 OBJECT2D_SRC = src/object2d.test.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
-SPRITE_SRC = src/sprite.test.cpp src/sprite.cpp
+SPRITE_SRC = src/sprite.test.cpp
 OBJECT_MANAGER_SRC = src/object_manager.test.cpp
 ANIMATION_SRC = src/animation.hpp src/animation.test.cpp
 UTILS_SRC = src/utils.test.cpp

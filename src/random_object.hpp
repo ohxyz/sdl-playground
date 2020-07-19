@@ -27,18 +27,20 @@ public:
 
     int mGap {0};
 
-    RandomObject( int baseX=0, int baseY=0, float ratioOfSecondary=0.5 ) {
+    RandomObject( int baseX=0, int baseY=0, float percentageOfSecondary=0.5 ) {
 
-        mShouldRenderSecondary = utils::genRandomBool( ratioOfSecondary );
+        mShouldRenderSecondary = utils::genRandomBool( percentageOfSecondary );
         mGap = 25;
 
         int countOfPrimary = mPrimaryObjectImages.size();
-        int countOfSecondary = mSecondaryObjectImages.size();
+
+        if ( countOfPrimary == 0 ) throw "ERROR: No primary object images found!";
 
         auto imageOfPO = mPrimaryObjectImages[ utils::genRandomInt(0, countOfPrimary-1) ];
-        auto imageOfSO = mSecondaryObjectImages[ utils::genRandomInt(0, countOfSecondary-1) ];
 
-        if ( !mShouldRenderSecondary ) {
+        int countOfSecondary = mSecondaryObjectImages.size();
+
+        if ( !mShouldRenderSecondary || countOfSecondary == 0 ) {
 
             mPrimaryObject = new Object2D( 
                 baseX, 
@@ -49,6 +51,8 @@ public:
             );
         }
         else {
+
+            auto imageOfSO = mSecondaryObjectImages[ utils::genRandomInt(0, countOfSecondary-1) ];
 
             mSecondaryObject = new Object2D( 
                 baseX, 
@@ -74,7 +78,7 @@ public:
         }
 
         mPrimaryObject->setHitboxColor( 0, 0, 0, 150 );
-        mPrimaryObject->setHitbox( 5, 5, 0, 5 );
+        mPrimaryObject->setHitbox( 10, 10, 0, 10 );
 
         mShouldSwap = utils::genRandomBool();
     }
@@ -88,17 +92,18 @@ public:
     static void
     init() {
 
-        mPrimaryObjectImages = { 
-            new Image( "images/obstacles/obstacle-0-0.png" ),
-            new Image( "images/obstacles/obstacle-0-1.png" ),
-            new Image( "images/obstacles/obstacle-0-2.png" ),
-        };
+    }
 
-        mSecondaryObjectImages = {
-            new Image( "images/obstacles/obstacle-1-0.png" ),
-            new Image( "images/obstacles/obstacle-1-1.png" ),
-            new Image( "images/obstacles/obstacle-1-2.png" ),
-        };
+    static void
+    addPrimaryImage( Image* aImage ) {
+
+        mPrimaryObjectImages.push_back( aImage );
+    }
+
+    static void
+    addSecondaryImage( Image* aImage ) {
+
+        mSecondaryObjectImages.push_back( aImage );
     }
 
     static void
@@ -131,7 +136,7 @@ public:
 
         if ( mPrimaryObject != nullptr ) {
 
-            mPrimaryObject->renderHitbox();
+            // mPrimaryObject->renderHitbox();
             mPrimaryObject->renderImage();
         } 
     }
@@ -139,9 +144,9 @@ public:
     void
     renderSecondaryObject() {
 
-        if ( mPrimaryObject != nullptr && mShouldRenderSecondary ) {
+        if ( mSecondaryObject != nullptr && mShouldRenderSecondary ) {
 
-            mSecondaryObject->renderHitbox();
+            // mSecondaryObject->renderHitbox();
             mSecondaryObject->renderImage();
         }
     }
@@ -184,7 +189,10 @@ public:
         if ( currentTicks - mMovementTicks > mMovement.interval ) {
     
             mPrimaryObject->moveOnce();
-            if ( mShouldRenderSecondary ) mSecondaryObject->moveOnce();
+
+            if ( mSecondaryObject ) {
+                mSecondaryObject->moveOnce();
+            }
             
             mMovementTicks = currentTicks;
         }
@@ -195,13 +203,13 @@ public:
 
         mMovement = move;
         mPrimaryObject->setMovement( move );
-        if ( mShouldRenderSecondary ) mSecondaryObject->setMovement( move );
+        if ( mSecondaryObject ) mSecondaryObject->setMovement( move );
     }
 
     int
     getX() {
 
-        if ( mShouldRenderSecondary ) {
+        if ( mSecondaryObject ) {
             return mSecondaryObject->getX();
         }
 
@@ -211,7 +219,7 @@ public:
     int
     getWidth() {
 
-        if ( mShouldRenderSecondary ) {
+        if ( mSecondaryObject ) {
             return mSecondaryObject->getWidth() + mGap + mPrimaryObject->getWidth();
         }
 

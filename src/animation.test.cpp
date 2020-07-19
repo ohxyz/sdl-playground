@@ -9,13 +9,15 @@
 #include "animations/chicken_hurt.hpp"
 #include "animations/chicken_walk.hpp"
 #include "animations/chicken_jump.hpp"
+#include "animations/chicken_skid.hpp"
+#include "animations/vulture_fly.hpp"
 
 extern SDL_Renderer* gRenderer;
 
 int 
 main( int argc, char* args[] ) {
 
-    if ( !game::init( { .x=500, .width=800, .height=600 } ) ) {
+    if ( !game::init( { .x=500, .width=800, .height=800 } ) ) {
         return 1;
     }
 
@@ -27,11 +29,18 @@ main( int argc, char* args[] ) {
     walk->start(true);
 
     auto jump = new ChickenJumpAnimation( 200, 150 );
-    jump->start( true );
+    jump->start( 5 );
 
     auto jumpFrames = jump->getFrames();
 
-    for ( auto &f : *jumpFrames ) { f.x = 200; }
+    for ( auto &f : *jumpFrames ) { f.x = 50; }
+
+    auto skid = new ChickenSkidAnimation( 0, 350 );
+    // skid->setFrameDuration( 100 );
+    skid->start(0);
+
+    auto fly = new VultureFlyAnimation( 60, 250);
+    fly->start( true );
 
     bool shouldQuit = false;
     
@@ -54,13 +63,19 @@ main( int argc, char* args[] ) {
         SDL_RenderClear( gRenderer );
         
         hurt->animate();
-        hurt->renderCurrentFrame();
+        hurt->render();
 
         walk->animate();
-        walk->renderCurrentFrame();
+        walk->render();
 
         jump->animate();
-        jump->renderCurrentFrame();
+        jump->render();
+
+        skid->animate();
+        skid->render();
+
+        fly->animate();
+        fly->render();
 
         // Update
         SDL_RenderPresent( gRenderer );

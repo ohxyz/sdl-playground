@@ -89,13 +89,14 @@ namespace event_handler {
 
                 case SDLK_UP:
                 case SDLK_w:
-                    // SDL_Log( "key up!\n" );
+
                     if ( !gameRunner->isFrozen() ) chicken->jump();
                     break;
 
                 case SDLK_DOWN:
                 case SDLK_s:
-                    // SDL_Log( "key down!\n" );
+
+                    if ( !gameRunner->isFrozen() ) chicken->skid();
                     break;
 
                 case SDLK_LEFT:
