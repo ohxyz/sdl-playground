@@ -15,21 +15,19 @@ extern SDL_Renderer* gRenderer;
 
 class Object2D {
 
-protected:
-
     Frame* mFrame;
     Frame* mCurrentFrame;
 
     Move mMovement;
     int mMovementTicks;
     bool mIsMovementStarted {false};
-
-    EventHandler mClickEventHandler;
-    EventHandler mTouchEventHandler;
-
+    
     bool mShouldRender {true};
 
     SDL_Texture* mImageTexture {NULL};
+
+    EventHandler mClickEventHandler;
+    EventHandler mTouchEventHandler;
 
 public:
 
@@ -110,66 +108,66 @@ public:
         if ( mImageTexture != NULL ) SDL_DestroyTexture( mImageTexture );
     }
 
-    void
+    virtual void
     startMove() {
 
         mMovementTicks = SDL_GetTicks();
         mIsMovementStarted = true;
     }
 
-    void
+    virtual void
     stopMove() {
 
         mIsMovementStarted = false;
     }
 
-    void 
-    moveOnce() {
+    virtual void
+    moveOnce( Direction aDirection, int aStep ) {
 
-        if ( mMovement.direction == Direction::None || mMovement.step == 0 ) return;
+        if ( aDirection == Direction::None || aStep == 0 ) return;
 
-        switch ( mMovement.direction ) {
+        switch ( aDirection ) {
 
         case Direction::Up:
-            mCurrentFrame->y -= mMovement.step;
+            mCurrentFrame->y -= aStep;
             break;
 
         case Direction::Right:
-            mCurrentFrame->x += mMovement.step;
+            mCurrentFrame->x += aStep;
             break;
 
         case Direction::Down:
-            mCurrentFrame->y += mMovement.step;
+            mCurrentFrame->y += aStep;
             break;
 
         case Direction::Left:
-            mCurrentFrame->x -= mMovement.step;
+            mCurrentFrame->x -= aStep;
             break;
         }
     }
 
-    void 
+    virtual void 
     move() {
 
         int currentTicks = SDL_GetTicks();
 
         if ( currentTicks - mMovementTicks > mMovement.interval ) {
 
-            moveOnce();
+            moveOnce( mMovement.direction, mMovement.step );
             mMovementTicks = currentTicks;
         }
     }
 
-    void
+    virtual void
     renderBorder() { mCurrentFrame->renderBorder(); }
 
-    void
+    virtual void
     renderBackground() { mCurrentFrame->renderBackground(); }
 
-    void
+    virtual void
     renderHitbox() { mCurrentFrame->renderHitbox(); }
 
-    void 
+    virtual void 
     renderImage() { mCurrentFrame->renderImage(); }
 
     virtual void
@@ -178,38 +176,29 @@ public:
         if ( !mShouldRender ) return;
         if ( mIsMovementStarted ) move();
 
-        renderBackground();
-        renderBorder();
-        renderHitbox();
-        renderImage();
+        mCurrentFrame->renderBackground();
+        mCurrentFrame->renderBorder();
+        mCurrentFrame->renderHitbox();
+        mCurrentFrame->renderImage();
     }
+
+    virtual SDL_Rect
+    getRect() { return mCurrentFrame->getRect(); }
+
+    virtual SDL_Rect
+    getHitboxRect() { return mCurrentFrame->getHitboxRect(); }
 
     Frame*
     getCurrentFrame() { return mCurrentFrame; }
-
-    SDL_Rect
-    getRect() { return mCurrentFrame->getRect(); }
-
-    SDL_Rect
-    getHitboxRect() { return mCurrentFrame->getHitboxRect(); }
-
+    
     void
     setCurrentFrame( Frame* frame ) { mCurrentFrame = frame; }
 
     void
-    setCurrentFrameDuration( int ms ) { mCurrentFrame->duration = ms; }
-
-    void
     setMovement( Move move ) { mMovement = move; }
 
-    void
-    setMovementDirection( Direction d ) { mMovement.direction = d; }
-
-    void
-    setMovementStep( int s ) { mMovement.step = s; }
-    
-    void
-    setMovementInterval( int i ) { mMovement.interval = i; }
+    Move
+    getMovement() { return mMovement; }
 
     void
     setX( int v ) { mCurrentFrame->x = v; }

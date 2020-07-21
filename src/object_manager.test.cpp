@@ -37,7 +37,6 @@ main( int argc, char* args[] ) {
     om->setMovement( movement );
     om->setSpawnInterval( 1000 );
 
-
     bool shouldQuit = false;
     
     while ( !shouldQuit ) {

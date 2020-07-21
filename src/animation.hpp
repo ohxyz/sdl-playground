@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <vector>
 #include "frame.hpp"
+#include <iostream>
 
 #ifndef ANIMATION_HPP
 #define ANIMATION_HPP
@@ -35,7 +36,11 @@ public:
     Frame*
     animate() {
 
-        if ( !mIsEnabled ) return NULL;
+        if ( !mIsEnabled ) {
+
+            SDL_Log( "Error: Animation not enabled!" );
+            return NULL;
+        }
 
         int totalFrames = mFrames.size();
 

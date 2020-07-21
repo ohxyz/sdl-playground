@@ -41,6 +41,15 @@ test_genRandomInt() {
     std::cout << a4 << std::endl;
 }
 
+
+void test_genRandomInt2() {
+
+    for ( int i = 0; i < 100; i++ ) {
+
+        std::cout << utils::genRandomInt( -10, 10 ) << std::endl;
+    }
+}
+
 void
 test_genRandomBool() {
 
@@ -67,9 +76,9 @@ main() {
     // std::cout << rand() << ":" << RAND_MAX << std::endl;
 
     // test_genRandomString();
-    // test_genRandomInt();
+    test_genRandomInt2();
 
-    test_genRandomBool();
+    // test_genRandomBool();
 
     return 0;
 }

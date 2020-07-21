@@ -51,7 +51,7 @@ main( int argc, char* args[] ) {
 
         auto random2 = new RandomObject( 700, 550, 0.5 );
         random2->setMovement( {
-            .direction=Direction::Left, .step=10, .interval=5000
+            .direction=Direction::Left, .step=10, .interval=100
         } );
         random2->startMove();
 
@@ -78,7 +78,9 @@ main( int argc, char* args[] ) {
             for ( auto &ro: ros ) { ro->render(); }
             ranger->render();
             random->render();
+
             random2->render();
+
             // Update
             SDL_RenderPresent( gRenderer );
             SDL_Delay(5);

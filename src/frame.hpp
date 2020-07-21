@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <string>
 #include "game.hpp"
+#include "structs.hpp"
 
 #ifndef FRAME_HPP
 #define FRAME_HPP
@@ -47,6 +48,23 @@ public:
     uint8_t             hitboxColorA {0};
 
     int                 duration {1000};
+
+    Frame() {
+
+        
+    }
+
+    Frame( int aX, int aY, int aW, int aH, SDL_Texture* aTexture ) {
+
+        this->x = aX;
+        this->y = aY;
+        this->width = aW;
+        this->height = aH;
+        this->imageTexture = aTexture;
+
+        this->imageClipWidth = aW;
+        this->imageClipHeight = aH;
+    }
 
     void 
     renderBorder() {
@@ -224,6 +242,33 @@ public:
         this->hitboxColorG = aG;
         this->hitboxColorB = aB;
         this->hitboxColorA = aA;
+    }
+
+
+    // Not tested
+    void
+    move( Direction aDirection, int aStep ) {
+
+        if ( aDirection == Direction::None || aStep == 0 ) return;
+
+        switch ( aDirection ) {
+
+        case Direction::Up:
+            this->y -= aStep;
+            break;
+
+        case Direction::Right:
+            this->x += aStep;
+            break;
+
+        case Direction::Down:
+            this->y += aStep;
+            break;
+
+        case Direction::Left:
+            this->x -= aStep;
+            break;
+        }
     }
 };
 

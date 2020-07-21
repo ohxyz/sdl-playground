@@ -9,19 +9,18 @@ class Scrollable : public Object2D {
 
     bool mShouldRepeatHorizontal {false};
 
+    Move mMovement;
+    int mMovementTicks {0};
+    bool mIsMovementStarted {false};
+
 public:
-
-    Scrollable( int x, int y, int w, int h, std::string imagePath )
-    : Object2D( x, y, w, h, imagePath ) {
-
-    }
 
     Scrollable( int x, int y, int w, int h, std::string imagePath, SDL_Rect imageClipRect, Move movement )
     : Object2D( x, y, w, h, imagePath, imageClipRect ) {
 
         mMovement = movement;
         mShouldRepeatHorizontal = true;
-        mCurrentFrame->width = mCurrentFrame->width * 2;
+        getCurrentFrame()->width = getCurrentFrame()->width * 2;
     }
 
     Scrollable( int x, int y, int w, int h, std::string imagePath, Move movement )
@@ -32,17 +31,24 @@ public:
     void
     startMove() {
 
-        Object2D::startMove();
+        mMovementTicks = SDL_GetTicks();
+        mIsMovementStarted = true;
 
         if ( mShouldRepeatHorizontal ) {
 
             if ( mMovement.direction == Direction::Left ) {
-                mCurrentFrame->x = 0;
+                getCurrentFrame()->x = 0;
             }
             else if ( mMovement.direction == Direction::Right ) {
-                mCurrentFrame->x = -mCurrentFrame->imageClipWidth;
+                getCurrentFrame()->x = -getCurrentFrame()->imageClipWidth;
             }
         }
+    }
+
+    void
+    stopMove() {
+
+        mIsMovementStarted = false;
     }
 
     void
@@ -58,13 +64,13 @@ public:
 
             case Direction::Right:
 
-                if ( mShouldRepeatHorizontal && mCurrentFrame->x >= -mMovement.step ) {
+                if ( mShouldRepeatHorizontal && getCurrentFrame()->x >= -mMovement.step ) {
 
-                    mCurrentFrame->x = -mCurrentFrame->imageClipWidth;
+                    getCurrentFrame()->x = -getCurrentFrame()->imageClipWidth;
                 }
                 else {
 
-                    mCurrentFrame->x += mMovement.step;
+                    getCurrentFrame()->x += mMovement.step;
                 }
 
                 break;
@@ -72,13 +78,13 @@ public:
             case Direction::Left:
 
                 if ( mShouldRepeatHorizontal 
-                        && mCurrentFrame->x + mCurrentFrame->imageClipWidth <= mMovement.step ) {
+                        && getCurrentFrame()->x + getCurrentFrame()->imageClipWidth <= mMovement.step ) {
 
-                    mCurrentFrame->x = 0;
+                    getCurrentFrame()->x = 0;
                 }
                 else {
 
-                    mCurrentFrame->x -= mMovement.step;
+                    getCurrentFrame()->x -= mMovement.step;
                 }
 
                 break;
@@ -86,6 +92,12 @@ public:
 
             mMovementTicks = currentTicks;
         }
+    }
+
+    void
+    setMovement( Move move ) {
+
+        mMovement = move;
     }
 
     void
@@ -99,10 +111,8 @@ public:
 
         if ( mIsMovementStarted ) move();
 
-        renderImage();
+        getCurrentFrame()->renderImage();
     }
-
-
 };
 
 #endif

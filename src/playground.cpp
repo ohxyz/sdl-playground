@@ -7,44 +7,40 @@
 #include <functional>
 #include <iostream>
 
-void
-outside() {
 
-    std::cout << "outside!" << std::endl;
-}
+struct ClsStruct {
 
-void
-call( std::function<void()> callback ) {
+    int a {11};
+    int b {22};
+    int c {33};
 
-    callback();
-}
+};
 
 class Cls {
 
-    int mInt = 1;
+    ClsStruct mStruct; 
 
 public:
 
-    void
-    inside() {
+    Cls( ClsStruct s ) {
 
-        std::cout << mInt << std::endl;
+        mStruct = s;
     }
 
-    void
-    callInside() {
+    int
+    addAll() {
 
-        call( inside );
+       return mStruct.a + mStruct.b + mStruct.c;
     }
+
 };
 
 int 
 main( int argc, char* args[] ) {
 
-    call( outside );
-    auto cls = new Cls;
-    
-    cls->callInside();
+    Cls* c = new Cls(  { .a=1, .b=2 } );
+
+    std::cout << c->addAll() << std::endl;
 
     return 0;
 }

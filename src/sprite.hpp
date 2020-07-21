@@ -43,8 +43,7 @@ public:
     createFrames( int aX, int aY, int aFrameDuration=1000 ) {
 
         std::vector<Frame> frames;
-        Frame frame;
-
+        
         int width = round( (float)mArea.w / mCols );
         int height = round( (float)mArea.h / mRows );
 
@@ -52,7 +51,7 @@ public:
 
             for ( int j = 0; j < mCols; j++ ) {
                 
-                frame = {
+                Frame frame = {
                     .x = aX,
                     .y = aY,
                     .width = width,

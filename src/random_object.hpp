@@ -10,13 +10,11 @@
 
 class RandomObject {
 
-public:
+    static std::vector<Image*> mPrimaryImages;
+    static std::vector<Image*> mSecondaryImages;
 
-    static std::vector<Image*> mPrimaryObjectImages;
-    static std::vector<Image*> mSecondaryObjectImages;
-
-    Object2D* mPrimaryObject {nullptr};
-    Object2D* mSecondaryObject {nullptr};
+    Frame* mPrimaryFrame {nullptr};
+    Frame* mSecondaryFrame {nullptr};
 
     bool mShouldSwap {false};
     bool mShouldRenderSecondary {true};
@@ -27,22 +25,24 @@ public:
 
     int mGap {0};
 
+public:
+
     RandomObject( int baseX=0, int baseY=0, float percentageOfSecondary=0.5 ) {
 
         mShouldRenderSecondary = utils::genRandomBool( percentageOfSecondary );
         mGap = 25;
 
-        int countOfPrimary = mPrimaryObjectImages.size();
+        int countOfPrimary = mPrimaryImages.size();
 
         if ( countOfPrimary == 0 ) throw "ERROR: No primary object images found!";
 
-        auto imageOfPO = mPrimaryObjectImages[ utils::genRandomInt(0, countOfPrimary-1) ];
+        auto imageOfPO = mPrimaryImages[ utils::genRandomInt(0, countOfPrimary-1) ];
 
-        int countOfSecondary = mSecondaryObjectImages.size();
+        int countOfSecondary = mSecondaryImages.size();
 
         if ( !mShouldRenderSecondary || countOfSecondary == 0 ) {
 
-            mPrimaryObject = new Object2D( 
+            mPrimaryFrame = new Frame( 
                 baseX, 
                 baseY - imageOfPO->height, 
                 imageOfPO->width, 
@@ -52,9 +52,9 @@ public:
         }
         else {
 
-            auto imageOfSO = mSecondaryObjectImages[ utils::genRandomInt(0, countOfSecondary-1) ];
+            auto imageOfSO = mSecondaryImages[ utils::genRandomInt(0, countOfSecondary-1) ];
 
-            mSecondaryObject = new Object2D( 
+            mSecondaryFrame = new Frame( 
                 baseX, 
                 baseY - imageOfSO->height, 
                 imageOfSO->width, 
@@ -65,7 +65,7 @@ public:
             int xOfPO = baseX + mGap;
             int yOfPO = baseY - imageOfPO->height;
 
-            mPrimaryObject = new Object2D( 
+            mPrimaryFrame = new Frame( 
                 xOfPO, 
                 yOfPO, 
                 imageOfPO->width, 
@@ -73,20 +73,20 @@ public:
                 imageOfPO->texture
             );
 
-            mSecondaryObject->setHitboxColor( 0, 0, 0, 150 );
-            mSecondaryObject->setHitbox( 5, 0, 0, 10 );
+            mSecondaryFrame->setHitboxColor( 0, 0, 0, 150 );
+            mSecondaryFrame->setHitbox( 5, 0, 0, 10 );
         }
 
-        mPrimaryObject->setHitboxColor( 0, 0, 0, 150 );
-        mPrimaryObject->setHitbox( 10, 10, 0, 10 );
+        mPrimaryFrame->setHitboxColor( 0, 0, 0, 150 );
+        mPrimaryFrame->setHitbox( 10, 10, 0, 10 );
 
         mShouldSwap = utils::genRandomBool();
     }
 
     ~RandomObject() {
 
-        delete mPrimaryObject;
-        delete mSecondaryObject;
+        delete mPrimaryFrame;
+        delete mSecondaryFrame;
     }
 
     static void
@@ -97,33 +97,33 @@ public:
     static void
     addPrimaryImage( Image* aImage ) {
 
-        mPrimaryObjectImages.push_back( aImage );
+        mPrimaryImages.push_back( aImage );
     }
 
     static void
     addSecondaryImage( Image* aImage ) {
 
-        mSecondaryObjectImages.push_back( aImage );
+        mSecondaryImages.push_back( aImage );
     }
 
     static void
     destroy() {
 
-        mPrimaryObjectImages.clear();
-        mSecondaryObjectImages.clear();
+        mPrimaryImages.clear();
+        mSecondaryImages.clear();
     }
 
     bool
     collide( Object2D* target ) {
 
         auto hitboxOfTarget = target->getHitboxRect();
-        auto hitboxOfPO = mPrimaryObject->getHitboxRect();
+        auto hitboxOfPO = mPrimaryFrame->getHitboxRect();
 
         if ( !mShouldRenderSecondary ) {
             return helpers::collide( hitboxOfTarget, hitboxOfPO );
         }
 
-        auto hitboxOfSO = mSecondaryObject->getHitboxRect();
+        auto hitboxOfSO = mSecondaryFrame->getHitboxRect();
 
         return (
             helpers::collide( hitboxOfTarget, hitboxOfPO ) 
@@ -132,22 +132,22 @@ public:
     }
 
     void
-    renderPrimaryObject() {
+    renderPrimaryFrame() {
 
-        if ( mPrimaryObject != nullptr ) {
+        if ( mPrimaryFrame != nullptr ) {
 
             // mPrimaryObject->renderHitbox();
-            mPrimaryObject->renderImage();
+            mPrimaryFrame->renderImage();
         } 
     }
 
     void
-    renderSecondaryObject() {
+    renderSecondaryFrame() {
 
-        if ( mSecondaryObject != nullptr && mShouldRenderSecondary ) {
+        if ( mSecondaryFrame != nullptr && mShouldRenderSecondary ) {
 
-            // mSecondaryObject->renderHitbox();
-            mSecondaryObject->renderImage();
+            // mSecondaryFrame->renderHitbox();
+            mSecondaryFrame->renderImage();
         }
     }
 
@@ -158,13 +158,13 @@ public:
 
         if ( mShouldSwap ) {
 
-            renderPrimaryObject();
-            renderSecondaryObject();
+            renderPrimaryFrame();
+            renderSecondaryFrame();
         }
         else {
 
-            renderSecondaryObject();
-            renderPrimaryObject();
+            renderSecondaryFrame();
+            renderPrimaryFrame();
         }
     }
 
@@ -188,10 +188,10 @@ public:
 
         if ( currentTicks - mMovementTicks > mMovement.interval ) {
     
-            mPrimaryObject->moveOnce();
+            mPrimaryFrame->move( mMovement.direction, mMovement.step );
 
-            if ( mSecondaryObject ) {
-                mSecondaryObject->moveOnce();
+            if ( mSecondaryFrame ) {
+                mSecondaryFrame->move( mMovement.direction, mMovement.step );
             }
             
             mMovementTicks = currentTicks;
@@ -202,39 +202,37 @@ public:
     setMovement( Move move ) { 
 
         mMovement = move;
-        mPrimaryObject->setMovement( move );
-        if ( mSecondaryObject ) mSecondaryObject->setMovement( move );
     }
 
     int
     getX() {
 
-        if ( mSecondaryObject ) {
-            return mSecondaryObject->getX();
+        if ( mSecondaryFrame ) {
+            return mSecondaryFrame->x;
         }
 
-        return mPrimaryObject->getX();
+        return mPrimaryFrame->x;
     }
 
     int
     getWidth() {
 
-        if ( mSecondaryObject ) {
-            return mSecondaryObject->getWidth() + mGap + mPrimaryObject->getWidth();
+        if ( mSecondaryFrame ) {
+            return mSecondaryFrame->width + mGap + mPrimaryFrame->width;
         }
 
-        return mPrimaryObject->getWidth();
+        return mPrimaryFrame->width;
     }
 
-    Object2D*
-    getPrimaryObject() { return mPrimaryObject; }
+    Frame*
+    getPrimaryFrame() { return mPrimaryFrame; }
 
-    Object2D*
-    getSecondaryObject() { return mSecondaryObject; }
+    Frame*
+    getSecondaryFrame() { return mSecondaryFrame; }
 };
 
-std::vector<Image*> RandomObject::mPrimaryObjectImages = {};
-std::vector<Image*> RandomObject::mSecondaryObjectImages = {};
+std::vector<Image*> RandomObject::mPrimaryImages = {};
+std::vector<Image*> RandomObject::mSecondaryImages = {};
 
 
 #endif

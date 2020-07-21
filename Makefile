@@ -20,6 +20,7 @@ OBJECT_MANAGER_SRC = src/object_manager.test.cpp
 ANIMATION_SRC = src/animation.hpp src/animation.test.cpp
 UTILS_SRC = src/utils.test.cpp
 RANDOM_OBJECT_SRC = src/random_object.test.cpp
+VULTURE_SRC = src/vulture.test.cpp
 
 CC = g++
 
@@ -56,9 +57,12 @@ test_object_manager: $(OBJECT_MANAGER_SRC)
 test_random_object: $(RANDOM_OBJECT_SRC)
 	$(CC) $(RANDOM_OBJECT_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
+test_vulture: $(VULTURE_SRC)
+	$(CC) $(VULTURE_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+
 test_utils: $(UTILS_SRC)
 	$(CC) $(UTILS_SRC) -o bin/test
 
-play: $(PLAYGROUND_SRC)
-	$(CC) $(PLAYGROUND_SRC) -o bin/play
+playground: $(PLAYGROUND_SRC)
+	$(CC) $(PLAYGROUND_SRC) -o bin/playground
 

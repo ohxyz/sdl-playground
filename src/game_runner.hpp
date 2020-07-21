@@ -41,7 +41,7 @@ public:
 
         mLand = new Scrollable(
             0, 360, 360, 150, "images/land.png", { 0, 0, 90, 135 },
-            {.direction=Direction::Left, .step=2, .interval=10 }
+            {.direction=Direction::Left, .step=5, .interval=10 }
         );
         
         mWaterTop = new Scrollable(
@@ -85,6 +85,7 @@ public:
         mLandStep = 5;
         mLandInterval = 10;
         mChickenFrameDuration = 20;
+
         mSpikeMovement = { .direction=Direction::Left, .step=mLandStep, .interval=mLandInterval };
         mSpikeSpawnInterval = 3000;
         
@@ -94,8 +95,7 @@ public:
         mDesert->startMove();
         
         mLand->setX( 0 );
-        mLand->setMovementStep( mLandStep );
-        mLand->setMovementInterval( mLandInterval );
+        mLand->setMovement( mSpikeMovement );
         mLand->startMove();
 
         mWaterTop->setX( 0 );

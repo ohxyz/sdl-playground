@@ -20,6 +20,8 @@ class Chicken : public Object2D {
     ChickenJumpAnimation* mJumpAnimation;
     ChickenSkidAnimation* mSkidAnimation;
 
+    Frame* mCurrentFrame;
+
 public:
 
     Chicken() {
@@ -110,16 +112,20 @@ public:
 
         if ( mCurrentFrame != NULL ) {
 
-            renderImage();
+            mCurrentFrame->renderImage();
             // renderHitbox();
         }
     }
 
-    void setFrameDuration( int ms ) {
+    void 
+    setFrameDuration( int ms ) {
 
         mWalkAnimation->setFrameDuration( ms );
         mJumpAnimation->setFrameDuration( ms );
     }
+
+    SDL_Rect
+    getHitboxRect() { return mCurrentFrame->getHitboxRect(); }
 
 };
 
