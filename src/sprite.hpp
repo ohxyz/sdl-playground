@@ -50,20 +50,20 @@ public:
         for ( int i = 0; i < mRows; i++ ) {
 
             for ( int j = 0; j < mCols; j++ ) {
-                
-                Frame frame = {
-                    .x = aX,
-                    .y = aY,
-                    .width = width,
-                    .height = height,
-                    .imageClipX = j * width,
-                    .imageClipY = i * height,
-                    .imageClipWidth = width,
-                    .imageClipHeight = height,
-                    .imageClipFlip = mFlip,
-                    .imageTexture = mTexture,
-                    .duration = aFrameDuration
-                };
+
+                Frame frame;
+
+                frame.x = aX;
+                frame.y = aY;
+                frame.width = width;
+                frame.height = height;
+                frame.imageClipX = j * width;
+                frame.imageClipY = i * height;
+                frame.imageClipWidth = width;
+                frame.imageClipHeight = height;
+                frame.imageClipFlip = mFlip;
+                frame.imageTexture = mTexture;
+                frame.duration = aFrameDuration;
 
                 frames.push_back( frame );
             }

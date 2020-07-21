@@ -4,12 +4,11 @@
 #include <string>
 #include <math.h>
 #include <iostream>
-#include "random_object.hpp"
+#include "random_spike.hpp"
 #include "game.hpp"
 #include <vector>
 #include "helpers.hpp"
-#include "object_manager.hpp"
-#include "chicken.hpp"
+#include "spawner.hpp"
 
 extern SDL_Renderer* gRenderer;
 
@@ -22,20 +21,21 @@ handleCollide() {
 int 
 main( int argc, char* args[] ) {
 
-    SDL_Log( "Test ObjectManager" );
+    SDL_Log( "Test Spawner" );
 
     if ( !game::init( {.x=500, .width=500, .height=500} ) ) {
         return 1;
     }
 
-    RandomObject::init();
+    RandomSpike::init();
 
     auto ranger = new Object2D( 11, 55, 48, 64, "images/ranger.bmp" );
 
     Move movement = { .direction=Direction::Left, .step=5, .interval=20 };
-    auto om = new ObjectManager<RandomObject>( 400, 100 );
-    om->setMovement( movement );
+    auto om = new Spawner<RandomSpike>( {400, 400}, {40, 50, 10}, {1, 5, 300} );
+    om->setObjectMovement( movement );
     om->setSpawnInterval( 1000 );
+    om->start();
 
     bool shouldQuit = false;
     
@@ -59,7 +59,7 @@ main( int argc, char* args[] ) {
 
         ranger->render();
         // om->run( ranger, handleCollide);
-        om->move();
+        om->spawn();
         // for ( auto& obj : *om->getObjects() ) {
 
         //     if ( obj->collide( ranger ) ) { SDL_Log( "cOLLIDE!" ); om->stopMove(); }

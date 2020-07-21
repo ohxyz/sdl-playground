@@ -23,8 +23,6 @@ public:
 
         mFlyAnimation = new VultureFlyAnimation( aX, aY );
         mFlyAnimation->start( true );
-
-        mMovement = { .direction=Direction::Left, .step=5, .interval=20 };
         mNewX = aX;
     }
 
@@ -62,9 +60,19 @@ public:
     }
 
     void
+    setMovement( Move move ) { mMovement = move; }
+
+    int
+    getX() { return mFrame.x; }
+
+    int
+    getWidth() { return mFrame.width; }
+
+    void
     render() {
 
         if ( mIsMovementStarted ) move();
+        mFrame.renderHitbox();
         mFrame.renderImage();
     }
 };

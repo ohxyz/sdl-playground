@@ -45,24 +45,24 @@ public:
 
             SDL_Texture* imageTexture = helpers::loadTexture( imagePath );
 
-            Frame frame = {
-                .x = x,
-                .y = y, 
-                .width = mImageWidth, 
-                .height = mImageHeight,
-                .imageClipX = 0,
-                .imageClipY = 0,
-                .imageClipWidth = mImageWidth,
-                .imageClipHeight = mImageHeight,
-                .imageClipFlip = SDL_FLIP_HORIZONTAL,
-                .imageTexture = imageTexture,
-                .hitboxTop = jumpHitboxTop,
-                .hitboxRight = jumpHitboxRight,
-                .hitboxBottom = jumpHitboxBottom,
-                .hitboxLeft = jumpHitboxLeft,
-                .hitboxColorA = jumpHitboxColorA,
-                .duration = 20
-            };
+            Frame frame;
+            
+            frame.x = x;
+            frame.y = y; 
+            frame.width = mImageWidth; 
+            frame.height = mImageHeight;
+            frame.imageClipX = 0;
+            frame.imageClipY = 0;
+            frame.imageClipWidth = mImageWidth;
+            frame.imageClipHeight = mImageHeight;
+            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame.imageTexture = imageTexture;
+            frame.hitboxTop = jumpHitboxTop;
+            frame.hitboxRight = jumpHitboxRight;
+            frame.hitboxBottom = jumpHitboxBottom;
+            frame.hitboxLeft = jumpHitboxLeft;
+            frame.hitboxColorA = jumpHitboxColorA;
+            frame.duration = 20;
 
             frames.push_back( frame );
         }

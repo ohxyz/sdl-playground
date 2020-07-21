@@ -54,25 +54,24 @@ public:
 
             SDL_Texture* imageTexture = mTextures[i];
 
-            Frame frame = {
-                .x = x, 
-                .y = y, 
-                .width = mImageWidth, 
-                .height = mImageHeight,
-                // .backgroundColorA = 100,
-                .imageClipX = 0,
-                .imageClipY = 0,
-                .imageClipWidth = mImageWidth,
-                .imageClipHeight = mImageHeight,
-                .imageClipFlip = SDL_FLIP_HORIZONTAL,
-                .imageTexture = imageTexture,
-                .hitboxTop = jumpHitboxTop,
-                .hitboxRight = jumpHitboxRight,
-                .hitboxBottom = jumpHitboxBottom,
-                .hitboxLeft = jumpHitboxLeft,
-                .hitboxColorA = jumpHitboxColorA,
-                .duration = frameDuration
-            };
+            Frame frame;
+            frame.x = x; 
+            frame.y = y; 
+            frame.width = mImageWidth; 
+            frame.height = mImageHeight;
+            // frame.backgroundColorA = 100;
+            frame.imageClipX = 0;
+            frame.imageClipY = 0;
+            frame.imageClipWidth = mImageWidth;
+            frame.imageClipHeight = mImageHeight;
+            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame.imageTexture = imageTexture;
+            frame.hitboxTop = jumpHitboxTop;
+            frame.hitboxRight = jumpHitboxRight;
+            frame.hitboxBottom = jumpHitboxBottom;
+            frame.hitboxLeft = jumpHitboxLeft;
+            frame.hitboxColorA = jumpHitboxColorA;
+            frame.duration = frameDuration;
 
             frames.push_back( frame );
         }
@@ -99,25 +98,25 @@ public:
             else if ( i == totalInAir - 1 ) imageTexture = mTextures[9];
             else imageTexture = mTextures[5];
 
-            Frame frame = {
-                .x = x, 
-                .y = newY,
-                .width = mImageWidth, 
-                .height = mImageHeight,
-                // .backgroundColorA = 100,
-                .imageClipX = 0,
-                .imageClipY = 0,
-                .imageClipWidth = mImageWidth,
-                .imageClipHeight = mImageHeight,
-                .imageClipFlip = SDL_FLIP_HORIZONTAL,
-                .imageTexture = imageTexture,
-                .hitboxTop = jumpHitboxTop,
-                .hitboxRight = jumpHitboxRight,
-                .hitboxBottom = jumpHitboxBottom,
-                .hitboxLeft = jumpHitboxLeft,
-                .hitboxColorA = jumpHitboxColorA,
-                .duration = frameDuration
-            };
+            Frame frame;
+
+            frame.x = x; 
+            frame.y = newY;
+            frame.width = mImageWidth; 
+            frame.height = mImageHeight;
+            // frame.backgroundColorA = 100;
+            frame.imageClipX = 0;
+            frame.imageClipY = 0;
+            frame.imageClipWidth = mImageWidth;
+            frame.imageClipHeight = mImageHeight;
+            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame.imageTexture = imageTexture;
+            frame.hitboxTop = jumpHitboxTop;
+            frame.hitboxRight = jumpHitboxRight;
+            frame.hitboxBottom = jumpHitboxBottom;
+            frame.hitboxLeft = jumpHitboxLeft;
+            frame.hitboxColorA = jumpHitboxColorA;
+            frame.duration = frameDuration;
 
             frames.push_back( frame );
         }
@@ -127,25 +126,25 @@ public:
 
             SDL_Texture* imageTexture = mTextures[10+i];
 
-            Frame frame = {
-                .x = x, 
-                .y = y, 
-                .width = mImageWidth, 
-                .height = mImageHeight,
-                // .backgroundColorA = 100,
-                .imageClipX = 0,
-                .imageClipY = 0,
-                .imageClipWidth = mImageWidth,
-                .imageClipHeight = mImageHeight,
-                .imageClipFlip = SDL_FLIP_HORIZONTAL,
-                .imageTexture = imageTexture,
-                .hitboxTop = jumpHitboxTop,
-                .hitboxRight = jumpHitboxRight,
-                .hitboxBottom = jumpHitboxBottom,
-                .hitboxLeft = jumpHitboxLeft,
-                .hitboxColorA = jumpHitboxColorA,
-                .duration = frameDuration
-            };
+            Frame frame;
+
+            frame.x = x;
+            frame.y = y; 
+            frame.width = mImageWidth; 
+            frame.height = mImageHeight;
+            // frame.backgroundColorA = 100;
+            frame.imageClipX = 0;
+            frame.imageClipY = 0;
+            frame.imageClipWidth = mImageWidth;
+            frame.imageClipHeight = mImageHeight;
+            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame.imageTexture = imageTexture;
+            frame.hitboxTop = jumpHitboxTop;
+            frame.hitboxRight = jumpHitboxRight;
+            frame.hitboxBottom = jumpHitboxBottom;
+            frame.hitboxLeft = jumpHitboxLeft;
+            frame.hitboxColorA = jumpHitboxColorA;
+            frame.duration = frameDuration;
 
             frames.push_back( frame );
         }

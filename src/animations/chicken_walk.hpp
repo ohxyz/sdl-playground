@@ -45,25 +45,24 @@ public:
             std::string imagePath = mImageFolderPath + "__yellow_chicken_walk_0" + imageIndex + ".png";
             SDL_Texture* imageTexture = helpers::loadTexture( imagePath );
 
-            Frame frame = {
-                .x = x, 
-                .y = y, 
-                .width = mImageWidth, 
-                .height = mImageHeight,
-                .imageClipX = 0,
-                .imageClipY = 0,
-                .imageClipWidth = mImageWidth,
-                .imageClipHeight = mImageHeight,
-                .imageClipFlip = SDL_FLIP_HORIZONTAL,
-                .imageTexture = imageTexture,
-                .hitboxTop = hitboxTop,
-                .hitboxRight = hitboxRight,
-                .hitboxBottom = hitboxBottom,
-                .hitboxLeft = hitboxLeft,
-                .hitboxColorA = hitboxColorA,
-                .duration = frameDuration
-            };
-
+            Frame frame;
+            frame.x = x; 
+            frame.y = y; 
+            frame.width = mImageWidth; 
+            frame.height = mImageHeight;
+            frame.imageClipX = 0;
+            frame.imageClipY = 0;
+            frame.imageClipWidth = mImageWidth;
+            frame.imageClipHeight = mImageHeight;
+            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame.imageTexture = imageTexture;
+            frame.hitboxTop = hitboxTop;
+            frame.hitboxRight = hitboxRight;
+            frame.hitboxBottom = hitboxBottom;
+            frame.hitboxLeft = hitboxLeft;
+            frame.hitboxColorA = hitboxColorA;
+            frame.duration = frameDuration;
+            
             frames.push_back( frame );
         }
 

@@ -3,8 +3,8 @@
 #include "chicken.hpp"
 #include <SDL.h>
 #include "scrollable.hpp"
-#include "random_object.hpp"
-#include "object_manager.hpp"
+#include "random_spike.hpp"
+#include "spawner.hpp"
 
 #ifndef GAME_RUNNER_HPP
 #define GAME_RUNNER_HPP
@@ -20,7 +20,7 @@ class GameRunner {
     Object2D* mRestartButton {nullptr};
     Chicken* mChicken {nullptr};
 
-    ObjectManager<RandomObject>* mSpikeManager {nullptr};
+    Spawner<RandomSpike>* mSpikeSpawner {nullptr};
     Move mSpikeMovement;
     int mSpikeSpawnInterval;
 
@@ -29,6 +29,9 @@ class GameRunner {
 
     int mChickenFrameDuration;
     bool mIsFrozen {false};
+
+    std::vector<Image*> mPrimarySpikeImages;
+    std::vector<Image*> mSecondarySpikeImages;
 
 public:
 
@@ -57,14 +60,8 @@ public:
         mChicken = new Chicken();
         mRestartButton = new Object2D( 120, 400, 120, 120, "images/restart.png" );
 
-        mSpikeManager = new ObjectManager<RandomObject>( 360, 362 );
-
-        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-0.png" ) );
-        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-1.png" ) );
-        RandomObject::addPrimaryImage( new Image( "images/obstacles/obstacle-0-2.png" ) );
-        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-0.png" ) );
-        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-1.png" ) );
-        RandomObject::addSecondaryImage( new Image( "images/obstacles/obstacle-1-2.png" ) );
+        RandomSpike::init();
+        mSpikeSpawner = new Spawner<RandomSpike>( 360, 362 );
 
         init();
     }
@@ -76,7 +73,9 @@ public:
         delete mWaterTop;
         delete mWaterBody;
         delete mDesert;
-        delete mSpikeManager;
+        delete mSpikeSpawner;
+        mPrimarySpikeImages.clear();
+        mSecondarySpikeImages.clear();
     }
     
     void
@@ -107,10 +106,10 @@ public:
         mChicken->init();
         mChicken->setFrameDuration( mChickenFrameDuration );
 
-        mSpikeManager->clear();
-        mSpikeManager->setMovement( mSpikeMovement );
-        mSpikeManager->setSpawnInterval( mSpikeSpawnInterval );
-        mSpikeManager->startMove();
+        mSpikeSpawner->clear();
+        mSpikeSpawner->setObjectMovement( mSpikeMovement );
+        mSpikeSpawner->setSpawnInterval( mSpikeSpawnInterval );
+        mSpikeSpawner->start();
 
         mIsFrozen = false;
     }
@@ -118,7 +117,7 @@ public:
     void
     detectCollision() {
 
-        for ( auto& obj : *mSpikeManager->getObjects() ) {
+        for ( auto& obj : *mSpikeSpawner->getObjects() ) {
 
             if ( obj->collide( mChicken ) ) handleCollide();
         }
@@ -132,7 +131,7 @@ public:
         mLand->stopMove();
         mWaterTop->stopMove();
         mWaterBody->stopMove();
-        mSpikeManager->stopMove();
+        mSpikeSpawner->stop();
         mIsFrozen = true;
         mRestartButton->setShouldRender( true );
     }
@@ -143,14 +142,14 @@ public:
         if ( !mIsFrozen ) {
 
             detectCollision();
-            mSpikeManager->move();
+            mSpikeSpawner->spawn();
         }
 
         mDesert->render();
         mLand->render();
         mWaterTop->render();
         mWaterBody->render();
-        mSpikeManager->render();
+        mSpikeSpawner->render();
         mChicken->render();
         mRestartButton->render();
     }

@@ -7,6 +7,8 @@
 #include "object2d.hpp"
 #include "game.hpp"
 #include "vulture.hpp"
+#include "spawner.hpp"
+#include "structs.hpp"
 
 extern SDL_Renderer* gRenderer;
 
@@ -19,9 +21,15 @@ main( int argc, char* args[] ) {
         return 1;
     }
 
-    auto vulture = new Vulture( 600, 400 );
+    Move move = { .direction=Direction::Left, .step=5, .interval=20 };
+    auto vulture1 = new Vulture( 700, 50 );
+    vulture1->setMovement( move );
+    vulture1->startMove();
 
-    vulture->startMove();
+    Spawner<Vulture>* vm = new Spawner<Vulture>( {800, 800}, {10, 15, 20}, {1, 5, 333} );
+    vm->setObjectMovement( move );
+    vm->setSpawnInterval( 2000 );
+    vm->start();
 
     bool shouldQuit = false;
     
@@ -42,12 +50,12 @@ main( int argc, char* args[] ) {
 
                 case SDLK_UP:
                 case SDLK_w:
-                    vulture->startMove();
+                    vulture1->startMove();
                     break;
 
                 case SDLK_DOWN:
                 case SDLK_s:
-                    vulture->stopMove();
+                    vulture1->stopMove();
                     break;
                 }
             }   
@@ -58,7 +66,9 @@ main( int argc, char* args[] ) {
         SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
         SDL_RenderClear( gRenderer );
         
-        vulture->render();
+        vulture1->render();
+        vm->spawn();
+        vm->render();
 
         // Update
         SDL_RenderPresent( gRenderer );

@@ -4,22 +4,22 @@ PLAYGROUND_SRC += src/playground-mod.c
 SRC += src/object2d.hpp
 SRC += src/sprite.hpp
 SRC += src/helpers.hpp
-SRC += src/object_manager.hpp
 SRC += src/chicken.hpp
 SRC += src/structs.hpp
 SRC += src/scrollable.hpp
 SRC += src/game.hpp
 
-APP_SRC = $(SRC) src/main.cpp
+APP_SRC = src/main.cpp
 DEBUG_SRC = src/debug.cpp
 
 OBJECT2D_SRC = src/object2d.test.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
 SPRITE_SRC = src/sprite.test.cpp
-OBJECT_MANAGER_SRC = src/object_manager.test.cpp
+SPAWNER_SRC = src/spawner.test.cpp
 ANIMATION_SRC = src/animation.hpp src/animation.test.cpp
 UTILS_SRC = src/utils.test.cpp
 RANDOM_OBJECT_SRC = src/random_object.test.cpp
+RANDOM_SPIKE_SRC = src/random_spike.test.cpp
 VULTURE_SRC = src/vulture.test.cpp
 
 CC = g++
@@ -51,11 +51,14 @@ test_animation: $(ANIMATION_SRC)
 test_sprite: $(SPRITE_SRC)
 	$(CC) $(SPRITE_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
-test_object_manager: $(OBJECT_MANAGER_SRC)
-	$(CC) $(OBJECT_MANAGER_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+test_spawner: $(SPAWNER_SRC)
+	$(CC) $(SPAWNER_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
 test_random_object: $(RANDOM_OBJECT_SRC)
 	$(CC) $(RANDOM_OBJECT_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+
+test_random_spike: $(RANDOM_SPIKE_SRC)
+	$(CC) $(RANDOM_SPIKE_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
 test_vulture: $(VULTURE_SRC)
 	$(CC) $(VULTURE_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test

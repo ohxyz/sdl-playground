@@ -10,8 +10,8 @@
 
 class RandomObject {
 
-    static std::vector<Image*> mPrimaryImages;
-    static std::vector<Image*> mSecondaryImages;
+    std::vector<Image*>* mPrimaryImages;
+    std::vector<Image*>* mSecondaryImages;
 
     Frame* mPrimaryFrame {nullptr};
     Frame* mSecondaryFrame {nullptr};
@@ -23,22 +23,29 @@ class RandomObject {
     bool mIsMovementStarted;
     Move mMovement;
 
-    int mGap {0};
+    int mGap {25};
 
 public:
 
-    RandomObject( int baseX=0, int baseY=0, float percentageOfSecondary=0.5 ) {
+    RandomObject( 
+        int baseX, 
+        int baseY,
+        std::vector<Image*>* aPrimaryImages,
+        std::vector<Image*>* aSecondaryImages,
+        float percentageOfSecondary=0.5
+    ) {
+
+        mPrimaryImages = aPrimaryImages;
+        mSecondaryImages = aSecondaryImages;
 
         mShouldRenderSecondary = utils::genRandomBool( percentageOfSecondary );
-        mGap = 25;
-
-        int countOfPrimary = mPrimaryImages.size();
+        int countOfPrimary = (*mPrimaryImages).size();
 
         if ( countOfPrimary == 0 ) throw "ERROR: No primary object images found!";
 
-        auto imageOfPO = mPrimaryImages[ utils::genRandomInt(0, countOfPrimary-1) ];
+        auto imageOfPO = (*mPrimaryImages)[ utils::genRandomInt(0, countOfPrimary-1) ];
 
-        int countOfSecondary = mSecondaryImages.size();
+        int countOfSecondary = (*mSecondaryImages).size();
 
         if ( !mShouldRenderSecondary || countOfSecondary == 0 ) {
 
@@ -52,7 +59,7 @@ public:
         }
         else {
 
-            auto imageOfSO = mSecondaryImages[ utils::genRandomInt(0, countOfSecondary-1) ];
+            auto imageOfSO = (*mSecondaryImages)[ utils::genRandomInt(0, countOfSecondary-1) ];
 
             mSecondaryFrame = new Frame( 
                 baseX, 
@@ -89,30 +96,6 @@ public:
         delete mSecondaryFrame;
     }
 
-    static void
-    init() {
-
-    }
-
-    static void
-    addPrimaryImage( Image* aImage ) {
-
-        mPrimaryImages.push_back( aImage );
-    }
-
-    static void
-    addSecondaryImage( Image* aImage ) {
-
-        mSecondaryImages.push_back( aImage );
-    }
-
-    static void
-    destroy() {
-
-        mPrimaryImages.clear();
-        mSecondaryImages.clear();
-    }
-
     bool
     collide( Object2D* target ) {
 
@@ -135,8 +118,6 @@ public:
     renderPrimaryFrame() {
 
         if ( mPrimaryFrame != nullptr ) {
-
-            // mPrimaryObject->renderHitbox();
             mPrimaryFrame->renderImage();
         } 
     }
@@ -145,8 +126,6 @@ public:
     renderSecondaryFrame() {
 
         if ( mSecondaryFrame != nullptr && mShouldRenderSecondary ) {
-
-            // mSecondaryFrame->renderHitbox();
             mSecondaryFrame->renderImage();
         }
     }
@@ -224,6 +203,18 @@ public:
         return mPrimaryFrame->width;
     }
 
+    void
+    setPrimaryImages( std::vector<Image*>* aImages ) {
+
+        mPrimaryImages = aImages;
+    }
+
+    void
+    setSeconaryImages( std::vector<Image*>* aImages ) {
+
+        mSecondaryImages = aImages;
+    }
+
     Frame*
     getPrimaryFrame() { return mPrimaryFrame; }
 
@@ -231,8 +222,8 @@ public:
     getSecondaryFrame() { return mSecondaryFrame; }
 };
 
-std::vector<Image*> RandomObject::mPrimaryImages = {};
-std::vector<Image*> RandomObject::mSecondaryImages = {};
+// std::vector<Image*> RandomObject::mPrimaryImages = {};
+// std::vector<Image*> RandomObject::mSecondaryImages = {};
 
 
 #endif
