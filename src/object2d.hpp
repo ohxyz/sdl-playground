@@ -33,7 +33,7 @@ public:
 
     Object2D() {
 
-        mFrame = new Frame;
+        mFrame = new Frame();
         mCurrentFrame = mFrame;
     }
 
@@ -180,6 +180,12 @@ public:
         mCurrentFrame->renderBorder();
         mCurrentFrame->renderHitbox();
         mCurrentFrame->renderImage();
+    }
+
+    bool
+    collide( Object2D* target ) {
+
+        return helpers::collide( getHitboxRect(), target->getHitboxRect() );
     }
 
     virtual SDL_Rect

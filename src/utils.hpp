@@ -31,6 +31,12 @@ namespace utils {
         return min + ( rand() % (max - min + 1) );
     }
 
+    float
+    genRandomFloat( float min, float max ) {
+
+        return min + static_cast<float>(rand()) / ( static_cast<float>( RAND_MAX/(max-min) ) );
+    }
+
     bool
     genRandomBool( float ratioOfTrue=0.5 ) {
 

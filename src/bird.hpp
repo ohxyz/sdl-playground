@@ -2,16 +2,16 @@
 #include "frame.hpp"
 #include "structs.hpp"
 #include "object2d.hpp"
-#include "animations/vulture_fly.hpp"
+#include "animations/bird_fly.hpp"
 #include <string>
 
-#ifndef VULTURE_HPP
-#define VULTURE_HPP
+#ifndef BIRD_HPP
+#define BIRD_HPP
 
-class Vulture : public Object2D {
+class Bird : public Object2D {
 
     Frame* mFrame;
-    VultureFlyAnimation* mFlyAnimation;
+    BirdFlyAnimation* mFlyAnimation;
 
     int mNewX;
     Move mMovement;
@@ -21,16 +21,16 @@ class Vulture : public Object2D {
 
 public:
 
-    Vulture( int aX, int aY ) {
+    Bird( int aX, int aY ) {
 
-        mFlyAnimation = new VultureFlyAnimation( aX, aY );
+        mFlyAnimation = new BirdFlyAnimation( aX, aY );
         mFlyAnimation->start( true );
         mNewX = aX;
 
         mFrame = new Frame();
     }
 
-    ~Vulture() {
+    ~Bird() {
 
         delete mFrame;
         delete mFlyAnimation;
@@ -73,7 +73,7 @@ public:
 
         if ( mIsMovementStarted ) move();
 
-        mFrame->renderHitbox();
+        // mFrame->renderHitbox();
         mFrame->renderImage();
     }
 };

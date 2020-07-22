@@ -14,29 +14,33 @@ class ChickenHurtAnimation : public Animation {
     int mImageHeight = 122;
     std::string mImageFolderPath = "images/chicken/";
 
+    std::vector<Frame*> mFrames;
+
 public:
 
     ChickenHurtAnimation( int x=0, int y=0 ) {
 
-        setFrames( createFrames( x, y ) );
+        mFrames = createFrames( x, y );
+        setFrames( mFrames );
     }
 
     ~ChickenHurtAnimation() {
 
-        for ( auto &f : mFrames ) SDL_DestroyTexture( f.imageTexture );
+        for ( auto &f : mFrames ) SDL_DestroyTexture( f->imageTexture );
+        mFrames.clear();
     }
-
-    std::vector<Frame>
+    
+    std::vector<Frame*>
     createFrames( int x, int y ) {
 
-        std::vector<Frame> frames;
-
+        std::vector<Frame*> frames;
         // Use jump hitbox to debug
-        int jumpHitboxTop = 10;
+        int jumpHitboxTop = 15;
         int jumpHitboxRight = 45;
         int jumpHitboxBottom = 15;
         int jumpHitboxLeft = 65;
         uint8_t jumpHitboxColorA = 150;
+        int frameDuration = 30;
 
         for ( int i = 0; i < 5; i++ ) {
 
@@ -45,24 +49,24 @@ public:
 
             SDL_Texture* imageTexture = helpers::loadTexture( imagePath );
 
-            Frame frame;
+            Frame* frame = new Frame();
             
-            frame.x = x;
-            frame.y = y; 
-            frame.width = mImageWidth; 
-            frame.height = mImageHeight;
-            frame.imageClipX = 0;
-            frame.imageClipY = 0;
-            frame.imageClipWidth = mImageWidth;
-            frame.imageClipHeight = mImageHeight;
-            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
-            frame.imageTexture = imageTexture;
-            frame.hitboxTop = jumpHitboxTop;
-            frame.hitboxRight = jumpHitboxRight;
-            frame.hitboxBottom = jumpHitboxBottom;
-            frame.hitboxLeft = jumpHitboxLeft;
-            frame.hitboxColorA = jumpHitboxColorA;
-            frame.duration = 20;
+            frame->x = x;
+            frame->y = y; 
+            frame->width = mImageWidth; 
+            frame->height = mImageHeight;
+            frame->imageClipX = 0;
+            frame->imageClipY = 0;
+            frame->imageClipWidth = mImageWidth;
+            frame->imageClipHeight = mImageHeight;
+            frame->imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame->imageTexture = imageTexture;
+            frame->hitboxTop = jumpHitboxTop;
+            frame->hitboxRight = jumpHitboxRight;
+            frame->hitboxBottom = jumpHitboxBottom;
+            frame->hitboxLeft = jumpHitboxLeft;
+            frame->hitboxColorA = jumpHitboxColorA;
+            frame->duration = frameDuration;
 
             frames.push_back( frame );
         }

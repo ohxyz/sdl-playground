@@ -15,28 +15,32 @@ class ChickenJumpAnimation : public Animation {
     std::string mImageFolderPath = "images/chicken/";
 
     std::vector<SDL_Texture*> mTextures;
+    std::vector<Frame*> mFrames;
 
 public:
 
     ChickenJumpAnimation( int x=0, int y=0 ) {
 
-        setFrames( createFrames( x, y ) );
+        mFrames = createFrames( x, y );
+        setFrames( mFrames );
     }
 
     ~ChickenJumpAnimation() {
 
-        for ( auto &f : mFrames ) SDL_DestroyTexture( f.imageTexture );
+        for ( auto &t : mTextures ) SDL_DestroyTexture( t );
+        for ( auto &f : mFrames ) SDL_DestroyTexture( f->imageTexture );
+        mFrames.clear();
     }
 
-    std::vector<Frame>
+    std::vector<Frame*>
     createFrames( int x, int y ) {
 
-        int jumpHitboxTop = 10;
+        int jumpHitboxTop = 15;
         int jumpHitboxRight = 45;
         int jumpHitboxBottom = 15;
         int jumpHitboxLeft = 65;
         uint8_t jumpHitboxColorA = 150;
-        int frameDuration = 20;
+        int frameDuration = 30;
 
         for ( int i = 0; i < 12; i++ ) {
 
@@ -47,31 +51,31 @@ public:
             mTextures.push_back( imageTexture );
         }
 
-        std::vector<Frame> frames;
+        std::vector<Frame*> frames;
 
         // Jump starting
         for ( int i = 0; i < 2; i++ ) {
 
             SDL_Texture* imageTexture = mTextures[i];
 
-            Frame frame;
-            frame.x = x; 
-            frame.y = y; 
-            frame.width = mImageWidth; 
-            frame.height = mImageHeight;
-            // frame.backgroundColorA = 100;
-            frame.imageClipX = 0;
-            frame.imageClipY = 0;
-            frame.imageClipWidth = mImageWidth;
-            frame.imageClipHeight = mImageHeight;
-            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
-            frame.imageTexture = imageTexture;
-            frame.hitboxTop = jumpHitboxTop;
-            frame.hitboxRight = jumpHitboxRight;
-            frame.hitboxBottom = jumpHitboxBottom;
-            frame.hitboxLeft = jumpHitboxLeft;
-            frame.hitboxColorA = jumpHitboxColorA;
-            frame.duration = frameDuration;
+            Frame* frame = new Frame();
+            frame->x = x; 
+            frame->y = y; 
+            frame->width = mImageWidth; 
+            frame->height = mImageHeight;
+            // frame->backgroundColorA = 100;
+            frame->imageClipX = 0;
+            frame->imageClipY = 0;
+            frame->imageClipWidth = mImageWidth;
+            frame->imageClipHeight = mImageHeight;
+            frame->imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame->imageTexture = imageTexture;
+            frame->hitboxTop = jumpHitboxTop;
+            frame->hitboxRight = jumpHitboxRight;
+            frame->hitboxBottom = jumpHitboxBottom;
+            frame->hitboxLeft = jumpHitboxLeft;
+            frame->hitboxColorA = jumpHitboxColorA;
+            frame->duration = frameDuration;
 
             frames.push_back( frame );
         }
@@ -98,25 +102,25 @@ public:
             else if ( i == totalInAir - 1 ) imageTexture = mTextures[9];
             else imageTexture = mTextures[5];
 
-            Frame frame;
+            Frame* frame = new Frame();
 
-            frame.x = x; 
-            frame.y = newY;
-            frame.width = mImageWidth; 
-            frame.height = mImageHeight;
-            // frame.backgroundColorA = 100;
-            frame.imageClipX = 0;
-            frame.imageClipY = 0;
-            frame.imageClipWidth = mImageWidth;
-            frame.imageClipHeight = mImageHeight;
-            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
-            frame.imageTexture = imageTexture;
-            frame.hitboxTop = jumpHitboxTop;
-            frame.hitboxRight = jumpHitboxRight;
-            frame.hitboxBottom = jumpHitboxBottom;
-            frame.hitboxLeft = jumpHitboxLeft;
-            frame.hitboxColorA = jumpHitboxColorA;
-            frame.duration = frameDuration;
+            frame->x = x; 
+            frame->y = newY;
+            frame->width = mImageWidth; 
+            frame->height = mImageHeight;
+            // frame->backgroundColorA = 100;
+            frame->imageClipX = 0;
+            frame->imageClipY = 0;
+            frame->imageClipWidth = mImageWidth;
+            frame->imageClipHeight = mImageHeight;
+            frame->imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame->imageTexture = imageTexture;
+            frame->hitboxTop = jumpHitboxTop;
+            frame->hitboxRight = jumpHitboxRight;
+            frame->hitboxBottom = jumpHitboxBottom;
+            frame->hitboxLeft = jumpHitboxLeft;
+            frame->hitboxColorA = jumpHitboxColorA;
+            frame->duration = frameDuration;
 
             frames.push_back( frame );
         }
@@ -126,25 +130,25 @@ public:
 
             SDL_Texture* imageTexture = mTextures[10+i];
 
-            Frame frame;
+            Frame* frame = new Frame();
 
-            frame.x = x;
-            frame.y = y; 
-            frame.width = mImageWidth; 
-            frame.height = mImageHeight;
-            // frame.backgroundColorA = 100;
-            frame.imageClipX = 0;
-            frame.imageClipY = 0;
-            frame.imageClipWidth = mImageWidth;
-            frame.imageClipHeight = mImageHeight;
-            frame.imageClipFlip = SDL_FLIP_HORIZONTAL;
-            frame.imageTexture = imageTexture;
-            frame.hitboxTop = jumpHitboxTop;
-            frame.hitboxRight = jumpHitboxRight;
-            frame.hitboxBottom = jumpHitboxBottom;
-            frame.hitboxLeft = jumpHitboxLeft;
-            frame.hitboxColorA = jumpHitboxColorA;
-            frame.duration = frameDuration;
+            frame->x = x;
+            frame->y = y; 
+            frame->width = mImageWidth; 
+            frame->height = mImageHeight;
+            // frame->backgroundColorA = 100;
+            frame->imageClipX = 0;
+            frame->imageClipY = 0;
+            frame->imageClipWidth = mImageWidth;
+            frame->imageClipHeight = mImageHeight;
+            frame->imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame->imageTexture = imageTexture;
+            frame->hitboxTop = jumpHitboxTop;
+            frame->hitboxRight = jumpHitboxRight;
+            frame->hitboxBottom = jumpHitboxBottom;
+            frame->hitboxLeft = jumpHitboxLeft;
+            frame->hitboxColorA = jumpHitboxColorA;
+            frame->duration = frameDuration;
 
             frames.push_back( frame );
         }

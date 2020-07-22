@@ -32,7 +32,7 @@ main( int argc, char* args[] ) {
     auto ranger = new Object2D( 11, 55, 48, 64, "images/ranger.bmp" );
 
     Move movement = { .direction=Direction::Left, .step=5, .interval=20 };
-    auto om = new Spawner<RandomSpike>( {400, 400}, {40, 50, 10}, {1, 5, 300} );
+    auto om = new Spawner<RandomSpike>( {400, 400}, {40, 50, 10}, {1, 5, 100.5} );
     om->setObjectMovement( movement );
     om->setSpawnInterval( 1000 );
     om->start();

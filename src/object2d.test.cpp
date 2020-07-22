@@ -17,13 +17,17 @@ main( int argc, char* args[] ) {
     if ( !game::init( {.x=500, .width=800, .height=600} ) ) {
         return 1;
     }
-
-    Obstacle::init();
     
-    auto obstacle = new Object2D( 700, 0, 40, 72, "images/obstacle-3.png" );
+    auto obj = new Object2D( 100, 100, 40, 72, "images/obstacle-3.png" );
+    auto obj2 = new Object2D( 150, 110, 40, 72, "images/obstacle-3.png" );
 
-    obstacle->setMovement( {.direction=Direction::Left, .step=1, .interval=20} );
-    obstacle->startMove();
+    obj->setHitboxColor( 0, 0, 0, 111 );
+    obj2->setHitboxColor( 0, 0, 0, 111 ); 
+
+    // obj->setMovement( {.direction=Direction::Left, .step=1, .interval=20} );
+    // obj->startMove();
+
+    if ( obj->collide( obj2 ) ) SDL_Log( "@@ collide!" );
 
     bool shouldQuit = false;
     
@@ -45,7 +49,8 @@ main( int argc, char* args[] ) {
         SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
         SDL_RenderClear( gRenderer );
         
-        obstacle->render();
+        obj->render();
+        obj2->render();
 
         // Update
         SDL_RenderPresent( gRenderer );

@@ -4,6 +4,7 @@
 #define STRUCTS_HPP
 
 enum Direction {
+    
     None,
     Up,
     Right,
@@ -12,16 +13,18 @@ enum Direction {
 };
 
 struct Move {
+
     Direction direction {Direction::None};
     int step {0};
-    unsigned int interval {16}; // milliseconds
+    int interval {16}; // milliseconds
 };
 
 
 struct Range {
-    int start {0};
-    int end {0};
-    int amplifier {1}; 
+
+    float start {0};
+    float end {0};
+    float amplifier {1}; 
 };
 
 #endif

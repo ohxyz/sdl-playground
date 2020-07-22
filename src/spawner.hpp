@@ -5,6 +5,7 @@
 #include <functional>
 #include "structs.hpp"
 #include "utils.hpp"
+#include <math.h>
 
 #ifndef SPAWNER_HPP
 #define SPAWNER_HPP
@@ -27,8 +28,8 @@ class Spawner {
 
     int mSpawnInterval;
 
-    // Use amplifier is e.g. 100ms, 200ms, 500ms, 1000ms. 
-    // So the spawn interval is 100ms * 1, 500ms * 3, etc...
+    // Use amplifier e.g. 100ms, 200ms, 500ms, 1000ms. 
+    // So the spawn interval is 100ms * 1, 200ms * 3, etc...
     Range mRangeOfSpawnInterval;
 
     int mSpawnIntervalMilliseconds;
@@ -80,9 +81,9 @@ public:
             return mSpawnInterval;
         }
 
-        int seconds = utils::genRandomInt( mRangeOfSpawnInterval.start, mRangeOfSpawnInterval.end );
+        int base = utils::genRandomInt( mRangeOfSpawnInterval.start, mRangeOfSpawnInterval.end );
 
-        return seconds * mRangeOfSpawnInterval.amplifier;
+        return round( static_cast<float>(base) * mRangeOfSpawnInterval.amplifier );
     }
 
     void
@@ -94,26 +95,26 @@ public:
 
         if ( ticksNow - mSpawnIntervalMilliseconds > mTicksLastTime ) {
 
-            SDL_Log( "@@ spawnInterval %d", mSpawnIntervalMilliseconds );
+            // SDL_Log( "@@ spawnInterval %d", mSpawnIntervalMilliseconds );
 
-            ObjectType* obj;
+            int posX = mSpawnPosX;
+            int posY = mSpawnPosY;
 
             if ( mIsRange ) {
 
-                int posX = (
-                    utils::genRandomInt( mRangeOfX.start, mRangeOfX.end ) 
+                posX = round(
+                    static_cast<float>( utils::genRandomInt( mRangeOfX.start, mRangeOfX.end ) ) 
                     * mRangeOfX.amplifier
                 );
-                int posY = (
-                    utils::genRandomInt( mRangeOfY.start, mRangeOfY.end ) 
+                posY = round(
+                    static_cast<float>( utils::genRandomInt( mRangeOfY.start, mRangeOfY.end ) )
                     * mRangeOfY.amplifier
                 );
-                obj = new ObjectType( posX, posY );
             }
-            else {
 
-                obj = new ObjectType( mSpawnPosX, mSpawnPosY );
-            }
+            ObjectType* obj = new ObjectType( posX, posY );
+
+            // SDL_Log( "@@ %d %d", posX, posY );
 
             obj->setMovement( mObjectMovement );
             obj->startMove();
@@ -138,8 +139,8 @@ public:
         for ( auto& obj: mObjectQueue ) obj->render();
     }
 
-    std::vector<ObjectType*>*
-    getObjects() { return &mObjectQueue; }
+    std::vector<ObjectType*>
+    getObjects() { return mObjectQueue; }
     
     void
     setObjectMovement( Move aMove ) { mObjectMovement = aMove; }

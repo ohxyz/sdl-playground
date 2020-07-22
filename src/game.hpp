@@ -74,6 +74,8 @@ namespace game {
             return false;
         }
 
+        // SDL_RENDERER_ACCELERATED
+        // SDL_RENDERER_PRESENTVSYNC
         gRenderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_PRESENTVSYNC );
 
         if ( gRenderer == NULL ) {

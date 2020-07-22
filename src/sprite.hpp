@@ -18,6 +18,7 @@ class Sprite {
     SDL_RendererFlip mFlip {SDL_FLIP_NONE};
     SDL_Rect mArea;
     SDL_Texture* mTexture;
+    std::vector<Frame*> mFrames;
 
 public:
 
@@ -36,14 +37,15 @@ public:
 
     ~Sprite() {
 
+        mFrames.clear();
         SDL_DestroyTexture( mTexture );
     };
     
-    std::vector<Frame>
+    std::vector<Frame*>
     createFrames( int aX, int aY, int aFrameDuration=1000 ) {
 
-        std::vector<Frame> frames;
-        
+        mFrames.clear();
+
         int width = round( (float)mArea.w / mCols );
         int height = round( (float)mArea.h / mRows );
 
@@ -51,25 +53,25 @@ public:
 
             for ( int j = 0; j < mCols; j++ ) {
 
-                Frame frame;
+                Frame* frame = new Frame();
 
-                frame.x = aX;
-                frame.y = aY;
-                frame.width = width;
-                frame.height = height;
-                frame.imageClipX = j * width;
-                frame.imageClipY = i * height;
-                frame.imageClipWidth = width;
-                frame.imageClipHeight = height;
-                frame.imageClipFlip = mFlip;
-                frame.imageTexture = mTexture;
-                frame.duration = aFrameDuration;
+                frame->x = aX;
+                frame->y = aY;
+                frame->width = width;
+                frame->height = height;
+                frame->imageClipX = j * width;
+                frame->imageClipY = i * height;
+                frame->imageClipWidth = width;
+                frame->imageClipHeight = height;
+                frame->imageClipFlip = mFlip;
+                frame->imageTexture = mTexture;
+                frame->duration = aFrameDuration;
 
-                frames.push_back( frame );
+                mFrames.push_back( frame );
             }
         }
 
-        return frames;
+        return mFrames;
     }
 
 };

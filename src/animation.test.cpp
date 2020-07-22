@@ -11,6 +11,7 @@
 #include "animations/chicken_jump.hpp"
 #include "animations/chicken_skid.hpp"
 #include "animations/vulture_fly.hpp"
+#include "animations/bird_fly.hpp"
 
 extern SDL_Renderer* gRenderer;
 
@@ -33,7 +34,7 @@ main( int argc, char* args[] ) {
 
     auto jumpFrames = jump->getFrames();
 
-    for ( auto &f : *jumpFrames ) { f.x = 50; }
+    for ( auto &f : jumpFrames ) { f->x = 50; }
 
     auto skid = new ChickenSkidAnimation( 0, 350 );
     // skid->setFrameDuration( 100 );
@@ -41,6 +42,9 @@ main( int argc, char* args[] ) {
 
     auto fly = new VultureFlyAnimation( 60, 250);
     fly->start( true );
+
+    auto birdFly = new BirdFlyAnimation( 250, 250 );
+    birdFly->start( true );
 
     bool shouldQuit = false;
     
@@ -76,6 +80,9 @@ main( int argc, char* args[] ) {
 
         fly->animate();
         fly->render();
+
+        birdFly->animate();
+        birdFly->render();
 
         // Update
         SDL_RenderPresent( gRenderer );

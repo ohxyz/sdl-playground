@@ -21,6 +21,7 @@ UTILS_SRC = src/utils.test.cpp
 RANDOM_OBJECT_SRC = src/random_object.test.cpp
 RANDOM_SPIKE_SRC = src/random_spike.test.cpp
 VULTURE_SRC = src/vulture.test.cpp
+BIRD_SRC = src/bird.test.cpp
 
 CC = g++
 
@@ -62,6 +63,9 @@ test_random_spike: $(RANDOM_SPIKE_SRC)
 
 test_vulture: $(VULTURE_SRC)
 	$(CC) $(VULTURE_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+
+test_bird: $(BIRD_SRC)
+	$(CC) $(BIRD_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
 test_utils: $(UTILS_SRC)
 	$(CC) $(UTILS_SRC) -o bin/test

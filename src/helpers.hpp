@@ -15,7 +15,7 @@ namespace helpers {
     Direction
     getDirection( float distX, float distY, float min=1.0 ) {
 
-        SDL_Log( "@@ %f, %f, %f", distX, distY, min );
+        // SDL_Log( "@@ %f, %f, %f", distX, distY, min );
 
         if ( distX < min && distY < min && distX > -min && distY > -min ) return Direction::None;
 
@@ -47,7 +47,7 @@ namespace helpers {
     }
 
     bool
-    collide( SDL_Rect& rect1, SDL_Rect& rect2 ) {
+    collide( SDL_Rect rect1, SDL_Rect rect2 ) {
 
         if ( (rect1.x < rect2.x) && (rect1.x + rect1.w  < rect2.x) ) {
 

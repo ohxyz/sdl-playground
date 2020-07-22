@@ -5,11 +5,10 @@
 #include "scrollable.hpp"
 #include "random_spike.hpp"
 #include "spawner.hpp"
+#include "bird.hpp"
 
 #ifndef GAME_RUNNER_HPP
 #define GAME_RUNNER_HPP
-
-void f1() { SDL_Log( "collide!" ); }
 
 class GameRunner {
     
@@ -21,13 +20,8 @@ class GameRunner {
     Chicken* mChicken {nullptr};
 
     Spawner<RandomSpike>* mSpikeSpawner {nullptr};
-    Move mSpikeMovement;
-    int mSpikeSpawnInterval;
+    Spawner<Bird>* mBirdSpawner {nullptr};
 
-    int mLandStep;
-    unsigned int mLandInterval;
-
-    int mChickenFrameDuration;
     bool mIsFrozen {false};
 
     std::vector<Image*> mPrimarySpikeImages;
@@ -63,6 +57,9 @@ public:
         RandomSpike::init();
         mSpikeSpawner = new Spawner<RandomSpike>( 360, 362 );
 
+        // Near collide of y is around 200
+        mBirdSpawner = new Spawner<Bird>( {360, 360}, {4, 7, 40}, {300, 400, 10} );
+
         init();
     }
 
@@ -81,12 +78,14 @@ public:
     void
     init() {
 
-        mLandStep = 5;
-        mLandInterval = 10;
-        mChickenFrameDuration = 20;
+        // Land and spikes have same movement.
+        Move landMovement = { .direction=Direction::Left, .step=5, .interval=10 };
+        
+        int spikeSpawnInterval = 3000;
+        int chickenFrameDuration = 20;
 
-        mSpikeMovement = { .direction=Direction::Left, .step=mLandStep, .interval=mLandInterval };
-        mSpikeSpawnInterval = 3000;
+        Move birdMovement = { .direction=Direction::Left, .step=6, .interval=10 };
+        int birdSpawnInterval = 1000;
         
         mRestartButton->setShouldRender( false );
 
@@ -94,7 +93,7 @@ public:
         mDesert->startMove();
         
         mLand->setX( 0 );
-        mLand->setMovement( mSpikeMovement );
+        mLand->setMovement( landMovement );
         mLand->startMove();
 
         mWaterTop->setX( 0 );
@@ -104,12 +103,19 @@ public:
         mWaterBody->startMove();
 
         mChicken->init();
-        mChicken->setFrameDuration( mChickenFrameDuration );
+        mChicken->setFrameDuration( chickenFrameDuration );
+
+        mBirdSpawner->clear();
 
         mSpikeSpawner->clear();
-        mSpikeSpawner->setObjectMovement( mSpikeMovement );
-        mSpikeSpawner->setSpawnInterval( mSpikeSpawnInterval );
+        mSpikeSpawner->setObjectMovement( landMovement );
+        mSpikeSpawner->setSpawnInterval( spikeSpawnInterval );
         mSpikeSpawner->start();
+
+        mBirdSpawner->clear();
+        mBirdSpawner->setObjectMovement( birdMovement );
+        mBirdSpawner->setSpawnInterval( birdSpawnInterval );
+        mBirdSpawner->start();
 
         mIsFrozen = false;
     }
@@ -117,9 +123,14 @@ public:
     void
     detectCollision() {
 
-        for ( auto& obj : *mSpikeSpawner->getObjects() ) {
+        for ( auto& spike : mSpikeSpawner->getObjects() ) {
 
-            if ( obj->collide( mChicken ) ) handleCollide();
+            // if ( spike->collide( mChicken ) ) handleCollide();
+        }
+
+        for ( auto& bird: mBirdSpawner->getObjects() ) {
+            
+            if ( bird->collide( mChicken ) ) handleCollide();
         }
     }
 
@@ -132,6 +143,7 @@ public:
         mWaterTop->stopMove();
         mWaterBody->stopMove();
         mSpikeSpawner->stop();
+        mBirdSpawner->stop();
         mIsFrozen = true;
         mRestartButton->setShouldRender( true );
     }
@@ -142,7 +154,8 @@ public:
         if ( !mIsFrozen ) {
 
             detectCollision();
-            mSpikeSpawner->spawn();
+            // mSpikeSpawner->spawn();
+            mBirdSpawner->spawn();
         }
 
         mDesert->render();
@@ -150,6 +163,7 @@ public:
         mWaterTop->render();
         mWaterBody->render();
         mSpikeSpawner->render();
+        mBirdSpawner->render();
         mChicken->render();
         mRestartButton->render();
     }

@@ -95,7 +95,7 @@ public:
     updateHurtFrames() {
 
         auto hurtFrames = mHurtAnimation->getFrames();
-        for ( auto &f : *hurtFrames ) f.y = mCurrentFrame->y;
+        for ( auto &f : hurtFrames ) f->y = mCurrentFrame->y;
     }
 
     void
@@ -113,7 +113,7 @@ public:
         if ( mCurrentFrame != NULL ) {
 
             mCurrentFrame->renderImage();
-            // renderHitbox();
+            // mCurrentFrame->renderHitbox();
         }
     }
 

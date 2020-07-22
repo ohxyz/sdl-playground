@@ -44,15 +44,16 @@ namespace event_handler {
                 auto direction = helpers::getDirection( dx, dy, 10 );
 
                 if ( direction == Direction::Up ) {
-                    
-                    SDL_Log( "up!" );
 
                     if ( !gameRunner->isFrozen() ) {
                          chicken->jump();
                     }
                 } 
                 else if ( direction == Direction::Down ) {
-                    SDL_Log( "down!" );
+                    
+                    if ( !gameRunner->isFrozen() ) {
+                         chicken->skid();
+                    }
                 }
                 else if ( direction == Direction::Left ) {
                     SDL_Log( "left!");

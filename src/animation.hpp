@@ -11,9 +11,7 @@ extern SDL_Renderer* gRenderer;
 
 class Animation {
 
-protected:
-
-    std::vector<Frame> mFrames;
+    std::vector<Frame*> mFrames;
     Frame* mCurrentFrame {NULL};
     int mCurrentFrameIndex {0};
     int mTicks {0};
@@ -29,7 +27,7 @@ public:
     }
 
     ~Animation() {
-
+        
         mFrames.clear();
     }
 
@@ -66,7 +64,7 @@ public:
                 mIsFinished = true;
             }
 
-            mCurrentFrame = &mFrames[ mCurrentFrameIndex ];
+            mCurrentFrame = mFrames[ mCurrentFrameIndex ];
             mTicks = currentTicks;
         }
 
@@ -82,7 +80,7 @@ public:
             return;
         }
 
-        mCurrentFrame = &mFrames[0];
+        mCurrentFrame = mFrames[0];
         mCurrentFrameIndex = 0;
         mTicks = SDL_GetTicks();
         mIsFinished = false;
@@ -120,14 +118,14 @@ public:
     void
     setFrameDuration( int ms ) {
 
-        for ( auto &f : mFrames ) f.duration = ms;
+        for ( auto f : mFrames ) f->duration = ms;
     }
 
     void
-    setFrames( std::vector<Frame> frames ) { mFrames = frames; }
+    setFrames( std::vector<Frame*> frames ) { mFrames = frames; }
 
-    std::vector<Frame>*
-    getFrames() { return &mFrames; }
+    std::vector<Frame*>
+    getFrames() { return mFrames; }
 
     Frame*
     getCurrentFrame() { return mCurrentFrame; }
