@@ -8,40 +8,24 @@
 #include <iostream>
 
 
-struct ClsStruct {
-
-    int a {11};
-    int b {22};
-    int c {33};
-
-};
-
-class Cls {
-
-    ClsStruct mStruct; 
-
-public:
-
-    Cls( ClsStruct s ) {
-
-        mStruct = s;
-    }
-
-    int
-    addAll() {
-
-       return mStruct.a + mStruct.b + mStruct.c;
-    }
-
-};
-
 int 
 main( int argc, char* args[] ) {
 
-    Cls* c = new Cls(  { .a=1, .b=2 } );
+    std::vector<int> ints = { 2, 4, 6, 8 };
 
-    std::cout << c->addAll() << std::endl;
+    // ints.erase( ints.begin() + 1 );
 
-    return 0;
+    for ( int i = 0; i < ints.size(); i++ ) {
+
+        if ( ints[i] == 6 || ints[i] == 2 ) {
+
+            ints.erase( ints.begin()+i );
+        }
+    }
+
+    for ( int i = 0; i < ints.size(); i++ ) {
+
+        std::cout << ints[i] << std::endl;
+    }
 }
 

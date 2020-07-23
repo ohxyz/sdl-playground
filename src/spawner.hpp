@@ -20,40 +20,41 @@ class Spawner {
     int mSpawnPosY {0};
     Move mObjectMovement;
 
-    bool mShouldMove {true};
+    bool mIsStarted {true};
 
-    bool mIsRange {false};
     Range mRangeOfX;
     Range mRangeOfY;
-
 
     int mSpawnInterval;
     // Use amplifier e.g. 100ms, 200ms, 500ms, 1000ms. 
     // So the spawn interval is 100ms * 1, 200ms * 3, etc...
     Range mRangeOfSpawnInterval;
 
-    Timer* mTimer;
+    Timer* mAutoSpawnTimer;
 
 public:
 
-    Spawner( int aX, int aY, int aInterval=1 )
-    : mSpawnPosX( aX ), mSpawnPosY( aY ), mSpawnInterval( aInterval ) {
-
-        mTimer = new Timer();
-    }
-
     Spawner( Range aRangeX, Range aRangeY, Range aRangeInterval={1, 1, 1000} )
-    : mIsRange( true ), 
-      mRangeOfX( aRangeX ), 
+    : mRangeOfX( aRangeX ), 
       mRangeOfY( aRangeY ), 
       mRangeOfSpawnInterval( aRangeInterval ) {
 
-        mTimer = new Timer();
+        mAutoSpawnTimer = new Timer();
+    }
+
+    Spawner( int aX, int aY, int aInterval=1 ) {
+
+        mRangeOfX = { aX, aX, 1 };
+        mRangeOfY = { aY, aY, 1 };
+        mRangeOfSpawnInterval = { aInterval, aInterval, 1 };
+
+        mAutoSpawnTimer = new Timer();
     }
 
     ~Spawner() {
 
         mObjectQueue.clear();
+        delete mAutoSpawnTimer;
     }
 
     void
@@ -63,26 +64,21 @@ public:
     }
 
     void
-    start() { 
+    startAutoSpawn() { 
 
-        mTimer->start( getSpawnIntervalMS() );
-        mShouldMove = true;
+        mAutoSpawnTimer->start( genSpawnInterval() );
+        mIsStarted = true;
     }
 
     void
-    stop() {
+    stopAutoSpawn() {
 
-        mShouldMove = false;
         for ( auto& obj : mObjectQueue ) { obj->stopMove(); }
+        mIsStarted = false;
     }
 
     int
-    getSpawnIntervalMS() {
-
-        if ( !mIsRange ) {
-
-            return mSpawnInterval;
-        }
+    genSpawnInterval() {
 
         int base = utils::genRandomInt( mRangeOfSpawnInterval.start, mRangeOfSpawnInterval.end );
 
@@ -90,44 +86,52 @@ public:
     }
 
     void
+    autoSpawn() {
+
+        if ( !mIsStarted ) return;
+
+        if ( mAutoSpawnTimer->isTimeOut() ) {
+
+            spawn();
+            clean();
+
+            mAutoSpawnTimer->reset( genSpawnInterval() );
+        }
+    }
+
+    void
     spawn() {
 
-        if ( !mShouldMove ) return;
+        int posX = round(
+            static_cast<float>( utils::genRandomInt( mRangeOfX.start, mRangeOfX.end ) ) 
+            * mRangeOfX.amplifier
+        );
+        int posY = round(
+            static_cast<float>( utils::genRandomInt( mRangeOfY.start, mRangeOfY.end ) )
+            * mRangeOfY.amplifier
+        );
 
-        if ( mTimer->isTimeOut() ) {
+        ObjectType* obj = new ObjectType( posX, posY );
 
-            int posX = mSpawnPosX;
-            int posY = mSpawnPosY;
+        // SDL_Log( "@@ %d %d", posX, posY );
 
-            if ( mIsRange ) {
+        obj->setMovement( mObjectMovement );
+        obj->startMove();
+        mObjectQueue.push_back( obj );
+    }
 
-                posX = round(
-                    static_cast<float>( utils::genRandomInt( mRangeOfX.start, mRangeOfX.end ) ) 
-                    * mRangeOfX.amplifier
-                );
-                posY = round(
-                    static_cast<float>( utils::genRandomInt( mRangeOfY.start, mRangeOfY.end ) )
-                    * mRangeOfY.amplifier
-                );
+    void
+    clean() {
+
+        for ( int i = 0; i < mObjectQueue.size(); i ++ ) {
+
+            ObjectType* obj = mObjectQueue[i];
+
+            if ( obj->getX() + obj->getWidth() < 0 ) {
+
+                mObjectQueue.erase( mObjectQueue.begin() + i );
+                delete obj;
             }
-
-            ObjectType* obj = new ObjectType( posX, posY );
-
-            // SDL_Log( "@@ %d %d", posX, posY );
-
-            obj->setMovement( mObjectMovement );
-            obj->startMove();
-            mObjectQueue.push_back( obj );
-
-            auto firstObj = mObjectQueue[0];
-
-            if ( firstObj->getX() + firstObj->getWidth() < 0 ) {
-
-                mObjectQueue.erase( mObjectQueue.begin() );
-                delete firstObj;
-            }
-
-            mTimer->reset( getSpawnIntervalMS() );
         }
     }
 
@@ -138,14 +142,28 @@ public:
     }
 
     std::vector<ObjectType*>
-    getObjects() { return mObjectQueue; }
+    getObjects() { 
+
+        return mObjectQueue; 
+    }
     
     void
-    setObjectMovement( Move aMove ) { mObjectMovement = aMove; }
+    setObjectMovement( Move aMove ) { 
+
+        mObjectMovement = aMove; 
+    }
 
     void
-    setSpawnInterval( int aMilliseconds ) { mSpawnInterval = aMilliseconds; }
+    setSpawnInterval( int aMilliseconds ) { 
+
+        mRangeOfSpawnInterval = { aMilliseconds, aMilliseconds, 1 }; 
+    }
     
+    void
+    setSpawnInterval( Range aRange ) {
+
+        mRangeOfSpawnInterval = aRange;
+    }
 };
 
 #endif

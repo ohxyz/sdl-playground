@@ -56,7 +56,12 @@ public:
 
             mTimer->reset();
         }
+    }
 
+    void
+    stopMove() {
+
+        mTimer->stop();
     }
 
     void

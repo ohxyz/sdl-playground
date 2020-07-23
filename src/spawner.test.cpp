@@ -4,7 +4,7 @@
 #include <string>
 #include <math.h>
 #include <iostream>
-#include "random_spike.hpp"
+#include "bird.hpp"
 #include "game.hpp"
 #include <vector>
 #include "helpers.hpp"
@@ -27,15 +27,14 @@ main( int argc, char* args[] ) {
         return 1;
     }
 
-    RandomSpike::init();
-
-    auto ranger = new Object2D( 11, 55, 48, 64, "images/ranger.bmp" );
-
     Move movement = { .direction=Direction::Left, .step=5, .interval=20 };
-    auto om = new Spawner<RandomSpike>( {400, 400}, {40, 50, 10}, {1, 5, 100.5} );
+    auto om = new Spawner<Bird>( 400, 400 );
     om->setObjectMovement( movement );
-    om->setSpawnInterval( 1000 );
-    om->start();
+    // om->setSpawnInterval( 1000 );
+    // om->startAutoSpawn();
+
+    Timer* timer = new Timer();
+    timer->start( 1000 );
 
     bool shouldQuit = false;
     
@@ -57,18 +56,17 @@ main( int argc, char* args[] ) {
         SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
         SDL_RenderClear( gRenderer );
 
-        ranger->render();
-        // om->run( ranger, handleCollide);
-        om->spawn();
-        // for ( auto& obj : *om->getObjects() ) {
+        if ( timer->isTimeOut() ) {
+        
+            om->spawn();
+            timer->reset();
+        }
 
-        //     if ( obj->collide( ranger ) ) { SDL_Log( "cOLLIDE!" ); om->stopMove(); }
-        // }
 
         om->renderObjects();
         // Update
         SDL_RenderPresent( gRenderer );
-        SDL_Delay(5);
+        SDL_Delay(10);
     }
 
     game::quit();

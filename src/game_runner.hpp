@@ -6,6 +6,8 @@
 #include "random_spike.hpp"
 #include "spawner.hpp"
 #include "bird.hpp"
+#include "timer.hpp"
+#include "utils.hpp"
 
 #ifndef GAME_RUNNER_HPP
 #define GAME_RUNNER_HPP
@@ -26,6 +28,8 @@ class GameRunner {
 
     std::vector<Image*> mPrimarySpikeImages;
     std::vector<Image*> mSecondarySpikeImages;
+
+    Timer* mSpawnTimer;
 
 public:
 
@@ -59,6 +63,7 @@ public:
 
         // Near collide of y is around 200
         mBirdSpawner = new Spawner<Bird>( {360, 360}, {4, 7, 40}, {300, 400, 10} );
+        mSpawnTimer = new Timer();
 
         init();
     }
@@ -73,19 +78,24 @@ public:
         delete mSpikeSpawner;
         mPrimarySpikeImages.clear();
         mSecondarySpikeImages.clear();
+
+        delete mSpawnTimer;
     }
     
     void
     init() {
 
+        // At begining of the game, set a fixe value to spawn
+        mSpawnTimer->start( 2000 );
+
         // Land and spikes have same movement.
         Move landMovement = { .direction=Direction::Left, .step=5, .interval=10 };
         
-        int spikeSpawnInterval = 3000;
-        int chickenFrameDuration = 20;
+        // int spikeSpawnInterval = 3000;
+        // int chickenFrameDuration = 20;
 
         Move birdMovement = { .direction=Direction::Left, .step=6, .interval=10 };
-        int birdSpawnInterval = 1000;
+        // int birdSpawnInterval = 1000;
         
         mRestartButton->setShouldRender( false );
 
@@ -103,21 +113,22 @@ public:
         mWaterBody->startMove();
 
         mChicken->init();
-        mChicken->setFrameDuration( chickenFrameDuration );
+        // mChicken->setFrameDuration( chickenFrameDuration );
 
         mBirdSpawner->clear();
 
         mSpikeSpawner->clear();
         mSpikeSpawner->setObjectMovement( landMovement );
-        mSpikeSpawner->setSpawnInterval( spikeSpawnInterval );
-        mSpikeSpawner->start();
+        // mSpikeSpawner->setSpawnInterval( spikeSpawnInterval );
+        // mSpikeSpawner->startAutoSpawn();
 
         mBirdSpawner->clear();
         mBirdSpawner->setObjectMovement( birdMovement );
-        mBirdSpawner->setSpawnInterval( birdSpawnInterval );
-        mBirdSpawner->start();
+        // mBirdSpawner->setSpawnInterval( birdSpawnInterval );
+        // mBirdSpawner->startAutoSpawn();
 
         mIsFrozen = false;
+
     }
 
     void
@@ -125,12 +136,12 @@ public:
 
         for ( auto& spike : mSpikeSpawner->getObjects() ) {
 
-            // if ( spike->collide( mChicken ) ) handleCollide();
+            if ( spike->collide( mChicken ) ) handleCollide();
         }
 
         for ( auto& bird: mBirdSpawner->getObjects() ) {
             
-            // if ( bird->collide( mChicken ) ) handleCollide();
+            if ( bird->collide( mChicken ) ) handleCollide();
         }
     }
 
@@ -142,10 +153,30 @@ public:
         mLand->stopMove();
         mWaterTop->stopMove();
         mWaterBody->stopMove();
-        mSpikeSpawner->stop();
-        mBirdSpawner->stop();
+        mSpikeSpawner->stopAutoSpawn();
+        mBirdSpawner->stopAutoSpawn();
         mIsFrozen = true;
         mRestartButton->setShouldRender( true );
+    }
+
+    void
+    spawn() {
+
+        if ( mSpawnTimer->isTimeOut() ) {
+
+            int which = utils::genRandomInt( 0, 1 );
+
+            if ( which == 0 ) {
+
+                mBirdSpawner->spawn();
+            }
+            else if ( which == 1 ) {
+
+                mSpikeSpawner->spawn();
+            }
+
+            mSpawnTimer->reset( utils::genRandomInt( 3, 5 ) * 400 );
+        }
     }
 
     void 
@@ -154,8 +185,7 @@ public:
         if ( !mIsFrozen ) {
 
             detectCollision();
-            mSpikeSpawner->spawn();
-            mBirdSpawner->spawn();
+            spawn();
         }
 
         mDesert->render();

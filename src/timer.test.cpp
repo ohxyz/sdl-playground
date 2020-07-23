@@ -8,6 +8,7 @@
 #include "game.hpp"
 #include "structs.hpp"
 #include "timer.hpp"
+#include "utils.hpp"
 
 extern SDL_Renderer* gRenderer;
 
@@ -20,9 +21,9 @@ main( int argc, char* args[] ) {
         return 1;
     }
 
-    Timer* timer = new Timer( 1000 );
+    Timer* timer = new Timer();
 
-    timer->start();
+    timer->start(1000);
 
     bool shouldQuit = false;
     
@@ -52,7 +53,7 @@ main( int argc, char* args[] ) {
                     SDL_Log( "Key down!" );
                     break;
                 }
-            }   
+            }
         }
 
         // Drawing 
@@ -64,7 +65,9 @@ main( int argc, char* args[] ) {
 
             SDL_Log( "@@ time out!" );
 
-            timer->reset();
+            int ticks = utils::genRandomInt( 1, 5 ) * 1000;
+            std::cout << ticks << std::endl;
+            timer->reset( ticks );
         }
         
         // Update

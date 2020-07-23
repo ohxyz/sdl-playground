@@ -22,8 +22,8 @@ struct Move {
 
 struct Range {
 
-    float start {0};
-    float end {0};
+    int start {0};
+    int end {0};
     float amplifier {1}; 
 };
 

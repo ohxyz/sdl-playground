@@ -4,11 +4,12 @@
 #include "helpers.hpp"
 #include "image.hpp"
 #include "utils.hpp"
+#include "timer.hpp"
 
 #ifndef RANDOM_OBJECT_HPP
 #define RANDOM_OBJECT_HPP
 
-class RandomObject {
+class RandomObject : public Object2D {
 
     std::vector<Image*>* mPrimaryImages;
     std::vector<Image*>* mSecondaryImages;
@@ -19,11 +20,11 @@ class RandomObject {
     bool mShouldSwap {false};
     bool mShouldRenderSecondary {true};
 
-    int mMovementTicks;
-    bool mIsMovementStarted;
     Move mMovement;
 
     int mGap {25};
+
+    Timer* mTimer;
 
 public:
 
@@ -88,12 +89,15 @@ public:
         mPrimaryFrame->setHitbox( 10, 10, 0, 10 );
 
         mShouldSwap = utils::genRandomBool();
+
+        mTimer = new Timer();
     }
 
     ~RandomObject() {
 
         delete mPrimaryFrame;
         delete mSecondaryFrame;
+        delete mTimer;
     }
 
     bool
@@ -133,7 +137,7 @@ public:
     void    
     render() {
 
-        if ( mIsMovementStarted ) move();
+        if ( mTimer->isStarted() ) move();
 
         if ( mShouldSwap ) {
 
@@ -150,30 +154,29 @@ public:
     void
     startMove() {
 
-        mMovementTicks = SDL_GetTicks();
-        mIsMovementStarted = true;
+        mTimer->start( mMovement.interval ) ;
     }
 
     void
     stopMove() {
 
-        mIsMovementStarted = false;
+        mTimer->stop();
     }
 
     void
     move() {
 
-        int currentTicks = SDL_GetTicks();
+        if ( !mTimer->isStarted() ) return;
 
-        if ( currentTicks - mMovementTicks > mMovement.interval ) {
-    
+        if ( mTimer->isTimeOut() ) {
+
             mPrimaryFrame->move( mMovement.direction, mMovement.step );
 
             if ( mSecondaryFrame ) {
                 mSecondaryFrame->move( mMovement.direction, mMovement.step );
             }
-            
-            mMovementTicks = currentTicks;
+
+            mTimer->reset();
         }
     }
 

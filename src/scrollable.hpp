@@ -34,6 +34,11 @@ public:
 
     }
 
+    ~Scrollable() {
+
+        delete mTimer;
+    }
+
     void
     startMove() {
         
