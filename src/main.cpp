@@ -31,9 +31,8 @@ main( int argc, char* args[] ) {
             // Update
             SDL_RenderPresent( gRenderer );
 
-            // Delay by some time to avoid high CPU usage
-            // If by 1 ms, my laptop gives ci, ci, ci sound
-            SDL_Delay(5);
+            // If delay by 1 ms, my laptop gives ci, ci, ci sound
+            SDL_Delay(10);
         }
 
         game::quit();

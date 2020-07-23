@@ -4,6 +4,7 @@
 #include "object2d.hpp"
 #include "animations/bird_fly.hpp"
 #include <string>
+#include "timer.hpp"
 
 #ifndef BIRD_HPP
 #define BIRD_HPP
@@ -16,8 +17,7 @@ class Bird : public Object2D {
     int mNewX;
     Move mMovement;
 
-    int mMovementTicks;
-    bool mIsMovementStarted {false};
+    Timer* mTimer;
 
 public:
 
@@ -28,50 +28,47 @@ public:
         mNewX = aX;
 
         mFrame = new Frame();
+        mTimer = new Timer();
     }
 
     ~Bird() {
 
         delete mFrame;
         delete mFlyAnimation;
+        delete mTimer;
     }
 
     void
     startMove() {
 
-        mMovementTicks = SDL_GetTicks();
-        mIsMovementStarted = true;
-    }
-
-    void
-    stopMove() {
-
-        mIsMovementStarted = false;
+        mTimer->start( mMovement.interval );
     }
 
     void
     move() {
 
-        int currentTicks = SDL_GetTicks();
-
-        if ( currentTicks - mMovementTicks > mMovement.interval ) {
+        if ( mTimer->isTimeOut() ) {
 
             mFrame = mFlyAnimation->animate();
             mFrame->x = mNewX;
             mNewX -= mMovement.step;
             setCurrentFrame( mFrame );
 
-            mMovementTicks = currentTicks;
+            mTimer->reset();
         }
+
     }
 
     void
-    setMovement( Move move ) { mMovement = move; }
+    setMovement( Move move ) { 
+
+        mMovement = move; 
+    }
 
     void
     render() {
 
-        if ( mIsMovementStarted ) move();
+        if ( mTimer->isStarted() ) move();
 
         // mFrame->renderHitbox();
         mFrame->renderImage();

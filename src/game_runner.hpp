@@ -130,7 +130,7 @@ public:
 
         for ( auto& bird: mBirdSpawner->getObjects() ) {
             
-            if ( bird->collide( mChicken ) ) handleCollide();
+            // if ( bird->collide( mChicken ) ) handleCollide();
         }
     }
 
@@ -154,7 +154,7 @@ public:
         if ( !mIsFrozen ) {
 
             detectCollision();
-            // mSpikeSpawner->spawn();
+            mSpikeSpawner->spawn();
             mBirdSpawner->spawn();
         }
 
@@ -162,8 +162,8 @@ public:
         mLand->render();
         mWaterTop->render();
         mWaterBody->render();
-        mSpikeSpawner->render();
-        mBirdSpawner->render();
+        mSpikeSpawner->renderObjects();
+        mBirdSpawner->renderObjects();
         mChicken->render();
         mRestartButton->render();
     }

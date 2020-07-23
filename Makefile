@@ -12,6 +12,7 @@ SRC += src/game.hpp
 APP_SRC = src/main.cpp
 DEBUG_SRC = src/debug.cpp
 
+TEST_SRC = src/test.test.cpp
 OBJECT2D_SRC = src/object2d.test.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
 SPRITE_SRC = src/sprite.test.cpp
@@ -22,6 +23,7 @@ RANDOM_OBJECT_SRC = src/random_object.test.cpp
 RANDOM_SPIKE_SRC = src/random_spike.test.cpp
 VULTURE_SRC = src/vulture.test.cpp
 BIRD_SRC = src/bird.test.cpp
+TIMER_SRC = src/timer.test.cpp
 
 CC = g++
 
@@ -66,6 +68,12 @@ test_vulture: $(VULTURE_SRC)
 
 test_bird: $(BIRD_SRC)
 	$(CC) $(BIRD_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+
+test_timer: $(TIMER_SRC)
+	$(CC) $(TIMER_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
+
+test_test: $(TEST_SRC)
+	$(CC) $(TEST_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
 test_utils: $(UTILS_SRC)
 	$(CC) $(UTILS_SRC) -o bin/test

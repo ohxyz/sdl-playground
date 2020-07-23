@@ -1,6 +1,7 @@
 #include "object2d.hpp"
 #include "structs.hpp"
 #include <string>
+#include "timer.hpp"
 
 #ifndef SCROLLABLE_HPP
 #define SCROLLABLE_HPP
@@ -10,8 +11,11 @@ class Scrollable : public Object2D {
     bool mShouldRepeatHorizontal {false};
 
     Move mMovement;
+
     int mMovementTicks {0};
     bool mIsMovementStarted {false};
+
+    Timer* mTimer;
 
 public:
 
@@ -21,6 +25,8 @@ public:
         mMovement = movement;
         mShouldRepeatHorizontal = true;
         getCurrentFrame()->width = getCurrentFrame()->width * 2;
+
+        mTimer = new Timer( movement.interval );
     }
 
     Scrollable( int x, int y, int w, int h, std::string imagePath, Move movement )
@@ -30,9 +36,8 @@ public:
 
     void
     startMove() {
-
-        mMovementTicks = SDL_GetTicks();
-        mIsMovementStarted = true;
+        
+        mTimer->start();
 
         if ( mShouldRepeatHorizontal ) {
 
@@ -48,7 +53,7 @@ public:
     void
     stopMove() {
 
-        mIsMovementStarted = false;
+        mTimer->stop();
     }
 
     void
@@ -56,9 +61,7 @@ public:
 
         if ( mMovement.direction == Direction::None || mMovement.step == 0 ) return;
 
-        int currentTicks = SDL_GetTicks();
-
-        if ( currentTicks - mMovementTicks > mMovement.interval ) {
+        if ( mTimer->isTimeOut() ) {
 
             switch ( mMovement.direction ) {
 
@@ -90,7 +93,7 @@ public:
                 break;
             }
 
-            mMovementTicks = currentTicks;
+            mTimer->reset();
         }
     }
 
@@ -109,7 +112,7 @@ public:
     void
     render() {
 
-        if ( mIsMovementStarted ) move();
+        if ( mTimer->isStarted() ) move();
 
         getCurrentFrame()->renderImage();
     }

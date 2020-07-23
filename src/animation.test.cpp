@@ -89,7 +89,7 @@ main( int argc, char* args[] ) {
 
         // Delay by some time to avoid high CPU usage
         // If by 1 ms, my laptop gives ci, ci, ci sound
-        SDL_Delay(5);
+        SDL_Delay(10);
     }
 
     game::quit();

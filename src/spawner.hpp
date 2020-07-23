@@ -6,6 +6,7 @@
 #include "structs.hpp"
 #include "utils.hpp"
 #include <math.h>
+#include "timer.hpp"
 
 #ifndef SPAWNER_HPP
 #define SPAWNER_HPP
@@ -19,25 +20,26 @@ class Spawner {
     int mSpawnPosY {0};
     Move mObjectMovement;
 
-    int mTicksLastTime;
     bool mShouldMove {true};
 
     bool mIsRange {false};
     Range mRangeOfX;
     Range mRangeOfY;
 
-    int mSpawnInterval;
 
+    int mSpawnInterval;
     // Use amplifier e.g. 100ms, 200ms, 500ms, 1000ms. 
     // So the spawn interval is 100ms * 1, 200ms * 3, etc...
     Range mRangeOfSpawnInterval;
 
-    int mSpawnIntervalMilliseconds;
+    Timer* mTimer;
 
 public:
 
     Spawner( int aX, int aY, int aInterval=1 )
     : mSpawnPosX( aX ), mSpawnPosY( aY ), mSpawnInterval( aInterval ) {
+
+        mTimer = new Timer();
     }
 
     Spawner( Range aRangeX, Range aRangeY, Range aRangeInterval={1, 1, 1000} )
@@ -45,6 +47,8 @@ public:
       mRangeOfX( aRangeX ), 
       mRangeOfY( aRangeY ), 
       mRangeOfSpawnInterval( aRangeInterval ) {
+
+        mTimer = new Timer();
     }
 
     ~Spawner() {
@@ -61,8 +65,7 @@ public:
     void
     start() { 
 
-        mTicksLastTime = SDL_GetTicks();
-        mSpawnIntervalMilliseconds = getSpawnIntervalMilliseconds();
+        mTimer->start( getSpawnIntervalMS() );
         mShouldMove = true;
     }
 
@@ -74,7 +77,7 @@ public:
     }
 
     int
-    getSpawnIntervalMilliseconds() {
+    getSpawnIntervalMS() {
 
         if ( !mIsRange ) {
 
@@ -91,11 +94,7 @@ public:
 
         if ( !mShouldMove ) return;
 
-        int ticksNow = SDL_GetTicks();
-
-        if ( ticksNow - mSpawnIntervalMilliseconds > mTicksLastTime ) {
-
-            // SDL_Log( "@@ spawnInterval %d", mSpawnIntervalMilliseconds );
+        if ( mTimer->isTimeOut() ) {
 
             int posX = mSpawnPosX;
             int posY = mSpawnPosY;
@@ -128,13 +127,12 @@ public:
                 delete firstObj;
             }
 
-            mTicksLastTime = ticksNow;
-            mSpawnIntervalMilliseconds = getSpawnIntervalMilliseconds();
+            mTimer->reset( getSpawnIntervalMS() );
         }
     }
 
     void
-    render() {
+    renderObjects() {
 
         for ( auto& obj: mObjectQueue ) obj->render();
     }

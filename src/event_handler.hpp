@@ -22,7 +22,8 @@ namespace event_handler {
 
                 return false;
             }
-            else if ( event.type == SDL_FINGERUP ) {
+            
+            if ( event.type == SDL_FINGERUP ) {
             
 
             }

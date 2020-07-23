@@ -65,7 +65,7 @@ main( int argc, char* args[] ) {
         //     if ( obj->collide( ranger ) ) { SDL_Log( "cOLLIDE!" ); om->stopMove(); }
         // }
 
-        om->render();
+        om->renderObjects();
         // Update
         SDL_RenderPresent( gRenderer );
         SDL_Delay(5);
