@@ -268,6 +268,9 @@ public:
         case Direction::Left:
             this->x -= aStep;
             break;
+
+        case Direction::None:
+            break;
         }
     }
 };

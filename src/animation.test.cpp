@@ -18,7 +18,9 @@ extern SDL_Renderer* gRenderer;
 int 
 main( int argc, char* args[] ) {
 
-    if ( !game::init( { .x=500, .width=800, .height=800 } ) ) {
+    // SDL_RENDERER_ACCELERATED
+    // SDL_RENDERER_PRESENTVSYNC
+    if ( !game::init( { .x=500, .width=800, .height=800, .rendererFlag=SDL_RENDERER_ACCELERATED } ) ) {
         return 1;
     }
 
@@ -30,11 +32,11 @@ main( int argc, char* args[] ) {
     walk->start(true);
 
     auto jump = new ChickenJumpAnimation( 200, 150 );
-    jump->start( 5 );
+    jump->start( 100 );
 
     auto jumpFrames = jump->getFrames();
 
-    for ( auto &f : jumpFrames ) { f->x = 50; }
+    for ( auto &f : jumpFrames ) { f->x = 99; }
 
     auto skid = new ChickenSkidAnimation( 0, 350 );
     // skid->setFrameDuration( 100 );
@@ -66,30 +68,30 @@ main( int argc, char* args[] ) {
         SDL_SetRenderDrawColor( gRenderer, 0, 128, 0, 255 );
         SDL_RenderClear( gRenderer );
         
-        hurt->animate();
-        hurt->render();
+        // hurt->animate();
+        // hurt->render();
 
-        walk->animate();
-        walk->render();
+        // walk->animate();
+        // walk->render();
 
         jump->animate();
         jump->render();
 
-        skid->animate();
-        skid->render();
+        // skid->animate();
+        // skid->render();
 
-        fly->animate();
-        fly->render();
+        // fly->animate();
+        // fly->render();
 
-        birdFly->animate();
-        birdFly->render();
+        // birdFly->animate();
+        // birdFly->render();
 
         // Update
         SDL_RenderPresent( gRenderer );
 
         // Delay by some time to avoid high CPU usage
         // If by 1 ms, my laptop gives ci, ci, ci sound
-        SDL_Delay(10);
+        SDL_Delay(5);
     }
 
     game::quit();

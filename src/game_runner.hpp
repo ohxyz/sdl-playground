@@ -90,12 +90,7 @@ public:
 
         // Land and spikes have same movement.
         Move landMovement = { .direction=Direction::Left, .step=5, .interval=10 };
-        
-        // int spikeSpawnInterval = 3000;
-        // int chickenFrameDuration = 20;
-
         Move birdMovement = { .direction=Direction::Left, .step=6, .interval=10 };
-        // int birdSpawnInterval = 1000;
         
         mRestartButton->setShouldRender( false );
 
@@ -113,22 +108,16 @@ public:
         mWaterBody->startMove();
 
         mChicken->init();
-        // mChicken->setFrameDuration( chickenFrameDuration );
 
         mBirdSpawner->clear();
 
         mSpikeSpawner->clear();
         mSpikeSpawner->setObjectMovement( landMovement );
-        // mSpikeSpawner->setSpawnInterval( spikeSpawnInterval );
-        // mSpikeSpawner->startAutoSpawn();
 
         mBirdSpawner->clear();
         mBirdSpawner->setObjectMovement( birdMovement );
-        // mBirdSpawner->setSpawnInterval( birdSpawnInterval );
-        // mBirdSpawner->startAutoSpawn();
 
         mIsFrozen = false;
-
     }
 
     void
@@ -175,7 +164,7 @@ public:
                 mSpikeSpawner->spawn();
             }
 
-            mSpawnTimer->reset( utils::genRandomInt( 3, 5 ) * 400 );
+            mSpawnTimer->reset( utils::genRandomInt( 3, 5 ) * 380 );
         }
     }
 

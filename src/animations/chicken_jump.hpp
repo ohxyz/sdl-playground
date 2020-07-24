@@ -39,8 +39,8 @@ public:
         int jumpHitboxRight = 45;
         int jumpHitboxBottom = 15;
         int jumpHitboxLeft = 65;
-        uint8_t jumpHitboxColorA = 150;
-        int frameDuration = 30;
+        uint8_t jumpHitboxColorA = 0;
+        int frameDuration = 16;
 
         for ( int i = 0; i < 12; i++ ) {
 
@@ -79,6 +79,8 @@ public:
 
             frames.push_back( frame );
         }
+
+        // Total in air 23, expo 2.0
 
         // Jump in the air
         int totalInAir = 23;

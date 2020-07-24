@@ -96,7 +96,14 @@ public:
                 }
 
                 break;
+
+            case Direction::Up:
+            case Direction::Down:
+            case Direction::None:
+                // Todo: handle them
+                break;
             }
+
 
             mTimer->reset();
         }

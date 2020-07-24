@@ -143,6 +143,9 @@ public:
         case Direction::Left:
             mCurrentFrame->x -= aStep;
             break;
+
+        case Direction::None:
+            break;
         }
     }
 

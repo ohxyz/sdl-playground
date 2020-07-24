@@ -11,7 +11,7 @@ main( int argc, char* args[] ) {
 
     try {
 
-        if ( !game::init() ) {
+        if ( !game::init( { .name="Chicken Jump" }) ) {
             return 1;
         }
 

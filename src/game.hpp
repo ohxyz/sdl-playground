@@ -13,10 +13,12 @@ namespace game {
 
     struct InitOptions {
 
-        int x {1000};
-        int y {-2000};
-        int width {360};
-        int height {640};
+        int                 x {1000};
+        int                 y {-2000};
+        int                 width {360};
+        int                 height {640};
+        const char*         name {"Game"};
+        SDL_RendererFlags   rendererFlag { SDL_RENDERER_PRESENTVSYNC };
 
     } defaultInitOptions;
 
@@ -60,7 +62,7 @@ namespace game {
         }
 
         window = SDL_CreateWindow(
-            "SDL APP",
+            options.name,
             options.x,
             options.y,
             options.width,
@@ -76,7 +78,7 @@ namespace game {
 
         // SDL_RENDERER_ACCELERATED
         // SDL_RENDERER_PRESENTVSYNC
-        gRenderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_PRESENTVSYNC );
+        gRenderer = SDL_CreateRenderer( window, -1, options.rendererFlag );
 
         if ( gRenderer == NULL ) {
 
