@@ -63,7 +63,11 @@ public:
     void
     skid() {
 
-        if ( mCurrentState == Skid && !mSkidAnimation->isFinished() ) return;
+        if ( ( mCurrentState == Skid && !mSkidAnimation->isFinished() )
+            || ( mCurrentState == Jump && !mJumpAnimation->isFinished() )
+        ) {
+            return;
+        }
 
         mCurrentState = Skid;
         mCurrentAnimation = mSkidAnimation;

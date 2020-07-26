@@ -42,7 +42,7 @@ public:
         int hitboxBottom = 0;
         int hitboxLeft = 65;
         uint8_t hitboxColorA = 150;
-        int frameDuration = 30;
+        int frameDuration = 20;
 
         for ( int i = 0; i < totalFrames; i++ ) {
 

@@ -2,6 +2,7 @@
 #include <string>
 #include "game.hpp"
 #include "structs.hpp"
+#include "image.hpp"
 
 #ifndef FRAME_HPP
 #define FRAME_HPP

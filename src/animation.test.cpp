@@ -36,7 +36,7 @@ main( int argc, char* args[] ) {
 
     auto jumpFrames = jump->getFrames();
 
-    for ( auto &f : jumpFrames ) { f->x = 99; }
+    // for ( auto &f : jumpFrames ) { f->x = 99; }
 
     auto skid = new ChickenSkidAnimation( 0, 350 );
     // skid->setFrameDuration( 100 );
@@ -51,6 +51,8 @@ main( int argc, char* args[] ) {
     bool shouldQuit = false;
     
     while ( !shouldQuit ) {
+
+        Uint64 start = SDL_GetPerformanceCounter();
 
         SDL_Event event;
 
@@ -92,6 +94,21 @@ main( int argc, char* args[] ) {
         // Delay by some time to avoid high CPU usage
         // If by 1 ms, my laptop gives ci, ci, ci sound
         SDL_Delay(5);
+
+        Uint64 end = SDL_GetPerformanceCounter();
+        float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+        float cappedElapsedMS = floor(16.666f - elapsedMS);
+        // std::cout << "Current FPS: " << std::to_string( 1000.0f / cappedElapsedMS ) << std::endl;
+
+        if ( cappedElapsedMS < 0 ) {
+
+            SDL_Delay( 16.666 );
+        }
+        else {
+
+            SDL_Delay( cappedElapsedMS );
+        }
+
     }
 
     game::quit();

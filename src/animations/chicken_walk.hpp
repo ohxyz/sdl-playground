@@ -39,8 +39,8 @@ public:
         int hitboxRight = 45;
         int hitboxBottom = 0;
         int hitboxLeft = 65;
-        uint8_t hitboxColorA = 0;
-        int frameDuration = 16;
+        uint8_t hitboxColorA = 150;
+        int frameDuration = 20;
 
         for ( int i = 0; i < totalFrames; i++ ) {
 
@@ -48,29 +48,26 @@ public:
             std::string imagePath = mImageFolderPath + "__yellow_chicken_walk_0" + imageIndex + ".png";
             SDL_Texture* imageTexture = helpers::loadTexture( imagePath );
 
-            for ( int j = 0; j < 2; j ++ ) {
+            Frame* frame = new Frame();
 
-                Frame* frame = new Frame();
-
-                frame->x = x; 
-                frame->y = y;
-                frame->width = mImageWidth; 
-                frame->height = mImageHeight;
-                frame->imageClipX = 0;
-                frame->imageClipY = 0;
-                frame->imageClipWidth = mImageWidth;
-                frame->imageClipHeight = mImageHeight;
-                frame->imageClipFlip = SDL_FLIP_HORIZONTAL;
-                frame->imageTexture = imageTexture;
-                frame->hitboxTop = hitboxTop;
-                frame->hitboxRight = hitboxRight;
-                frame->hitboxBottom = hitboxBottom;
-                frame->hitboxLeft = hitboxLeft;
-                frame->hitboxColorA = hitboxColorA;
-                frame->duration = frameDuration;
-                
-                mFrames.push_back( frame );
-            }
+            frame->x = x; 
+            frame->y = y;
+            frame->width = mImageWidth; 
+            frame->height = mImageHeight;
+            frame->imageClipX = 0;
+            frame->imageClipY = 0;
+            frame->imageClipWidth = mImageWidth;
+            frame->imageClipHeight = mImageHeight;
+            frame->imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame->imageTexture = imageTexture;
+            frame->hitboxTop = hitboxTop;
+            frame->hitboxRight = hitboxRight;
+            frame->hitboxBottom = hitboxBottom;
+            frame->hitboxLeft = hitboxLeft;
+            frame->hitboxColorA = hitboxColorA;
+            frame->duration = frameDuration;
+            
+            mFrames.push_back( frame ); 
         }
     }
 };

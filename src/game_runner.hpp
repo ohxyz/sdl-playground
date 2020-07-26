@@ -61,7 +61,7 @@ public:
         RandomSpike::init();
         mSpikeSpawner = new Spawner<RandomSpike>( 360, 362 );
 
-        // Near collide of y is around 200
+        // Near collide of y is around 200, 4, 7,
         mBirdSpawner = new Spawner<Bird>( {360, 360}, {4, 7, 40}, {300, 400, 10} );
         mSpawnTimer = new Timer();
 
@@ -164,7 +164,7 @@ public:
                 mSpikeSpawner->spawn();
             }
 
-            mSpawnTimer->reset( utils::genRandomInt( 3, 5 ) * 380 );
+            mSpawnTimer->reset( utils::genRandomInt( 3, 5 ) * 410 );
         }
     }
 

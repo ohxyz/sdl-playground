@@ -40,7 +40,7 @@ public:
         int jumpHitboxBottom = 15;
         int jumpHitboxLeft = 65;
         uint8_t jumpHitboxColorA = 150;
-        int frameDuration = 30;
+        int frameDuration = 20;
 
         for ( int i = 0; i < 5; i++ ) {
 

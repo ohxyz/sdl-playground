@@ -23,7 +23,7 @@ public:
             4
         );
 
-        auto frames = mSprite->createFrames( aX, aY, 30 );
+        auto frames = mSprite->createFrames( aX, aY, 20 );
 
         for ( auto frame : frames ) {
 

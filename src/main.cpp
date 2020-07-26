@@ -32,7 +32,7 @@ main( int argc, char* args[] ) {
             SDL_RenderPresent( gRenderer );
 
             // If delay by 1 ms, my laptop gives ci, ci, ci sound
-            SDL_Delay(10);
+            SDL_Delay( 5 );
         }
 
         game::quit();
