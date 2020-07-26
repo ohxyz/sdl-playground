@@ -20,7 +20,7 @@ main( int argc, char* args[] ) {
 
     // SDL_RENDERER_ACCELERATED
     // SDL_RENDERER_PRESENTVSYNC
-    if ( !game::init( { .x=500, .width=800, .height=800, .rendererFlag=SDL_RENDERER_ACCELERATED } ) ) {
+    if ( !game::init( { .x=500, .width=800, .height=800, .rendererFlag=SDL_RENDERER_PRESENTVSYNC } ) ) {
         return 1;
     }
 
@@ -31,8 +31,8 @@ main( int argc, char* args[] ) {
     auto walk = new ChickenWalkAnimation( 0, 150 );
     walk->start(true);
 
-    auto jump = new ChickenJumpAnimation( 200, 150 );
-    jump->start( 100 );
+    auto jump = new ChickenJumpAnimation( 200, 200 );
+    jump->start( 1 );
 
     auto jumpFrames = jump->getFrames();
 
@@ -52,7 +52,7 @@ main( int argc, char* args[] ) {
     
     while ( !shouldQuit ) {
 
-        Uint64 start = SDL_GetPerformanceCounter();
+        // Uint64 start = SDL_GetPerformanceCounter();
 
         SDL_Event event;
 
@@ -95,19 +95,22 @@ main( int argc, char* args[] ) {
         // If by 1 ms, my laptop gives ci, ci, ci sound
         SDL_Delay(5);
 
-        Uint64 end = SDL_GetPerformanceCounter();
-        float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
-        float cappedElapsedMS = floor(16.666f - elapsedMS);
-        // std::cout << "Current FPS: " << std::to_string( 1000.0f / cappedElapsedMS ) << std::endl;
 
-        if ( cappedElapsedMS < 0 ) {
+        // Uint64 end = SDL_GetPerformanceCounter();
+        
+        // float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+        // float cappedElapsedMS = floor(16.666f - elapsedMS);
 
-            SDL_Delay( 16.666 );
-        }
-        else {
+        // std::cout << "Current FPS: " << std::to_string( 1000.0f / elapsedMS ) << std::endl;
 
-            SDL_Delay( cappedElapsedMS );
-        }
+        // if ( cappedElapsedMS < 0 ) {
+
+        //     SDL_Delay( 16.666 );
+        // }
+        // else {
+
+        //     SDL_Delay( cappedElapsedMS );
+        // }
 
     }
 

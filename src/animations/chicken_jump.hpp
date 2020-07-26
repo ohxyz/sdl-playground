@@ -39,7 +39,8 @@ public:
         int jumpHitboxRight = 45;
         int jumpHitboxBottom = 15;
         int jumpHitboxLeft = 65;
-        uint8_t jumpHitboxColorA = 150;
+        uint8_t jumpHitboxColorA = 0;
+        int jumpFrameDuration = 10;
 
         for ( int i = 0; i < 12; i++ ) {
 
@@ -52,7 +53,7 @@ public:
 
         std::vector<Frame*> frames;
 
-        // Jump starting
+        // Jump starting, 3 images
         for ( int i = 0; i < 3; i++ ) {
 
             SDL_Texture* imageTexture = mTextures[i];
@@ -73,29 +74,24 @@ public:
             frame->hitboxBottom = jumpHitboxBottom;
             frame->hitboxLeft = jumpHitboxLeft;
             frame->hitboxColorA = jumpHitboxColorA;
-            frame->duration = 10;
+            frame->duration = jumpFrameDuration;
 
             frames.push_back( frame );
         }
 
-        // 40 * 2.3
+        // 
         int totalFramesInAir = 40;
-        double highest = 123.0;
+        double peakHeight = 123.0;
+        double vertexY = y - peakHeight;
         double exponent = 2.3;
-        // double middle = sqrt( highest );
-        double middle = pow( highest, 1 / exponent );
-        double factor = middle / ( totalFramesInAir / 2.0 );
-
-        int jumpInAirFrameDuration = 10;
-
-        int middleIndex = totalFramesInAir / 2;
+        double vertexX = pow( y - vertexY, 1 / exponent );
+        double factor = vertexX / ( totalFramesInAir / 2.0 );
 
         for ( int i = 0; i < totalFramesInAir; i++ ) {
 
-            int eachHeight = -round( pow( abs( middle - factor * i ), exponent ) ) + highest;
-            int newY = y - eachHeight;
+            int newY = round( pow( abs( vertexX - factor * i ), exponent ) ) + vertexY;
 
-            // SDL_Log( "@@ %d", eachHeight );
+            SDL_Log( "@@ %d", newY );
 
             SDL_Texture* imageTexture;
 
@@ -125,12 +121,12 @@ public:
             frame->hitboxBottom = jumpHitboxBottom;
             frame->hitboxLeft = jumpHitboxLeft;
             frame->hitboxColorA = jumpHitboxColorA;
-            frame->duration = jumpInAirFrameDuration;
+            frame->duration = jumpFrameDuration;
 
             frames.push_back( frame );
         }
 
-        // Jump ending
+        // Jump ending, 2 images
         for ( int i = 0; i < 2; i++ ) {
 
             SDL_Texture* imageTexture = mTextures[10+i];
@@ -141,7 +137,6 @@ public:
             frame->y = y; 
             frame->width = mImageWidth; 
             frame->height = mImageHeight;
-            // frame->backgroundColorA = 100;
             frame->imageClipX = 0;
             frame->imageClipY = 0;
             frame->imageClipWidth = mImageWidth;
@@ -153,7 +148,7 @@ public:
             frame->hitboxBottom = jumpHitboxBottom;
             frame->hitboxLeft = jumpHitboxLeft;
             frame->hitboxColorA = jumpHitboxColorA;
-            frame->duration = 10;
+            frame->duration = jumpFrameDuration;
 
             frames.push_back( frame );
         }
