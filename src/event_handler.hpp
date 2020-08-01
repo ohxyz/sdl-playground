@@ -112,7 +112,7 @@ namespace event_handler {
                     break;
 
                 case SDLK_SPACE:
-                    // SDL_Log( "SPACE!\n" );
+                    if ( !gameRunner->isFrozen() ) chicken->walkShoot();
                     break;
 
                 // default:

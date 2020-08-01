@@ -1,6 +1,8 @@
 PLAYGROUND_SRC =  src/playground.cpp
 PLAYGROUND_SRC += src/playground-mod.c
 
+MY_LIB_SRC = C:/my_lib/my_lib.c
+
 SRC += src/object2d.hpp
 SRC += src/sprite.hpp
 SRC += src/helpers.hpp
@@ -10,9 +12,10 @@ SRC += src/scrollable.hpp
 SRC += src/game.hpp
 
 APP_SRC = src/main.cpp
-DEBUG_SRC = src/debug.cpp
+DEBUG_SRC = $(MY_LIB_SRC) src/debug.cpp
 
 TEST_SRC = src/test.test.cpp
+FRAME_SRC = src/frame.test.cpp
 OBJECT2D_SRC = src/object2d.test.cpp
 ANIMATION_SRC = src/animation.test.cpp src/animation.cpp
 SPRITE_SRC = src/sprite.test.cpp
@@ -29,6 +32,7 @@ CC = g++
 
 INCLUDE_PATHS 	= 	-IC:/mingw_dev_lib/SDL2-2.0.12/i686-w64-mingw32/include/SDL2
 INCLUDE_PATHS 	+= 	-IC:/mingw_dev_lib/SDL2_image-2.0.5/i686-w64-mingw32/include/SDL2
+INCLUDE_PATHS 	+= 	-IC:/my_lib
 
 LIBRARY_PATHS 	= 	-LC:/mingw_dev_lib/SDL2-2.0.12/i686-w64-mingw32/lib
 LIBRARY_PATHS 	+= 	-LC:/mingw_dev_lib/SDL2_image-2.0.5/i686-w64-mingw32/lib
@@ -44,6 +48,9 @@ app: $(APP_SRC)
 
 debug: $(DEBUG_SRC)
 	$(CC) $(DEBUG_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/debug
+
+test_frame: $(FRAME_SRC)
+	$(CC) $(FRAME_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test
 
 test_object2d: $(OBJECT2D_SRC)
 	$(CC) $(OBJECT2D_SRC) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o bin/test

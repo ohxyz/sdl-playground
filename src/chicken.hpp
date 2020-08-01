@@ -5,20 +5,24 @@
 #include "animation.hpp"
 #include "animations/chicken_hurt.hpp"
 #include "animations/chicken_walk.hpp"
+#include "animations/chicken_walk_shoot.hpp"
 #include "animations/chicken_jump.hpp"
 #include "animations/chicken_skid.hpp"
+#include "animations/chicken_run.hpp"
 
 #ifndef CHICKEN_HPP
 #define CHICKEN_HPP
 
 class Chicken : public Object2D {
 
-    enum State { Idle, Walk, Jump, Hurt, Skid } mCurrentState { Idle };
+    enum State { Idle, Walk, WalkShoot, Jump, Hurt, Skid, Run } mCurrentState { Idle };
     Animation* mCurrentAnimation;
     ChickenHurtAnimation* mHurtAnimation;
     ChickenWalkAnimation* mWalkAnimation;
+    ChickenWalkShootAnimation* mWalkShootAnimation;
     ChickenJumpAnimation* mJumpAnimation;
     ChickenSkidAnimation* mSkidAnimation;
+    ChickenRunAnimation* mRunAnimation;
 
     Frame* mCurrentFrame;
 
@@ -31,8 +35,10 @@ public:
 
         mHurtAnimation = new ChickenHurtAnimation( startX, startY );
         mWalkAnimation = new ChickenWalkAnimation( startX, startY );
+        mWalkShootAnimation = new ChickenWalkShootAnimation( startX, startY );
         mJumpAnimation = new ChickenJumpAnimation( startX, startY );
         mSkidAnimation = new ChickenSkidAnimation( startX, startY );
+        mRunAnimation  = new ChickenRunAnimation( startX, startY );
         mCurrentAnimation = mWalkAnimation;
     }
 
@@ -40,14 +46,26 @@ public:
 
         delete mHurtAnimation;
         delete mWalkAnimation;
+        delete mWalkShootAnimation;
         delete mJumpAnimation;
         delete mSkidAnimation;
+        delete mRunAnimation;
     }
 
     void
     init() {
-        
+    
         walk();
+    }
+
+    void
+    run() {
+
+        if ( mCurrentState == Run ) return;
+
+        mCurrentState = Run;
+        mCurrentAnimation = mRunAnimation;
+        mRunAnimation->start( true );
     }
 
     void
@@ -61,10 +79,24 @@ public:
     }
 
     void
+    walkShoot() {
+
+        if ( mCurrentState == WalkShoot 
+            || ( mCurrentState != Walk && !mCurrentAnimation->isFinished() )
+        ) {
+            return;
+        }
+
+        mCurrentState = WalkShoot;
+        mCurrentAnimation = mWalkShootAnimation;
+        mWalkShootAnimation->start( 1 );
+    }
+
+    void
     skid() {
 
-        if ( ( mCurrentState == Skid && !mSkidAnimation->isFinished() )
-            || ( mCurrentState == Jump && !mJumpAnimation->isFinished() )
+        if ( mCurrentState == Skid 
+            || ( mCurrentState != Walk && !mCurrentAnimation->isFinished() )
         ) {
             return;
         }
@@ -77,8 +109,12 @@ public:
     void
     jump() {
 
-        if ( mCurrentState == Jump && !mJumpAnimation->isFinished() ) return;
-
+        if ( mCurrentState == Jump 
+            || ( mCurrentState != Walk && !mCurrentAnimation->isFinished() )
+        ) {
+            return;
+        }
+        
         mCurrentState = Jump;
         mCurrentAnimation = mJumpAnimation;
         mJumpAnimation->start( false );
@@ -105,11 +141,14 @@ public:
     void
     render() {
 
-        if ( ( mCurrentState == Jump || mCurrentState == Skid ) 
+        if ( ( mCurrentState == Jump || mCurrentState == Skid || mCurrentState == WalkShoot ) 
                 && mCurrentAnimation->isFinished() 
         ) {
 
+            mCurrentState = Walk;
             mCurrentAnimation = mWalkAnimation;
+            // Reset to first walk animation frame
+            mWalkAnimation->start( true );
         }
 
         mCurrentFrame = mCurrentAnimation->animate();

@@ -40,7 +40,7 @@ public:
         int jumpHitboxBottom = 15;
         int jumpHitboxLeft = 65;
         uint8_t jumpHitboxColorA = 0;
-        int jumpFrameDuration = 10;
+        int jumpFrameDuration = 11;
 
         for ( int i = 0; i < 12; i++ ) {
 
@@ -53,10 +53,10 @@ public:
 
         std::vector<Frame*> frames;
 
-        // Jump starting, 3 images
-        for ( int i = 0; i < 3; i++ ) {
+        // Jump starting, 2 images
+        for ( int i = 0; i < 2; i++ ) {
 
-            SDL_Texture* imageTexture = mTextures[i];
+            SDL_Texture* imageTexture = mTextures[i+1];
 
             Frame* frame = new Frame();
             frame->x = x; 
@@ -79,30 +79,62 @@ public:
             frames.push_back( frame );
         }
 
-        // 
-        int totalFramesInAir = 40;
+        // Jump rise and fall 
         double peakHeight = 123.0;
         double vertexY = y - peakHeight;
-        double exponent = 2.3;
+        double exponent = 2.7;
         double vertexX = pow( y - vertexY, 1 / exponent );
-        double factor = vertexX / ( totalFramesInAir / 2.0 );
 
-        for ( int i = 0; i < totalFramesInAir; i++ ) {
+        // Jump rise
+        int totalFramesOfJumpRise = 23;
+        double factorOfJumpRise = vertexX / (double)totalFramesOfJumpRise;
 
-            int newY = round( pow( abs( vertexX - factor * i ), exponent ) ) + vertexY;
+        for ( int i = 0; i < totalFramesOfJumpRise; i++ ) {
 
-            SDL_Log( "@@ %d", newY );
+            int newY = round( pow( abs( vertexX - factorOfJumpRise * i ), exponent ) ) + vertexY;
+
+            // SDL_Log( "@@ Jump rise %d", newY );
 
             SDL_Texture* imageTexture;
 
             // Use one image for every 2 frames;
             if ( i < 2 ) imageTexture = mTextures[3];
             else if ( i < 4 ) imageTexture = mTextures[4];
-            else if ( i >= 4 &&  i <= totalFramesInAir - 9 ) imageTexture = mTextures[5];
-            else if ( i > totalFramesInAir - 3 ) imageTexture = mTextures[9];
-            else if ( i > totalFramesInAir - 5 ) imageTexture = mTextures[8];
-            else if ( i > totalFramesInAir - 7 ) imageTexture = mTextures[7];
-            else if ( i > totalFramesInAir - 9 ) imageTexture = mTextures[6];
+            else imageTexture = mTextures[5];
+
+            Frame* frame = new Frame();
+
+            frame->x = x; 
+            frame->y = newY;
+            frame->width = mImageWidth; 
+            frame->height = mImageHeight;
+            frame->imageClipX = 0;
+            frame->imageClipY = 0;
+            frame->imageClipWidth = mImageWidth;
+            frame->imageClipHeight = mImageHeight;
+            frame->imageClipFlip = SDL_FLIP_HORIZONTAL;
+            frame->imageTexture = imageTexture;
+            frame->hitboxTop = jumpHitboxTop;
+            frame->hitboxRight = jumpHitboxRight;
+            frame->hitboxBottom = jumpHitboxBottom;
+            frame->hitboxLeft = jumpHitboxLeft;
+            frame->hitboxColorA = jumpHitboxColorA;
+            frame->duration = jumpFrameDuration;
+
+            frames.push_back( frame );
+        }
+
+        // Jump fall
+        int totalFramesOfJumpFall = round( 0.9 * (float)totalFramesOfJumpRise );
+        double factorOfJumpFall = vertexX / (double)totalFramesOfJumpFall;
+
+        for ( int i = 0; i < totalFramesOfJumpFall; i++ ) {
+
+            int newY = round( pow( factorOfJumpFall * i, exponent ) ) + vertexY;
+
+            // SDL_Log( "@@ Jump fall %d", newY );
+
+            SDL_Texture* imageTexture = mTextures[5];
 
             Frame* frame = new Frame();
 
@@ -129,7 +161,7 @@ public:
         // Jump ending, 2 images
         for ( int i = 0; i < 2; i++ ) {
 
-            SDL_Texture* imageTexture = mTextures[10+i];
+            SDL_Texture* imageTexture = mTextures[9+i];
 
             Frame* frame = new Frame();
 

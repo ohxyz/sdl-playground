@@ -82,11 +82,11 @@ public:
             );
 
             mSecondaryFrame->setHitboxColor( 0, 0, 0, 150 );
-            mSecondaryFrame->setHitbox( 5, 0, 0, 10 );
+            mSecondaryFrame->setHitboxRect( 5, 0, 0, 10 );
         }
 
         mPrimaryFrame->setHitboxColor( 0, 0, 0, 150 );
-        mPrimaryFrame->setHitbox( 10, 10, 0, 10 );
+        mPrimaryFrame->setHitboxRect( 10, 10, 0, 10 );
 
         mShouldSwap = utils::genRandomBool();
 

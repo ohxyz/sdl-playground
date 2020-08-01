@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <time.h>
 #include <string.h>
+#include <math.h>
 #include "structs.hpp"
 
 #ifndef HELPERS_HPP
@@ -67,6 +68,87 @@ namespace helpers {
         }
 
         return true;
+    }
+
+    // Note aX, aY are the coordinates of the container's top left point, not the center
+    void
+    fillCircle( int aX, int aY, int aRadius, SDL_Color aColor ) {
+
+        SDL_SetRenderDrawColor( gRenderer, aColor.r, aColor.g, aColor.b, aColor.a );
+
+        // center
+        int cx = aX + aRadius;
+        int cy = aY + aRadius;
+
+        // line
+        int lx1;
+        int lx2;
+        int ly;
+        // horizontal width
+        int hw;
+
+        // Note dist starts with 1, for better rendering effect
+        // Top and botttom lines(dots) are removed
+        for ( int dist = 1; dist <= aRadius; dist ++ ) {
+
+            hw = round( sqrt( pow( aRadius, 2 ) - pow( aRadius - dist, 2 ) ) );
+            lx1 = cx - hw;
+            lx2 = cx + hw;
+            ly = aY + dist;
+
+            SDL_RenderDrawLine( gRenderer, lx1, ly, lx2, ly );
+        }
+
+        for ( int dist = 1; dist < aRadius; dist ++ ) {
+
+            hw = round( sqrt( pow( aRadius, 2 ) - pow( dist, 2 ) ) );
+            lx1 = cx - hw;
+            lx2 = cx + hw;
+            ly = cy + dist;
+
+            SDL_RenderDrawLine( gRenderer, lx1, ly, lx2, ly );
+        }
+    }
+
+    void
+    drawCircle( int aX, int aY, int aRadius, SDL_Color aColor ) {
+
+        SDL_SetRenderDrawColor( gRenderer, aColor.r, aColor.g, aColor.b, aColor.a );
+
+        // center
+        int cx = aX + aRadius;
+        int cy = aY + aRadius;
+
+        // line
+        int lx1;
+        int lx2;
+        int ly;
+        // horizontal width
+        int hw;
+
+        // Note dist starts with 0, for better rendering effect
+        // Top and bottom lines(dots) are kept
+        for ( int dist = 0; dist < aRadius; dist ++ ) {
+
+            hw = round( sqrt( pow( aRadius, 2 ) - pow( aRadius - dist, 2 ) ) );
+            lx1 = cx - hw;
+            lx2 = cx + hw;
+            ly = aY + dist;
+
+            SDL_RenderDrawPoint( gRenderer, lx1, ly );
+            SDL_RenderDrawPoint( gRenderer, lx2, ly );
+        }
+
+        for ( int dist = 0; dist <= aRadius; dist ++ ) {
+
+            hw = round( sqrt( pow( aRadius, 2 ) - pow( dist, 2 ) ) );
+            lx1 = cx - hw;
+            lx2 = cx + hw;
+            ly = cy + dist;
+
+            SDL_RenderDrawPoint( gRenderer, lx1, ly );
+            SDL_RenderDrawPoint( gRenderer, lx2, ly );
+        }
     }
 }
 

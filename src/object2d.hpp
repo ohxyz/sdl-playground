@@ -228,9 +228,9 @@ public:
     getHeight() { return mCurrentFrame->height; }
 
     void
-    setHitbox( int top, int right, int bottom, int left ) {
+    setHitboxRect( int top, int right, int bottom, int left ) {
 
-        mCurrentFrame->setHitbox( top, right, bottom, left );
+        mCurrentFrame->setHitboxRect( top, right, bottom, left );
     }
 
     void

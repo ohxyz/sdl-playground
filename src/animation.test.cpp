@@ -8,6 +8,8 @@
 #include "animation.hpp"
 #include "animations/chicken_hurt.hpp"
 #include "animations/chicken_walk.hpp"
+#include "animations/chicken_walk_shoot.hpp"
+#include "animations/chicken_run.hpp"
 #include "animations/chicken_jump.hpp"
 #include "animations/chicken_skid.hpp"
 #include "animations/vulture_fly.hpp"
@@ -31,8 +33,14 @@ main( int argc, char* args[] ) {
     auto walk = new ChickenWalkAnimation( 0, 150 );
     walk->start(true);
 
-    auto jump = new ChickenJumpAnimation( 200, 200 );
-    jump->start( 1 );
+    auto walkShoot = new ChickenWalkShootAnimation( 100, 150 );
+    walkShoot->start(true);
+
+    auto run = new ChickenRunAnimation( 400, 150 );
+    run->start(true);
+
+    auto jump = new ChickenJumpAnimation( 500, 200 );
+    jump->start( 100 );
 
     auto jumpFrames = jump->getFrames();
 
@@ -73,8 +81,14 @@ main( int argc, char* args[] ) {
         // hurt->animate();
         // hurt->render();
 
-        // walk->animate();
-        // walk->render();
+        walk->animate();
+        walk->render();
+
+        walkShoot->animate();
+        walkShoot->render();
+
+        run->animate();
+        run->render();
 
         jump->animate();
         jump->render();

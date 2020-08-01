@@ -27,7 +27,7 @@ public:
 
         for ( auto frame : frames ) {
 
-            frame->setHitbox( 50, 25, 40, 25 );
+            frame->setHitboxRect( 50, 25, 40, 25 );
             frame->setHitboxColor( 0, 0, 0, 100 );
         }
 

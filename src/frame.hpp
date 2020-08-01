@@ -3,11 +3,18 @@
 #include "game.hpp"
 #include "structs.hpp"
 #include "image.hpp"
+#include "helpers.hpp"
 
 #ifndef FRAME_HPP
 #define FRAME_HPP
 
 extern SDL_Renderer* gRenderer;
+
+enum HitBoxStyle {
+
+    Rectangle,
+    Circle
+};
 
 class Frame {
 
@@ -39,10 +46,12 @@ public:
     SDL_RendererFlip    imageClipFlip { SDL_FLIP_NONE };
     SDL_Texture*        imageTexture {NULL};
 
+    HitBoxStyle         hitboxStyle {HitBoxStyle::Rectangle};
     int                 hitboxTop {0};
     int                 hitboxRight {0};
     int                 hitboxBottom {0};
     int                 hitboxLeft {0};
+    int                 hitBoxRadius {0};
     uint8_t             hitboxColorR {0};
     uint8_t             hitboxColorG {0};
     uint8_t             hitboxColorB {0};
@@ -55,14 +64,18 @@ public:
         
     }
 
-    Frame( int aX, int aY, int aW, int aH, SDL_Texture* aTexture ) {
+    Frame( int aX, int aY, int aW, int aH ) {
 
         this->x = aX;
         this->y = aY;
         this->width = aW;
         this->height = aH;
-        this->imageTexture = aTexture;
+    }
 
+    Frame( int aX, int aY, int aW, int aH, SDL_Texture* aTexture )
+    : Frame( aX, aY, aW, aH ) {
+        
+        this->imageTexture = aTexture;
         this->imageClipWidth = aW;
         this->imageClipHeight = aH;
     }
@@ -97,6 +110,27 @@ public:
 
     void 
     renderHitbox() {
+
+        renderHitboxRect();
+    }
+
+    void
+    renderHitboxCircle() {
+
+        int x = this->x + this->hitboxLeft;
+        int y = this->y + this->hitboxTop;
+        SDL_Color color = { 
+            this->hitboxColorR, 
+            this->hitboxColorG, 
+            this->hitboxColorB,
+            this->hitboxColorA 
+        };
+
+        helpers::fillCircle( x, y, this->hitBoxRadius, color );
+    }
+
+    void
+    renderHitboxRect() {
 
         auto rect = getHitboxRect();
         SDL_SetRenderDrawColor( 
@@ -226,14 +260,22 @@ public:
 
         return rect;
     }
-
+    
     void
-    setHitbox( int aTop, int aRight, int aBottom, int aLeft ) {
+    setHitboxRect( int aTop, int aRight, int aBottom, int aLeft ) {
 
         this->hitboxTop = aTop;
         this->hitboxRight = aRight;
         this->hitboxBottom = aBottom;
         this->hitboxLeft = aLeft;
+    }
+
+    void
+    setHitboxCircle( int aTop, int aLeft, int aRadius ) {
+
+        this->hitboxTop = aTop;
+        this->hitboxLeft = aLeft;
+        this->hitBoxRadius = aRadius;
     }
 
     void
@@ -245,6 +287,14 @@ public:
         this->hitboxColorA = aA;
     }
 
+    void
+    setBackgroundColor( int aR, int aG, int aB, int aA ) {
+
+        this->backgroundColorR = aR;
+        this->backgroundColorG = aG;
+        this->backgroundColorB = aB;
+        this->backgroundColorA = aA;
+    }
 
     // Not tested
     void
